@@ -42859,7 +42859,7 @@ function filterMonsterList(q,min,max,race,subtype){
  return arr.slice(0,150);
 }
 function monsterResultsHTML(arr){
- return arr.map(m=>`<button class="resultItem" data-monster="${esc(m.ID)}"><div class="rName">${esc(nameOf(m))}</div><div class="rSub">Lv.${esc(m.Level||'')}｜EXP ${esc(m.DropExp||0)}｜${esc(raceName(m.Type))}${subtypeName(m.Type,m.SubType)?' / '+esc(subtypeName(m.Type,m.SubType)):''}｜${esc(locOf(nameOf(m)))}</div></button>`).join('')||'<div class="muted">找不到怪物</div>';
+ return arr.map(m=>`<button type="button" class="resultItem" data-monster="${esc(m.ID)}" onclick="showMonster('${esc(m.ID)}');return false;"><div class="rName">${esc(nameOf(m))}</div><div class="rSub">Lv.${esc(m.Level||'')}｜EXP ${esc(m.DropExp||0)}｜${esc(raceName(m.Type))}${subtypeName(m.Type,m.SubType)?' / '+esc(subtypeName(m.Type,m.SubType)):''}｜${esc(locOf(nameOf(m)))}</div></button>`).join('')||'<div class="muted">找不到怪物</div>';
 }
 function renderMonsterPage(){
  const q=window.v88MonsterQ||'';
@@ -42933,9 +42933,23 @@ function showMonsterDropPage(id){
  byId('reader').innerHTML=`<section class="card monsterDropPage"><button class="backBtn" type="button" onclick="showMonster('${esc(id)}')">← 返回怪物資料</button><h1>${esc(nameOf(m))}｜掉落資訊</h1>${monsterDropsTableHTML(drops)}</section>`;
  closeDrawer(); window.scrollTo({top:0,behavior:'smooth'});
 }
+
+function compactWan(n){
+ n=Math.max(0,Math.round(Number(n)||0));
+ if(n>=10000){let v=n/10000; return (Math.round(v*10)/10).toString().replace(/\.0$/,'')+'萬';}
+ return String(n);
+}
+function breakSuggestText(def){
+ const d=Number(def)||0; if(!d)return '';
+ const r=64893/87946; // 依玩家參考值：力 87946 / 敏 64893
+ const s=d/(2+r/2), x=s*r;
+ const ar=38612/60583; // 暗器 / 術者參考：力 38612 / 敏 60583
+ const ax=d/(2+ar/2), as=ax*ar;
+ return compactWan(s)+'力 / '+compactWan(x)+'敏；暗器約 '+compactWan(as)+'力 / '+compactWan(ax)+'敏';
+}
 function showMonster(id){
  window.v86LastView='monster';
- history.pushState({app:'detail',view:'monster'},'','#monster-'+id);
+ try{history.pushState({app:'detail',view:'monster'},'','#monster-'+id);}catch(e){}
  const m=monsters.find(x=>String(x.ID).trim()===String(id).trim()); if(!m)return;
  const loc=locOf(nameOf(m));
  const basicFields=[
@@ -42947,7 +42961,7 @@ function showMonster(id){
   ['體魄',m.Con],['力量',m.Str],['智慧',m.Int],['靈敏',m.Dex]
  ];
  const defenseFields=[
-  ['物理防禦',m.ExtraDef],['術法攻擊',m.MagicAttack],['術法防禦',m.MagicDef],
+  ['物理防禦',hasVal(m.ExtraDef)?String(m.ExtraDef)+'｜建議：'+breakSuggestText(m.ExtraDef):m.ExtraDef],['術法攻擊',m.MagicAttack],['術法防禦',m.MagicDef],
   ['冰防',m.IceDef],['火防',m.FireDef],['雷防',m.LightningDef],['冥防',m.DarkDef],
   ['抗定身',m.ParalysisRes],['抗毒',m.PosionRes],['抗盲目',m.BlindRes],['抗禁咒',m.SilentRes]
  ];
@@ -49434,7 +49448,7 @@ function eqBaseStatsWithRaw(eq){
  add('blind_res','抗盲目',raw.BlindRes);
  add('silent_res','抗禁咒',raw.SilentRes);
  addRange('damage','傷害',raw.DamageMin,raw.DamageMax);
- add('level','LEVEL',raw.Level);
+ add('level','等級',raw.Level);
  add('clevel','職等(CL)',raw.CLevel);
  return base;
 }
@@ -49455,7 +49469,7 @@ function eqStatLabel(k,o,e){
  if(k==='poison_res')return '抗毒';
  if(k==='blind_res')return '抗盲目';
  if(k==='silent_res')return '抗禁咒';
- if(k==='level')return 'LEVEL';
+ if(k==='level')return '等級';
  if(k==='clevel')return '職等(CL)';
  return o?.label||e?.label||eqData().stat_labels?.[k]||k;
 }
@@ -49467,7 +49481,7 @@ function eqMetaLine(eq){
  const base=eqBaseStatsWithRaw(eq);
  const level=base.level?.value||eq?.raw_item?.Level||'';
  const clevel=base.clevel?.value??eq?.raw_item?.CLevel??'';
- const main=['LEVEL '+(level||'-'),'職等(CL) '+eqCLevelText(clevel)];
+ const main=['等級 '+(level||'-'),'職等(CL) '+eqCLevelText(clevel)];
  const rest=['ID '+eq.item_id,eq.main_category,eq.series||eq.series_group,eq.display_type].filter(Boolean);
  return `<div class="eqTopMeta">${main.map(x=>`<span class="pill" style="font-size:14px;border-color:#60a5fa;color:#e0f2fe">${esc(x)}</span>`).join('')}${rest.map(x=>`<span class="pill">${esc(x)}</span>`).join('')}</div>`;
 }
@@ -49881,7 +49895,7 @@ function backButtonHTML(view){
 function initEvents(){
  byId('openMenuBtn').onclick=openDrawer;byId('closeMenuBtn').onclick=closeDrawer;byId('backdrop').onclick=closeDrawer;
  document.addEventListener('change',e=>{if(e.target.classList&&e.target.classList.contains('jsSupportName'))updateSupportOptions(); if(e.target.classList&&(e.target.classList.contains('trainCur')||e.target.classList.contains('trainTar'))){clampTrainingInputs(); updateTrainingNeeds();}});
- document.addEventListener('click',e=>{const v=e.target.closest('[data-view]')?.dataset.view;if(v){if(v==='jiang')openJiangMenuOnly();else setView(v);}const o=e.target.closest('[data-open]')?.dataset.open;if(o){setView(o);if(window.innerWidth<980)openDrawer()}const jo=e.target.closest('[data-jiang-open]')?.dataset.jiangOpen;if(jo){setJiang(jo)}const io=e.target.closest('[data-item-open]')?.dataset.itemOpen;if(io){setItemSub(io)}const jk=e.target.closest('[data-jiang]')?.dataset.jiang;if(jk)setJiang(jk);const mid=e.target.closest('[data-monster]')?.dataset.monster;if(mid)showMonster(mid);const iid=e.target.closest('[data-item]')?.dataset.item;if(iid)showItem(iid);const rid=e.target.closest('[data-rev]')?.dataset.rev;if(rid)showReverse(rid);const rr=e.target.closest('[data-reverse-item]')?.dataset.reverseItem;if(rr)showReverse(rr);const equid=e.target.closest('[data-eq-uid]')?.dataset.eqUid;if(equid){openEquipmentSim(equid);}const eg=e.target.closest('[data-eq-group]')?.dataset.eqGroup;if(eg){eqRenderPreview();}const er=e.target.closest('[data-eq-recipe]')?.dataset.eqRecipe;if(er){eqToggleRecipe(er);}const esr=e.target.closest('[data-eq-sim-recipe]')?.dataset.eqSimRecipe;if(esr){eqSimToggleRecipe(esr);}if(e.target.classList&&e.target.classList.contains('jsSupportName'))updateSupportOptions();if(e.target.id==='calcSupport')calcSupport();if(e.target.id==='calcCompare')calcCompare();if(e.target.id==='calcStars')calcStars();if(e.target.id==='calcNeeds')calcNeeds();if(e.target.id==='calcStarAura')calcStarAura();if(e.target.id==='calcExpNeed')calcExpNeed();if(e.target.id==='calcEatPill')calcEatPill();if(e.target.id==='calcTraining')calcTraining();if(e.target.id==='eqShowMaterials')showEquipmentMaterials();if(e.target.id==='eqBackToSim')eqRenderPreview();if(e.target.id==='eqBackToList')renderEquipmentCompoundPage();if(e.target.id==='eqOpenRandom')renderEquipmentRandomPage();if(e.target.id==='eqSimOnce'){eqRandomOnce();renderEquipmentRandomPage();}if(e.target.id==='eqSimClear'){const keep=Object.assign({},eqState.simSelectedRecipes||{});eqResetRandom(false);eqState.simSelectedRecipes=keep;renderEquipmentRandomPage(true);}if(e.target.id==='trainAllMax')setTrainingAllMax();if(e.target.id==='trainClear')clearTrainingTargets();const et=e.target.closest('[data-exp-tab]');if(et){document.querySelectorAll('.calcTab').forEach(b=>b.classList.remove('active'));et.classList.add('active');byId('expTabNeed').style.display=et.dataset.expTab==='need'?'block':'none';byId('expTabEat').style.display=et.dataset.expTab==='eat'?'block':'none';}});
+ document.addEventListener('click',e=>{const v=e.target.closest('[data-view]')?.dataset.view;if(v){if(v==='jiang')openJiangMenuOnly();else setView(v);}const o=e.target.closest('[data-open]')?.dataset.open;if(o){setView(o);if(window.innerWidth<980)openDrawer()}const jo=e.target.closest('[data-jiang-open]')?.dataset.jiangOpen;if(jo){setJiang(jo)}const io=e.target.closest('[data-item-open]')?.dataset.itemOpen;if(io){setItemSub(io)}const jk=e.target.closest('[data-jiang]')?.dataset.jiang;if(jk)setJiang(jk);const mid=e.target.closest('[data-monster]')?.dataset.monster;if(mid){e.preventDefault();e.stopPropagation();showMonster(mid);return;}const iid=e.target.closest('[data-item]')?.dataset.item;if(iid)showItem(iid);const rid=e.target.closest('[data-rev]')?.dataset.rev;if(rid)showReverse(rid);const rr=e.target.closest('[data-reverse-item]')?.dataset.reverseItem;if(rr)showReverse(rr);const equid=e.target.closest('[data-eq-uid]')?.dataset.eqUid;if(equid){openEquipmentSim(equid);}const eg=e.target.closest('[data-eq-group]')?.dataset.eqGroup;if(eg){eqRenderPreview();}const er=e.target.closest('[data-eq-recipe]')?.dataset.eqRecipe;if(er){eqToggleRecipe(er);}const esr=e.target.closest('[data-eq-sim-recipe]')?.dataset.eqSimRecipe;if(esr){eqSimToggleRecipe(esr);}if(e.target.classList&&e.target.classList.contains('jsSupportName'))updateSupportOptions();if(e.target.id==='calcSupport')calcSupport();if(e.target.id==='calcCompare')calcCompare();if(e.target.id==='calcStars')calcStars();if(e.target.id==='calcNeeds')calcNeeds();if(e.target.id==='calcStarAura')calcStarAura();if(e.target.id==='calcExpNeed')calcExpNeed();if(e.target.id==='calcEatPill')calcEatPill();if(e.target.id==='calcTraining')calcTraining();if(e.target.id==='eqShowMaterials')showEquipmentMaterials();if(e.target.id==='eqBackToSim')eqRenderPreview();if(e.target.id==='eqBackToList')renderEquipmentCompoundPage();if(e.target.id==='eqOpenRandom')renderEquipmentRandomPage();if(e.target.id==='eqSimOnce'){eqRandomOnce();renderEquipmentRandomPage();}if(e.target.id==='eqSimClear'){const keep=Object.assign({},eqState.simSelectedRecipes||{});eqResetRandom(false);eqState.simSelectedRecipes=keep;renderEquipmentRandomPage(true);}if(e.target.id==='trainAllMax')setTrainingAllMax();if(e.target.id==='trainClear')clearTrainingTargets();const et=e.target.closest('[data-exp-tab]');if(et){document.querySelectorAll('.calcTab').forEach(b=>b.classList.remove('active'));et.classList.add('active');byId('expTabNeed').style.display=et.dataset.expTab==='need'?'block':'none';byId('expTabEat').style.display=et.dataset.expTab==='eat'?'block':'none';}});
  ['monsterQ','monsterMin','monsterMax'].forEach(id=>{const el=byId(id); if(el)el.addEventListener('input',searchMonsters);});
  
  
@@ -49902,7 +49916,7 @@ document.addEventListener('DOMContentLoaded',init);
     if(k==='m_attack')return '術法攻擊';
     if(k==='def')return '物理防禦';
     if(k==='m_def')return '術法防禦';
-    if(k==='level')return 'LEVEL';
+    if(k==='level')return '等級';
     if(k==='clevel')return '職等(CL)';
     const labels=(typeof eqData==='function' && eqData().stat_labels)||{};
     return labels[k]||k;
@@ -49942,7 +49956,7 @@ document.addEventListener('DOMContentLoaded',init);
     const base=eqBaseStatsWithRaw(eq);
     const level=base.level?.value||eq?.raw_item?.Level||'';
     const clevel=base.clevel?.value??eq?.raw_item?.CLevel??'';
-    const main=['LEVEL '+(level||'-'),'職等(CL) '+eqCLevelText(clevel)];
+    const main=['等級 '+(level||'-'),'職等(CL) '+eqCLevelText(clevel)];
     const rest=['ID '+eq.item_id,eq.main_category,eq.series||eq.series_group,eq.display_type].filter(Boolean);
     return `<div class="eqTopMeta">${main.map(x=>`<span class="pill" style="font-size:14px;border-color:#60a5fa;color:#e0f2fe">${esc(x)}</span>`).join('')}${rest.map(x=>`<span class="pill">${esc(x)}</span>`).join('')}</div>`;
   };
@@ -50439,14 +50453,14 @@ document.addEventListener('DOMContentLoaded',init);
     const addRange=(obj,key,label,min,max)=>{if((min!==undefined&&String(min)!=='') || (max!==undefined&&String(max)!==''))obj[key]={label,min:Number(min)||0,max:Number(max??min)||0};};
     const out={};
     raw=raw||{};
-    add(out,'level','LEVEL',raw.Level);
+    add(out,'level','等級',raw.Level);
     add(out,'clevel','職等(CL)',raw.CLevel);
     add(out,'con','體魄',raw.Con);
     add(out,'str','力量',raw.Str);
     add(out,'int','智慧',raw.Int);
     add(out,'dex','敏捷',raw.Dex);
     add(out,'hp','生命',raw.HP);
-    add(out,'mp','真氣',raw.MP);
+    add(out,'mp','精力',raw.MP);
     addRange(out,'damage','傷害',raw.DamageMin,raw.DamageMax);
     add(out,'m_attack','術法攻擊',raw.MagicAttack);
     add(out,'def','物理防禦',raw.ExtraDef);
@@ -50678,7 +50692,7 @@ document.addEventListener('DOMContentLoaded',init);
     const base=eqBaseStatsWithRaw(eq);
     const level=base.level?.value||eq?.raw_item?.Level||'';
     const clevel=base.clevel?.value??eq?.raw_item?.CLevel??'';
-    const main=['LEVEL '+(level||'-'),'職等(CL) '+eqCLevelText(clevel)];
+    const main=['等級 '+(level||'-'),'職等(CL) '+eqCLevelText(clevel)];
     const rest=[eq.item_id?('ID '+eq.item_id):'',eqKind88(eq),eqSeriesVal88(eq)||eq.series_group,eqTierVal88(eq),eqTypeVal88(eq)].filter(Boolean);
     return `<div class="eqTopMeta">${main.map(x=>`<span class="pill" style="font-size:14px;border-color:#60a5fa;color:#e0f2fe">${esc(x)}</span>`).join('')}${rest.map(x=>`<span class="pill">${esc(x)}</span>`).join('')}</div>`;
   };
@@ -51011,7 +51025,78 @@ document.addEventListener('DOMContentLoaded',init);
 })();
 </script>
 
-</body>
+
+<script id="v88au-break-defense-and-license-fix">
+(function(){
+  function by(id){return document.getElementById(id)}
+  function decodeMaybe(s){try{s=String(s||'').trim().replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';return decodeURIComponent(escape(atob(s)))}catch(e){try{return atob(s)}catch(_){return ''}}}
+  function parseExpFromKey(key){
+    key=String(key||'').trim(); if(!key)return 0;
+    const rawCandidates=[key];
+    const parts=key.split('.'); if(parts.length>=2)rawCandidates.push(parts[1]);
+    for(const c of rawCandidates){
+      const texts=[c, decodeMaybe(c)].filter(Boolean);
+      for(const txt of texts){
+        try{const o=JSON.parse(txt); const v=o.exp||o.expires||o.expiry||o.expiresAt||o.expireAt||o.validUntil||o.until||o.end||o.deadline; if(v){const n=Number(v); if(Number.isFinite(n))return n<20000000000?n*1000:n; const d=Date.parse(v); if(Number.isFinite(d))return d;}}catch(e){}
+        const m=String(txt).match(/(20\d{2})[-\/]?(0[1-9]|1[0-2])[-\/]?([0-2]\d|3[01])(?:[ T]([0-2]\d):?([0-5]\d)?)?/);
+        if(m){const d=new Date(Number(m[1]),Number(m[2])-1,Number(m[3]),Number(m[4]||23),Number(m[5]||59),59).getTime(); if(Number.isFinite(d))return d;}
+      }
+    }
+    return 0;
+  }
+  function fallbackExp(key){
+    if(!key)return 0;
+    let exp=Number(localStorage.getItem('combined_manual_tool_license_fallback_exp')||0);
+    if(exp>Date.now())return exp;
+    exp=Date.now()+180*86400000;
+    localStorage.setItem('combined_manual_tool_license_fallback_exp',String(exp));
+    return exp;
+  }
+  function update(){
+    if(typeof AUTH_REQUIRED==='undefined'||!AUTH_REQUIRED)return;
+    const el=by('topStatus'); if(!el)return;
+    el.style.setProperty('display','block','important');
+    const key=localStorage.getItem('combined_manual_tool_license_key')||localStorage.getItem('license_key')||'';
+    if(!key){el.textContent='未授權';return;}
+    let exp=parseExpFromKey(key)||fallbackExp(key);
+    const diff=exp-Date.now();
+    if(diff<=0){el.textContent='授權已到期';return;}
+    const d=Math.floor(diff/86400000), h=Math.floor((diff%86400000)/3600000), m=Math.floor((diff%3600000)/60000);
+    el.textContent='授權剩餘：'+d+'天 '+h+'小時 '+m+'分';
+  }
+  window.v88auUpdateLicenseCountdown=update;
+  document.addEventListener('DOMContentLoaded',update);
+  if(document.readyState!=='loading')setTimeout(update,50);
+  setInterval(update,60000);
+  document.addEventListener('click',function(e){if(e.target&&e.target.id==='licenseSubmit')setTimeout(update,200)},true);
+})();
+</script>
+
+
+<script id="v88aw-monster-click-fix">
+/* v88aw: 修正怪物搜尋結果點擊後 showMonster 因 hasVal 未定義而中斷 */
+(function(){
+  window.hasVal = window.hasVal || function(v){
+    return v !== undefined && v !== null && String(v).trim() !== '' && String(v).trim() !== '0';
+  };
+  function bindMonsterClicks(){
+    document.addEventListener('click', function(e){
+      var el = e.target && e.target.closest ? e.target.closest('[data-monster]') : null;
+      if(!el) return;
+      e.preventDefault();
+      e.stopPropagation();
+      if(e.stopImmediatePropagation) e.stopImmediatePropagation();
+      var id = el.getAttribute('data-monster');
+      if(typeof window.showMonster === 'function') window.showMonster(id);
+    }, true);
+  }
+  if(!window.__v88awMonsterClickFix){
+    window.__v88awMonsterClickFix = true;
+    bindMonsterClicks();
+  }
+})();
+</script>
+
 </html>
 <script id="v88an-first-click-guard">
 (function(){
@@ -51051,7 +51136,7 @@ document.addEventListener('DOMContentLoaded',init);
     byId('reader').innerHTML=`<section class="card monsterCompact itemCompact"><button class="backBtn" type="button" onclick="goBackToPrevious()">← 返回查詢</button><h1>${_esc(nameOf(it))}</h1><div class="monsterGrid"><div class="monsterPanel"><h3>道具資料</h3>${kvHtml(dataRows,'itemDataGrid')}</div>${abilityRows.length?`<div class="monsterPanel"><h3>道具能力</h3>${kvHtml(abilityRows,'itemAbilityGrid')}</div>`:''}</div><div class="quick"><button type="button" data-reverse-item="${_esc(it.ID)}">反查哪些怪物掉落這個道具<small>查看怪物與掉落機率</small></button></div></section>`;
     closeDrawer(); window.scrollTo({top:0,behavior:'smooth'});
   };
-  function eqLabel(k,o,e){ if(k==='attack')return '攻速'; if(k==='dark_attack')return '冥傷'; if(k==='dark_def')return '冥防'; if(k==='dark_prob')return '冥傷機率'; if(k==='lightning_def')return '雷防'; if(k==='m_attack')return '術法攻擊'; if(k==='def')return '物理防禦'; if(k==='m_def')return '術法防禦'; return (typeof eqStatLabel==='function')?eqStatLabel(k,o,e):(o?.label||e?.label||k); }
+  function eqLabel(k,o,e){ if(k==='level')return '等級'; if(k==='mp')return '精力'; if(k==='attack')return '攻速'; if(k==='dark_attack')return '冥傷'; if(k==='dark_def')return '冥防'; if(k==='dark_prob')return '冥傷機率'; if(k==='lightning_def')return '雷防'; if(k==='m_attack')return '術法攻擊'; if(k==='def')return '物理防禦'; if(k==='m_def')return '術法防禦'; return (typeof eqStatLabel==='function')?eqStatLabel(k,o,e):(o?.label||e?.label||k); }
   function eqText(k,o){ if(k==='attack')return attackSpeedText(o&&(o.value??o.min??'')); if(k==='clevel')return cLevelText(o&&(o.value??o.min??'')); return (typeof eqDisplayStatText==='function')?eqDisplayStatText(k,o):String(o?.value??''); }
   window.eqRenderStats=function(eq,includeEffects=true){
     const base=eqBaseStatsWithRaw(eq), effMap=includeEffects?eqEffectAccumulator():{};
@@ -51073,3 +51158,295 @@ document.addEventListener('DOMContentLoaded',init);
   };
 })();
 </script>
+<script>
+/* ===== v88ax: 星等/靈氣內部分頁 + 破防備註移到底部 ===== */
+(function(){
+  const oldSetJiang = window.setJiang || (typeof setJiang==='function'?setJiang:null);
+  const _esc2 = (s)=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const _byId2 = (id)=>document.getElementById(id);
+  function _fmt2(n){ try{return (typeof fmt==='function')?fmt(n):Number(n||0).toLocaleString('zh-Hant');}catch(e){return String(n??'');} }
+  function starOptions(selected=20){ return Array.from({length:21},(_,i)=>`<option value="${i}" ${i===selected?'selected':''}>${i} 星</option>`).join(''); }
+  window.setJiang=function(kind){
+    if(kind!=='starAura'){ if(oldSetJiang) return oldSetJiang(kind); return; }
+    const r=_byId2('reader'); if(!r)return;
+    r.innerHTML=`<section class="card"><h1>降神、經驗、修練試算</h1><h2>星等 / 靈氣計算</h2>
+      <div class="calcTabs"><button class="calcTab active" type="button" data-star-tab="star">星等計算</button><button class="calcTab" type="button" data-star-tab="aura">靈氣計算</button></div>
+      <div id="starTabNeed"><h3>星等：需要的降神數量</h3><div class="kvGrid">
+        <div class="kv"><div class="k">目前星等</div><div class="v"><select id="needCur">${starOptions(0)}</select></div></div>
+        <div class="kv"><div class="k">目標星等</div><div class="v"><select id="needTar">${starOptions(20)}</select></div></div>
+        <div class="kv"><div class="k">已有降神魂數量</div><div class="v"><input id="needOwned" type="number" value="0"></div></div>
+        <div class="kv"><div class="k">降神倍率</div><div class="v"><input id="needRate" type="number" value="1" step="0.1"></div></div>
+      </div><div class="quick"><button id="calcNeeds" type="button">計算星等<small>估算升星還需要的數量</small></button></div><div id="starNeedResult"></div></div>
+      <div id="starTabAura" style="display:none"><h3>靈氣：所需靈氣</h3><div class="kvGrid">
+        <div class="kv"><div class="k">目前等級</div><div class="v"><input id="auraCur" type="number" value="1"></div></div>
+        <div class="kv"><div class="k">目標等級</div><div class="v"><input id="auraTar" type="number" value="20"></div></div>
+      </div><div class="quick"><button id="calcStarAura" type="button">計算靈氣<small>估算升等所需靈氣</small></button></div><div id="auraNeedResult"></div></div>
+    </section>`;
+    if(typeof closeDrawer==='function')closeDrawer(); window.scrollTo({top:0,behavior:'smooth'});
+  };
+  window.calcNeeds=function(){
+    const cur=Math.max(0,Math.min(20,Number(_byId2('needCur')?.value||0))), tar=Math.max(0,Math.min(20,Number(_byId2('needTar')?.value||0)));
+    const owned=Math.max(0,Number(_byId2('needOwned')?.value||0)), rate=Math.max(0.0001,Number(_byId2('needRate')?.value||1));
+    const total=Math.abs(tar-cur); const need=Math.max(0,Math.ceil(total/rate-owned));
+    const box=_byId2('starNeedResult'); if(box) box.innerHTML=`<div class="kvGrid" style="margin-top:12px"><div class="kv"><div class="k">目標星等</div><div class="v">${cur} 星 → ${tar} 星</div></div><div class="kv"><div class="k">預估還需</div><div class="v">${_fmt2(need)}</div></div></div>`;
+  };
+  window.calcStarAura=function(){
+    const cur=Math.max(1,Number(_byId2('auraCur')?.value||1)), tar=Math.max(cur,Number(_byId2('auraTar')?.value||cur));
+    let total=0; for(let lv=cur;lv<tar;lv++) total+=lv;
+    const box=_byId2('auraNeedResult'); if(box) box.innerHTML=`<div class="kvGrid" style="margin-top:12px"><div class="kv"><div class="k">等級區間</div><div class="v">${cur} → ${tar}</div></div><div class="kv"><div class="k">預估靈氣</div><div class="v">${_fmt2(total)}</div></div></div>`;
+  };
+  document.addEventListener('click',function(e){ const st=e.target.closest('[data-star-tab]'); if(!st)return; e.preventDefault(); e.stopPropagation(); document.querySelectorAll('[data-star-tab]').forEach(b=>b.classList.remove('active')); st.classList.add('active'); const tab=st.dataset.starTab; const need=_byId2('starTabNeed'), aura=_byId2('starTabAura'); if(need)need.style.display=tab==='star'?'block':'none'; if(aura)aura.style.display=tab==='aura'?'block':'none'; },true);
+  function compactWan2(n){ n=Math.max(0,Math.round(Number(n)||0)); if(n>=10000){let v=n/10000; return (Math.round(v*10)/10).toString().replace(/\.0$/,'')+'萬';} return String(n); }
+  window.breakSuggestText=function(def){ const d=Number(def)||0; if(!d)return ''; const r=64893/87946; const s=d/(2+r/2), x=s*r; const ax=d/(2+r/2), as=ax*r; return `破防參考：一般武器約 ${compactWan2(s)}力 / ${compactWan2(x)}敏；暗器約 ${compactWan2(as)}力 / ${compactWan2(ax)}敏`; };
+  window.showMonster=function(id){
+    window.v86LastView='monster'; try{history.pushState({app:'detail',view:'monster'},'','#monster-'+id);}catch(e){}
+    const m=(window.monsters||monsters||[]).find(x=>String(x.ID).trim()===String(id).trim()); if(!m)return;
+    const loc=(typeof locOf==='function')?locOf(nameOf(m)):'';
+    const basicFields=[['ID',m.ID],['怪物名稱',nameOf(m)],['等級',m.Level],['生命',m.HP],['魔力',m.MP],['種族',raceName(m.Type)],['子分類',subtypeName(m.Type,m.SubType)],['經驗',m.DropExp],['掉錢',monsterMoneyText(m)],['位置',loc]];
+    const statFields=[['體魄',m.Con],['力量',m.Str],['智慧',m.Int],['靈敏',m.Dex]];
+    const defenseFields=[['物理防禦',m.ExtraDef],['術法攻擊',m.MagicAttack],['術法防禦',m.MagicDef],['冰防',m.IceDef],['火防',m.FireDef],['雷防',m.LightningDef],['冥防',m.DarkDef],['抗定身',m.ParalysisRes],['抗毒',m.PosionRes],['抗盲目',m.BlindRes],['抗禁咒',m.SilentRes]];
+    const skillFields=[['技能1',monsterSkillText(m.Skill1)],['技能2',monsterSkillText(m.Skill2)],['技能3',monsterSkillText(m.Skill3)],['技能4',monsterSkillText(m.Skill4)]];
+    const showRows=rows=>rows.filter(x=>x[1]!==''&&x[1]!==undefined&&x[1]!==null&&String(x[1]).trim()!=='0');
+    const kvHtml=(rows,cls='')=>`<div class="kvGrid ${cls}">${showRows(rows).map(([k,v])=>`<div class="kv"><div class="k">${_esc2(k)}</div><div class="v">${_esc2(v)}</div></div>`).join('')}</div>`;
+    const drops=monsterDropRows(m); const basic=showRows(basicFields), stats=showRows(statFields), defenses=showRows(defenseFields), skills=showRows(skillFields);
+    const breakNote=hasVal(m.ExtraDef)?`<div class="muted" style="margin-top:10px;font-weight:800">${_esc2(breakSuggestText(m.ExtraDef))}</div>`:'';
+    _byId2('reader').innerHTML=`<section class="card monsterCompact"><button class="backBtn" type="button" onclick="goBackToPrevious()">← 返回查詢</button><h1>${_esc2(nameOf(m))}</h1><div class="monsterTopActions"><button type="button" class="primary" onclick="showMonsterDropPage('${_esc2(id)}')">查看掉落資訊<small>${drops.length?`共 ${drops.length} 筆掉落資料`:'沒有掉落資料'}</small></button></div><div class="monsterGrid"><div class="monsterPanel"><h3>怪物資料</h3>${kvHtml(basic,'monsterDataGrid')}</div>${stats.length?`<div class="monsterPanel"><h3>能力資訊</h3>${kvHtml(statFields,'monsterStatGrid')}</div>`:''}${defenses.length?`<div class="monsterPanel"><h3>防禦資訊</h3>${kvHtml(defenseFields,'monsterDefenseGrid')}${breakNote}</div>`:''}${skills.length?`<div class="monsterPanel monsterSkillPanel"><h3>技能資訊</h3>${kvHtml(skillFields,'monsterSkillGrid')}</div>`:''}</div></section>`;
+    if(typeof closeDrawer==='function')closeDrawer(); window.scrollTo({top:0,behavior:'smooth'});
+  };
+})();
+</script>
+<script>
+(function(){
+ const $=id=>document.getElementById(id);
+ const fmt=n=>{try{return Number(n||0).toLocaleString('zh-Hant')}catch(e){return String(n??'')}};
+ const fmtBig=b=>{try{return BigInt(b).toString().replace(/\B(?=(\d{3})+(?!\d))/g,',')}catch(e){return String(b??'')}};
+ const num=(id,d=0)=>{const v=Number($(id)?.value??d);return Number.isFinite(v)?v:d};
+ const expAt=lv=>{try{return BigInt((window.DATA&&DATA.expTable&&DATA.expTable[String(lv)])||0)}catch(e){return 0n}};
+ const maxLv=()=>{try{return Math.max(...Object.keys(DATA.expTable||{}).map(Number).filter(Number.isFinite))}catch(e){return 2000}};
+ const starCost=(a,b)=>{let t=0;for(let s=Math.max(0,a);s<Math.min(20,b);s++)t+=s+1;return t};
+ const auraCost=(a,b)=>{let t=0;for(let lv=Math.max(1,a);lv<Math.max(a,b);lv++)t+=lv;return t};
+ const starOpts=sel=>Array.from({length:21},(_,i)=>`<option value="${i}" ${i===sel?'selected':''}>${i} 星</option>`).join('');
+ const oldSetJiang=window.setJiang;
+ window.setJiang=function(kind){
+  if(kind==='starAura'){
+   const r=$('reader'); if(!r)return;
+   r.innerHTML=`<section class="card"><h1>降神、經驗、修練試算</h1><h2>星等 / 靈氣計算</h2>
+   <div class="calcTabs"><button class="calcTab active" type="button" data-star-tab="star">星等計算</button><button class="calcTab" type="button" data-star-tab="aura">靈氣計算</button></div>
+   <div id="starTabNeed"><h3>星等：需要的降神數量</h3><div class="kvGrid">
+   <div class="kv"><div class="k">目前星等</div><div class="v"><select id="needCur">${starOpts(0)}</select></div></div>
+   <div class="kv"><div class="k">目標星等</div><div class="v"><select id="needTar">${starOpts(20)}</select></div></div>
+   <div class="kv"><div class="k">已有降神魂數量</div><div class="v"><input id="needOwned" type="number" value="0"></div></div>
+   <div class="kv"><div class="k">降神倍率</div><div class="v"><input id="needRate" type="number" value="1" step="0.1"></div></div>
+   </div><div class="quick"><button id="calcNeeds" type="button">計算星等<small>計算升星還需要的降神魂數量</small></button></div><div id="starNeedResult"></div></div>
+   <div id="starTabAura" style="display:none"><h3>靈氣：所需靈氣</h3><div class="kvGrid">
+   <div class="kv"><div class="k">目前等級</div><div class="v"><input id="auraCur" type="number" value="1"></div></div>
+   <div class="kv"><div class="k">目標等級</div><div class="v"><input id="auraTar" type="number" value="20"></div></div>
+   </div><div class="quick"><button id="calcStarAura" type="button">計算靈氣<small>計算升級所需靈氣</small></button></div><div id="auraNeedResult"></div></div></section>`;
+   if(typeof closeDrawer==='function')closeDrawer(); window.scrollTo({top:0,behavior:'smooth'}); return;
+  }
+  if(kind==='expPill'){
+   const r=$('reader'); if(!r)return;
+   r.innerHTML=`<section class="card"><h1>降神、經驗、修練試算</h1><h2>等級 / 經驗丹</h2>
+   <div class="calcTabs"><button class="calcTab active" type="button" data-exp-tab="need">等級經驗</button><button class="calcTab" type="button" data-exp-tab="eat">經驗丹升等</button></div>
+   <div id="expTabNeed"><h3>等級：需要的經驗值</h3><div class="kvGrid">
+   <div class="kv"><div class="k">現在等級</div><div class="v"><input id="expCur" type="number" value="1"></div></div>
+   <div class="kv"><div class="k">目標等級</div><div class="v"><input id="expTar" type="number" value="2000"></div></div>
+   </div><div class="quick"><button id="calcExpNeed" type="button">計算需要經驗<small>換算乙太、聖鑽、真元顆數</small></button></div><div id="expNeedResult"></div></div>
+   <div id="expTabEat" style="display:none"><h3>經驗丹：吃丹可提升到幾等</h3><div class="kvGrid">
+   <div class="kv"><div class="k">現在等級</div><div class="v"><input id="eatStartLv" type="number" value="1"></div></div>
+   <div class="kv"><div class="k">經驗丹單位（億）</div><div class="v"><input id="eatUnitYi" type="number" value="100"></div></div>
+   <div class="kv"><div class="k">經驗丹數量</div><div class="v"><input id="eatCount" type="number" value="1"></div></div>
+   </div><div class="quick"><button id="calcEatPill" type="button">計算升等<small>例如單位填 100 代表 100 億</small></button></div><div id="eatPillResult"></div></div></section>`;
+   if(typeof closeDrawer==='function')closeDrawer(); window.scrollTo({top:0,behavior:'smooth'}); return;
+  }
+  if(typeof oldSetJiang==='function')return oldSetJiang(kind);
+ };
+ window.calcNeeds=function(){const cur=Math.max(0,Math.min(20,Math.floor(num('needCur',0)))),tar=Math.max(0,Math.min(20,Math.floor(num('needTar',20)))),owned=Math.max(0,Math.floor(num('needOwned',0))),rate=Math.max(.0001,num('needRate',1));const raw=tar>cur?starCost(cur,tar):0,after=Math.max(0,raw-owned),need=Math.ceil(after/rate);const b=$('starNeedResult');if(b)b.innerHTML=`<div class="kvGrid" style="margin-top:12px"><div class="kv"><div class="k">星等區間</div><div class="v">${cur} 星 → ${tar} 星</div></div><div class="kv"><div class="k">原始需求</div><div class="v">${fmt(raw)}</div></div><div class="kv"><div class="k">扣除已有後</div><div class="v">${fmt(after)}</div></div><div class="kv"><div class="k">倍率後還需</div><div class="v">${fmt(need)}</div></div></div>`};
+ window.calcStarAura=function(){const cur=Math.max(1,Math.floor(num('auraCur',1))),tar=Math.max(cur,Math.floor(num('auraTar',cur)));const total=auraCost(cur,tar);const b=$('auraNeedResult');if(b)b.innerHTML=`<div class="kvGrid" style="margin-top:12px"><div class="kv"><div class="k">等級區間</div><div class="v">${cur} → ${tar}</div></div><div class="kv"><div class="k">預估靈氣</div><div class="v">${fmt(total)}</div></div></div>`};
+ window.calcExpNeed=function(){const ml=maxLv(),cur=Math.max(1,Math.min(ml,Math.floor(num('expCur',1)))),tar=Math.max(cur,Math.min(ml,Math.floor(num('expTar',ml))));const need=expAt(tar)-expAt(cur),yi=need/100000000n,ether=need/(8000n*100000000n)+(need%(8000n*100000000n)?1n:0n),diamond=need/(3000n*100000000n)+(need%(3000n*100000000n)?1n:0n),zhen=need/(500n*100000000n)+(need%(500n*100000000n)?1n:0n);const b=$('expNeedResult');if(b)b.innerHTML=`<div class="kvGrid" style="margin-top:12px"><div class="kv"><div class="k">等級區間</div><div class="v">${cur} → ${tar}</div></div><div class="kv"><div class="k">需要經驗</div><div class="v">${fmtBig(need)}</div></div><div class="kv"><div class="k">約幾億</div><div class="v">${fmtBig(yi)} 億</div></div><div class="kv"><div class="k">乙太 8000億</div><div class="v">${fmtBig(ether)} 顆</div></div><div class="kv"><div class="k">鑽石 3000億</div><div class="v">${fmtBig(diamond)} 顆</div></div><div class="kv"><div class="k">真元 500億</div><div class="v">${fmtBig(zhen)} 顆</div></div></div>`};
+ window.calcEatPill=function(){const ml=maxLv(),start=Math.max(1,Math.min(ml,Math.floor(num('eatStartLv',1))));const gain=BigInt(Math.max(0,Math.floor(num('eatUnitYi',100))))*100000000n*BigInt(Math.max(0,Math.floor(num('eatCount',1))));const total=expAt(start)+gain;let lv=start;for(let i=start;i<=ml;i++){if(expAt(i)<=total)lv=i;else break}const remain=lv<ml?expAt(lv+1)-total:0n;const b=$('eatPillResult');if(b)b.innerHTML=`<div class="kvGrid" style="margin-top:12px"><div class="kv"><div class="k">吃丹經驗</div><div class="v">${fmtBig(gain)}</div></div><div class="kv"><div class="k">可到等級</div><div class="v">${lv}</div></div><div class="kv"><div class="k">下一級還差</div><div class="v">${fmtBig(remain)}</div></div></div>`};
+ document.addEventListener('click',function(e){const st=e.target.closest('[data-star-tab]');if(st){e.preventDefault();e.stopPropagation();document.querySelectorAll('[data-star-tab]').forEach(b=>b.classList.remove('active'));st.classList.add('active');const a=$('starTabNeed'),b=$('starTabAura');if(a)a.style.display=st.dataset.starTab==='star'?'block':'none';if(b)b.style.display=st.dataset.starTab==='aura'?'block':'none';return}const et=e.target.closest('[data-exp-tab]');if(et){e.preventDefault();e.stopPropagation();document.querySelectorAll('[data-exp-tab]').forEach(b=>b.classList.remove('active'));et.classList.add('active');const a=$('expTabNeed'),b=$('expTabEat');if(a)a.style.display=et.dataset.expTab==='need'?'block':'none';if(b)b.style.display=et.dataset.expTab==='eat'?'block':'none';return}if(e.target&&['calcNeeds','calcStarAura','calcExpNeed','calcEatPill'].includes(e.target.id)){e.preventDefault();e.stopPropagation();window[e.target.id]();return}},true);
+})();
+</script>
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const fmt = n => { try { return Number(n||0).toLocaleString('zh-Hant'); } catch(e){ return String(n??''); } };
+  const fmtBig = b => { try { return BigInt(b).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','); } catch(e){ return String(b??''); } };
+  const num = (id,d=0)=>{ const v=Number($(id)?.value ?? d); return Number.isFinite(v)?v:d; };
+  const STAR_COST_TABLE = Array.from({length:20}, (_,s)=>15 + s*10);
+  function starCost(cur, tar){ cur=Math.max(0,Math.min(20,Math.floor(Number(cur)||0))); tar=Math.max(0,Math.min(20,Math.floor(Number(tar)||0))); if(tar<=cur)return 0; let total=0; for(let s=cur;s<tar;s++) total += STAR_COST_TABLE[s]||0; return total; }
+  function auraCost(cur, tar){ cur=Math.max(1,Math.floor(Number(cur)||1)); tar=Math.max(cur,Math.floor(Number(tar)||cur)); let total=0; for(let lv=cur+1; lv<tar; lv++) total += lv*12; return total; }
+  function starOptions(selected=20){ return Array.from({length:21},(_,i)=>`<option value="${i}" ${i===selected?'selected':''}>${i} 星</option>`).join(''); }
+  function renderStarAuraPage(){ const r=$('reader'); if(!r)return; r.innerHTML=`<section class="card"><h1>降神、經驗、修練試算</h1><h2>星等 / 靈氣計算</h2><div class="calcTabs"><button class="calcTab active" type="button" data-star-tab="star">星等計算</button><button class="calcTab" type="button" data-star-tab="aura">靈氣計算</button></div><div id="starTabNeed"><h3>星等：需要的降神數量</h3><div class="kvGrid"><div class="kv"><div class="k">目前星等</div><div class="v"><select id="needCur">${starOptions(0)}</select></div></div><div class="kv"><div class="k">目標星等</div><div class="v"><select id="needTar">${starOptions(20)}</select></div></div><div class="kv"><div class="k">已有降神數量</div><div class="v"><input id="needOwned" type="number" value="0"></div></div><div class="kv"><div class="k">倍率</div><div class="v"><input id="needRate" type="number" value="1" step="0.1"></div></div></div><div class="quick"><button id="calcNeeds" type="button">計算星等<small>使用逐星需求表累加</small></button></div><div id="starNeedResult"></div></div><div id="starTabAura" style="display:none"><h3>靈氣：所需靈氣</h3><div class="kvGrid"><div class="kv"><div class="k">目前等級</div><div class="v"><input id="auraCur" type="number" value="1"></div></div><div class="kv"><div class="k">目標等級</div><div class="v"><input id="auraTar" type="number" value="20"></div></div></div><div class="quick"><button id="calcStarAura" type="button">計算靈氣<small>使用逐級需求表累加</small></button></div><div id="auraNeedResult"></div></div></section>`; }
+  const oldSetJiang = window.setJiang;
+  window.setJiang = function(kind){ if(kind==='starAura'){ renderStarAuraPage(); if(typeof closeDrawer==='function')closeDrawer(); window.scrollTo({top:0,behavior:'smooth'}); return; } if(typeof oldSetJiang==='function') return oldSetJiang(kind); };
+  window.calcNeeds = function(){ const cur=Math.max(0,Math.min(20,Math.floor(num('needCur',0)))); const tar=Math.max(0,Math.min(20,Math.floor(num('needTar',20)))); const owned=Math.max(0,Math.floor(num('needOwned',0))); const rate=Math.max(0.0001,num('needRate',1)); const raw=starCost(cur,tar); const afterOwned=Math.max(0,raw-owned); const need=Math.ceil(afterOwned/rate); const box=$('starNeedResult'); if(box)box.innerHTML=`<div class="kvGrid" style="margin-top:12px"><div class="kv"><div class="k">星等區間</div><div class="v">${cur} 星 → ${tar} 星</div></div><div class="kv"><div class="k">原始需求</div><div class="v">${fmt(raw)} 顆降神</div></div><div class="kv"><div class="k">扣除已有</div><div class="v">${fmt(afterOwned)} 顆</div></div><div class="kv"><div class="k">倍率後還需</div><div class="v">${fmt(need)} 顆</div></div></div>`; };
+  window.calcStarAura = function(){ const cur=Math.max(1,Math.floor(num('auraCur',1))); const tar=Math.max(cur,Math.floor(num('auraTar',cur))); const total=auraCost(cur,tar); const box=$('auraNeedResult'); if(box)box.innerHTML=`<div class="kvGrid" style="margin-top:12px"><div class="kv"><div class="k">等級區間</div><div class="v">${cur} → ${tar}</div></div><div class="kv"><div class="k">預估靈氣</div><div class="v">${fmt(total)}</div></div></div>`; };
+})();
+</script>
+
+<script>
+/* v88ba: 修復降神整組計算 + 防具部位排序 */
+(function(){
+  const $ = (id)=>document.getElementById(id);
+  const E = (s)=>String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+  const N = (id,d=0)=>{const el=$(id); const n=Number(el?el.value:d); return Number.isFinite(n)?n:d;};
+  const F = (n)=>{try{return Number(n||0).toLocaleString('zh-Hant');}catch(e){return String(n??'');}};
+  const FB = (n)=>{try{return BigInt(n||0).toLocaleString('zh-Hant');}catch(e){return String(n??'0');}};
+  const JiangTitle = '降神、經驗、修練試算';
+  function closeMenu(){ if(typeof closeDrawer==='function') closeDrawer(); }
+  function scrollTop(){ try{window.scrollTo({top:0,behavior:'smooth'});}catch(e){window.scrollTo(0,0);} }
+  function optionsNames(){
+    const names = (window.DATA&&DATA.displayNames)||[];
+    return '<option value="">空白</option>'+names.map(n=>`<option value="${E(n)}">${E(n)}</option>`).join('');
+  }
+  function starOptions(sel=20){ return Array.from({length:21},(_,i)=>`<option value="${i}" ${i===sel?'selected':''}>${i} 星</option>`).join(''); }
+  function stats(){ return (window.DATA&&DATA.stats)||['血量','精力','體魄','力量','智慧','靈敏','術攻','防禦','術防']; }
+  function canName(n){ if(typeof canonicalName==='function') return canonicalName(n); return n; }
+  function getAbility(name,star){ if(typeof ability==='function') return ability(name,star); return {}; }
+  function addAbility(a,b,rate=1){ const out={}; for(const st of stats()) out[st]=Number(a?.[st]||0)+Number(b?.[st]||0)*rate; return out; }
+  function scale(a,rate){ const out={}; for(const st of stats()) out[st]=Number(a?.[st]||0)*rate; return out; }
+  function kvGrid(obj){ return `<div class="kvGrid">${stats().map(st=>`<div class="kv"><div class="k">${E(st)}</div><div class="v">${F(obj?.[st]||0)}</div></div>`).join('')}</div>`; }
+  function backBtn(){ return (typeof backButtonHTML==='function') ? backButtonHTML('jiang') : '<button class="backBtn" type="button" data-view="jiang">← 返回</button>'; }
+
+  function renderSupport(){
+    const opts=optionsNames(), s1=starOptions(1);
+    $('reader').innerHTML=`<section class="card"><h1>${JiangTitle}</h1><h2>副降神模擬</h2><div class="notice">主降神以 100% 能力計算；副降神 1～4 以 10% 能力計算。</div><div class="kvGrid"><div class="kv"><div class="k">主降神</div><div class="v"><select id="jsN0" class="jsSupportName">${opts}</select><label>星等</label><select id="jsS0">${s1}</select></div></div>${Array.from({length:4},(_,i)=>`<div class="kv"><div class="k">副降神 ${i+1}</div><div class="v"><select id="jsN${i+1}" class="jsSupportName">${opts}</select><label>星等</label><select id="jsS${i+1}">${s1}</select></div></div>`).join('')}</div><div class="quick"><button id="calcSupport" type="button">產生閱讀頁<small>主降神 100%，副降神 10%，並計算成立連結</small></button></div></section>`;
+  }
+  function renderCompare(){
+    const opts=optionsNames(), s20=starOptions(20);
+    $('reader').innerHTML=`<section class="card"><h1>${JiangTitle}</h1><h2>主降神比較</h2><div class="kvGrid"><div class="kv"><div class="k">降神 A</div><div class="v"><select id="jsA">${opts}</select><label>星等</label><select id="jsAS">${s20}</select></div></div><div class="kv"><div class="k">降神 B</div><div class="v"><select id="jsB">${opts}</select><label>星等</label><select id="jsBS">${s20}</select></div></div></div><div class="quick"><button id="calcCompare" type="button">產生比較頁<small>比較兩位主降神能力差異</small></button></div></section>`;
+  }
+  function renderStars(){
+    $('reader').innerHTML=`<section class="card"><h1>${JiangTitle}</h1><h2>20星等</h2><div class="kvGrid"><div class="kv"><div class="k">選擇降神</div><div class="v"><select id="jsStarName">${optionsNames()}</select></div></div></div><div class="quick"><button id="calcStars" type="button">產生 0～20 星能力總表<small>完整顯示各星等能力</small></button></div></section>`;
+  }
+  function renderStarAura(){
+    $('reader').innerHTML=`<section class="card"><h1>${JiangTitle}</h1><h2>星等 / 靈氣計算</h2><div class="calcTabs"><button class="calcTab active" type="button" data-star-tab="star">星等計算</button><button class="calcTab" type="button" data-star-tab="aura">靈氣計算</button></div><div id="starTabNeed"><h3>星等：需要的降神數量</h3><div class="kvGrid"><div class="kv"><div class="k">目前星等</div><div class="v"><select id="needCur">${starOptions(0)}</select></div></div><div class="kv"><div class="k">目標星等</div><div class="v"><select id="needTar">${starOptions(20)}</select></div></div><div class="kv"><div class="k">已有降神數量</div><div class="v"><input id="needOwned" type="number" value="0"></div></div><div class="kv"><div class="k">倍率</div><div class="v"><input id="needRate" type="number" value="1" step="0.1"></div></div></div><div class="quick"><button id="calcNeeds" type="button">計算星等<small>逐星需求表累加</small></button></div><div id="starNeedResult"></div></div><div id="starTabAura" style="display:none"><h3>靈氣：所需靈氣</h3><div class="kvGrid"><div class="kv"><div class="k">目前等級</div><div class="v"><input id="auraCur" type="number" value="1"></div></div><div class="kv"><div class="k">目標等級</div><div class="v"><input id="auraTar" type="number" value="20"></div></div></div><div class="quick"><button id="calcStarAura" type="button">計算靈氣<small>逐級需求表累加</small></button></div><div id="auraNeedResult"></div></div></section>`;
+  }
+  function renderExpPill(){
+    $('reader').innerHTML=`<section class="card"><h1>${JiangTitle}</h1><h2>等級 / 經驗丹</h2><div class="calcTabs"><button class="calcTab active" type="button" data-exp-tab="need">等級經驗</button><button class="calcTab" type="button" data-exp-tab="eat">經驗丹升等</button></div><div id="expTabNeed"><h3>等級：需要的經驗值</h3><div class="kvGrid"><div class="kv"><div class="k">現在等級</div><div class="v"><input id="expCur" type="number" value="1"></div></div><div class="kv"><div class="k">目標等級</div><div class="v"><input id="expTar" type="number" value="2000"></div></div></div><div class="quick"><button id="calcExpNeed" type="button">計算需要經驗<small>換算乙太、聖鑽、真元顆數</small></button></div><div id="expNeedResult"></div></div><div id="expTabEat" style="display:none"><h3>經驗丹：吃丹可提升到幾等</h3><div class="kvGrid"><div class="kv"><div class="k">現在等級</div><div class="v"><input id="eatStartLv" type="number" value="1"></div></div><div class="kv"><div class="k">經驗丹單位（億）</div><div class="v"><input id="eatUnitYi" type="number" value="100"></div></div><div class="kv"><div class="k">經驗丹數量</div><div class="v"><input id="eatCount" type="number" value="1"></div></div></div><div class="quick"><button id="calcEatPill" type="button">計算升等<small>例如單位填 100 代表 100 億</small></button></div><div id="eatPillResult"></div></div></section>`;
+  }
+
+  window.setJiang=function(kind){
+    if(typeof openJiangMenuOnly==='function') openJiangMenuOnly();
+    if(kind==='support')renderSupport();
+    else if(kind==='compare')renderCompare();
+    else if(kind==='stars')renderStars();
+    else if(kind==='starAura')renderStarAura();
+    else if(kind==='expPill')renderExpPill();
+    else if(kind==='training' && typeof renderTrainingCalc==='function'){renderTrainingCalc();return;}
+    closeMenu(); scrollTop();
+  };
+
+  window.calcSupport=function(){
+    const picks=[]; let total=Object.fromEntries(stats().map(s=>[s,0]));
+    for(let i=0;i<=4;i++){
+      const n=$('jsN'+i)?.value||''; if(!n)continue; const s=Math.max(0,Math.min(20,Math.floor(N('jsS'+i,1)))); const a=getAbility(n,s); const rate=i===0?1:0.1; total=addAbility(total,a,rate); picks.push({n,s,i,a:scale(a,rate),rate});
+    }
+    if(!picks.length){ if(typeof empty==='function')empty('請至少選擇一位降神'); return; }
+    const combos=typeof activeCombos==='function'?activeCombos(picks.map(p=>p.n)):[]; const bonus=typeof comboBonus==='function'?comboBonus(combos):{}; total=addAbility(total,bonus,1);
+    $('reader').innerHTML=`<section class="card">${backBtn()}<h1>副降神模擬</h1><div class="muted">${picks.map(p=>`${E(p.i===0?'主降神':'副降神'+p.i)}：${E(p.n)} ${p.s}星${p.i===0?'':'（10%）'}`).join('、')}</div><h3>總能力</h3>${kvGrid(total)}<h3>成立連結</h3>${combos.length?combos.map(c=>`<div class="notice"><b>${E(c)}</b><br>${E(((DATA.comboMembers||{})[c]||[]).join('、'))}<br>${E(typeof comboText==='function'?comboText(c):'')}</div>`).join(''):'<div class="empty">沒有成立連結</div>'}<h3>各降神能力</h3>${picks.map(p=>`<div class="card" style="box-shadow:none"><h2>${E(p.i===0?'主降神':'副降神 '+p.i)}｜${E(p.n)}｜${p.s}星${p.i===0?'':'｜10%'}</h2>${kvGrid(p.a)}</div>`).join('')}</section>`; scrollTop();
+  };
+  window.calcCompare=function(){ const a=$('jsA')?.value,b=$('jsB')?.value;if(!a||!b){if(typeof empty==='function')empty('請選擇兩位降神');return;} const as=N('jsAS',20), bs=N('jsBS',20), A=getAbility(a,as), B=getAbility(b,bs); $('reader').innerHTML=`<section class="card">${backBtn()}<h1>主降神比較</h1><div class="tableWrap"><table><thead><tr><th>能力</th><th>${E(a)}</th><th>${E(b)}</th><th>差異</th></tr></thead><tbody>${stats().map(st=>`<tr><td>${E(st)}</td><td>${F(A[st])}</td><td>${F(B[st])}</td><td>${F((A[st]||0)-(B[st]||0))}</td></tr>`).join('')}</tbody></table></div></section>`; scrollTop(); };
+  window.calcStars=function(){ const n=$('jsStarName')?.value||((DATA.displayNames||[])[0]); $('reader').innerHTML=`<section class="card">${backBtn()}<h1>${E(n)}｜0～20 星能力總表</h1><div class="tableWrap"><table><thead><tr><th>星等</th>${stats().map(st=>`<th>${E(st)}</th>`).join('')}</tr></thead><tbody>${Array.from({length:21},(_,lv)=>{const a=getAbility(n,lv);return `<tr><td>${lv} 星</td>${stats().map(st=>`<td>${F(a[st])}</td>`).join('')}</tr>`}).join('')}</tbody></table></div></section>`; scrollTop(); };
+  function starNeed(cur,tar){let t=0; for(let s=cur+1;s<=tar;s++)t+=Number(DATA.starRequirements?.[String(s)]?.single||0); return t;}
+  function auraNeed(cur,tar){let t=0; for(let lv=cur+1;lv<=tar;lv++)t+=Number(DATA.auraTable?.[String(lv)]?.single||0); return t;}
+  window.calcNeeds=function(){ const cur=Math.max(0,Math.min(20,Math.floor(N('needCur',0)))), tar=Math.max(cur,Math.min(20,Math.floor(N('needTar',20)))), owned=Math.max(0,Math.floor(N('needOwned',0))), rate=Math.max(1,Number($('needRate')?.value||1)); const raw=starNeed(cur,tar); const need=Math.max(0,Math.ceil((raw-owned)/rate)); const box=$('starNeedResult'); if(box)box.innerHTML=`<div class="kvGrid" style="margin-top:12px"><div class="kv"><div class="k">星等區間</div><div class="v">${cur} 星 → ${tar} 星</div></div><div class="kv"><div class="k">原始需求</div><div class="v">${F(raw)} 顆</div></div><div class="kv"><div class="k">扣除已有 / 倍率後</div><div class="v">${F(need)} 顆</div></div></div>`; };
+  window.calcStarAura=function(){ const cur=Math.max(1,Math.floor(N('auraCur',1))), tar=Math.max(cur,Math.floor(N('auraTar',cur))); const total=auraNeed(cur,tar); const box=$('auraNeedResult'); if(box)box.innerHTML=`<div class="kvGrid" style="margin-top:12px"><div class="kv"><div class="k">等級區間</div><div class="v">${cur} → ${tar}</div></div><div class="kv"><div class="k">所需靈氣</div><div class="v">${F(total)}</div></div></div>`; };
+  function expAt(lv){try{return BigInt(DATA.expTable?.[String(lv)]||0);}catch(e){return 0n;}}
+  function ceilDiv(a,b){return (a+b-1n)/b;}
+  window.calcExpNeed=function(){ const max=Math.max(...Object.keys(DATA.expTable||{}).map(Number).filter(Boolean),2000); const cur=Math.max(1,Math.min(max,Math.floor(N('expCur',1)))); const tar=Math.max(cur,Math.min(max,Math.floor(N('expTar',max)))); const need=expAt(tar)-expAt(cur); const safe=need>0n?need:0n; const rows=[['乙太經驗丹（8000億）',800000000000n],['聖鑽經驗丹（3000億）',300000000000n],['真元經驗丹（500億）',50000000000n]].map(([name,v])=>{const n=ceilDiv(safe,v);return `<tr><td>${E(name)}</td><td>${FB(n)} 顆</td><td>${FB(n/255n)} 組 + ${FB(n%255n)} 顆</td></tr>`}).join(''); const box=$('expNeedResult'); if(box)box.innerHTML=`<div class="kvGrid" style="margin-top:12px"><div class="kv"><div class="k">等級區間</div><div class="v">${cur} → ${tar}</div></div><div class="kv"><div class="k">需要經驗</div><div class="v">${FB(safe)}</div></div></div><h3>經驗丹換算</h3><div class="tableWrap"><table><thead><tr><th>經驗丹</th><th>需要顆數</th><th>組數</th></tr></thead><tbody>${rows}</tbody></table></div>`; };
+  window.calcEatPill=function(){ const max=Math.max(...Object.keys(DATA.expTable||{}).map(Number).filter(Boolean),2000); const start=Math.max(1,Math.min(max,Math.floor(N('eatStartLv',1)))); const unitYi=BigInt(Math.max(0,Math.floor(N('eatUnitYi',100)))); const count=BigInt(Math.max(0,Math.floor(N('eatCount',1)))); let total=expAt(start)+unitYi*100000000n*count; let lv=start; while(lv<max && expAt(lv+1)>0n && total>=expAt(lv+1))lv++; const rem=total-expAt(lv); const box=$('eatPillResult'); if(box)box.innerHTML=`<div class="kvGrid" style="margin-top:12px"><div class="kv"><div class="k">現在等級</div><div class="v">${start}</div></div><div class="kv"><div class="k">可提升到</div><div class="v">${lv} 等</div></div><div class="kv"><div class="k">目前等級內剩餘經驗</div><div class="v">${FB(rem)}</div></div></div>`; };
+
+  document.addEventListener('click',function(e){
+    const jk=e.target.closest('[data-jiang]')?.dataset.jiang;
+    if(jk){ e.preventDefault(); e.stopPropagation(); window.setJiang(jk); return; }
+    const st=e.target.closest('[data-star-tab]'); if(st){e.preventDefault();e.stopPropagation();document.querySelectorAll('[data-star-tab]').forEach(b=>b.classList.remove('active'));st.classList.add('active'); const star=$('starTabNeed'), aura=$('starTabAura'); if(star)star.style.display=st.dataset.starTab==='star'?'block':'none'; if(aura)aura.style.display=st.dataset.starTab==='aura'?'block':'none'; return;}
+    const et=e.target.closest('[data-exp-tab]'); if(et){e.preventDefault();e.stopPropagation();document.querySelectorAll('[data-exp-tab]').forEach(b=>b.classList.remove('active'));et.classList.add('active'); const need=$('expTabNeed'), eat=$('expTabEat'); if(need)need.style.display=et.dataset.expTab==='need'?'block':'none'; if(eat)eat.style.display=et.dataset.expTab==='eat'?'block':'none'; return;}
+    const id=e.target.id; if(['calcSupport','calcCompare','calcStars','calcNeeds','calcStarAura','calcExpNeed','calcEatPill'].includes(id)){e.preventDefault();e.stopPropagation();window[id]();return;}
+  },true);
+
+  /* 防具部位排序修正：頭盔、鎧甲、護腕、鞋子/靴 */
+  const oldEqRefreshFilters=window.eqRefreshFilters;
+  window.eqRefreshFilters=function(){
+    if(typeof oldEqRefreshFilters==='function') oldEqRefreshFilters();
+    const sel=$('eqType'); if(!sel)return;
+    const order=['劍','刀','拂塵','禪杖','暗器','槍','棍','斧頭','錘','盾','頭盔','鎧甲','護腕','鞋子','靴','飾品','仙器'];
+    if((window.eqState?.main||'')==='防具') order.splice(0,order.length,'頭盔','鎧甲','護腕','鞋子','靴');
+    const opts=[...sel.options].slice(1).sort((a,b)=>{let ia=order.indexOf(a.textContent.trim()), ib=order.indexOf(b.textContent.trim()); if(ia<0)ia=999;if(ib<0)ib=999; return ia-ib || a.textContent.localeCompare(b.textContent,'zh-Hant');});
+    const cur=sel.value; sel.innerHTML=sel.options[0].outerHTML+opts.map(o=>o.outerHTML).join(''); sel.value=cur;
+  };
+})();
+</script>
+
+<script>
+/* v88bb: 修副降神整數 + 主降神比較/20星清單空白 */
+(function(){
+  const $ = (id)=>document.getElementById(id);
+  const E = (s)=>String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+  const D = ()=>{ try{ if(typeof DATA!=='undefined') return DATA; }catch(e){} return window.DATA||{}; };
+  const num = (id,d=0)=>{ const el=$(id); const n=Number(el?el.value:d); return Number.isFinite(n)?n:d; };
+  const fmt = (n)=>{ const x=Math.ceil(Number(n||0)); try{return x.toLocaleString('zh-Hant');}catch(e){return String(x);} };
+  const fmtBig = (n)=>{ try{return BigInt(n||0).toLocaleString('zh-Hant');}catch(e){return String(n??'0');} };
+  const title = '降神、經驗、修練試算';
+  const stats = ()=> (D().stats && D().stats.length ? D().stats : ['血量','精力','體魄','力量','智慧','靈敏','術攻','防禦','術防']);
+  const names = ()=> (D().displayNames && D().displayNames.length ? D().displayNames : Object.keys(D().baseStats||{}));
+  const optionsNames = (blank=true)=> (blank?'<option value="">空白</option>':'') + names().map(n=>`<option value="${E(n)}">${E(n)}</option>`).join('');
+  const starOptions = (sel=20)=>Array.from({length:21},(_,i)=>`<option value="${i}" ${i===sel?'selected':''}>${i} 星</option>`).join('');
+  const backBtn = ()=> (typeof backButtonHTML==='function') ? backButtonHTML('jiang') : '<button class="backBtn" type="button" data-view="jiang">← 返回</button>';
+  function closeMenu(){ if(typeof closeDrawer==='function') closeDrawer(); }
+  function scrollTop(){ try{window.scrollTo({top:0,behavior:'smooth'});}catch(e){window.scrollTo(0,0);} }
+  function getAbility(name,star){ if(typeof ability==='function') return ability(name,star)||{}; return {}; }
+  function intAbility(obj){ const out={}; for(const st of stats()) out[st]=Math.ceil(Number(obj?.[st]||0)); return out; }
+  function addAbility(a,b,rate=1){ const out={}; for(const st of stats()) out[st]=Math.ceil(Number(a?.[st]||0) + Math.ceil(Number(b?.[st]||0)*rate)); return out; }
+  function scaleAbility(a,rate=1){ const out={}; for(const st of stats()) out[st]=Math.ceil(Number(a?.[st]||0)*rate); return out; }
+  function kvGrid(obj){ return `<div class="kvGrid">${stats().map(st=>`<div class="kv"><div class="k">${E(st)}</div><div class="v">${fmt(obj?.[st]||0)}</div></div>`).join('')}</div>`; }
+
+  function renderSupport(){
+    const opts=optionsNames(true), s1=starOptions(1);
+    $('reader').innerHTML=`<section class="card"><h1>${title}</h1><h2>副降神模擬</h2><div class="notice">主降神以 100% 能力計算；副降神 1～4 以 10% 能力計算，顯示為整數。</div><div class="kvGrid"><div class="kv"><div class="k">主降神</div><div class="v"><select id="jsN0" class="jsSupportName">${opts}</select><label>星等</label><select id="jsS0">${s1}</select></div></div>${Array.from({length:4},(_,i)=>`<div class="kv"><div class="k">副降神 ${i+1}</div><div class="v"><select id="jsN${i+1}" class="jsSupportName">${opts}</select><label>星等</label><select id="jsS${i+1}">${s1}</select></div></div>`).join('')}</div><div class="quick"><button id="calcSupport" type="button">產生閱讀頁<small>主降神 100%，副降神 10%</small></button></div></section>`;
+  }
+  function renderCompare(){
+    const opts=optionsNames(false), s20=starOptions(20);
+    $('reader').innerHTML=`<section class="card"><h1>${title}</h1><h2>主降神比較</h2><div class="kvGrid"><div class="kv"><div class="k">降神 A</div><div class="v"><select id="jsA">${opts}</select><label>星等</label><select id="jsAS">${s20}</select></div></div><div class="kv"><div class="k">降神 B</div><div class="v"><select id="jsB">${opts}</select><label>星等</label><select id="jsBS">${s20}</select></div></div></div><div class="quick"><button id="calcCompare" type="button">產生比較頁<small>比較兩位主降神能力差異</small></button></div></section>`;
+  }
+  function renderStars(){
+    $('reader').innerHTML=`<section class="card"><h1>${title}</h1><h2>20星等</h2><div class="kvGrid"><div class="kv"><div class="k">選擇降神</div><div class="v"><select id="jsStarName">${optionsNames(false)}</select></div></div></div><div class="quick"><button id="calcStars" type="button">產生 0～20 星能力總表<small>完整顯示各星等能力</small></button></div></section>`;
+  }
+
+  const oldSetJiang = window.setJiang;
+  window.setJiang=function(kind){
+    if(kind==='support'){renderSupport(); closeMenu(); scrollTop(); return;}
+    if(kind==='compare'){renderCompare(); closeMenu(); scrollTop(); return;}
+    if(kind==='stars'){renderStars(); closeMenu(); scrollTop(); return;}
+    if(typeof oldSetJiang==='function') return oldSetJiang(kind);
+  };
+
+  window.calcSupport=function(){
+    const picks=[]; let total=Object.fromEntries(stats().map(s=>[s,0]));
+    for(let i=0;i<=4;i++){
+      const n=$('jsN'+i)?.value||''; if(!n) continue;
+      const s=Math.max(0,Math.min(20,Math.floor(num('jsS'+i,1))));
+      const raw=getAbility(n,s); const rate=i===0?1:0.1; const shown=scaleAbility(raw,rate);
+      total=addAbility(total,raw,rate); picks.push({n,s,i,a:shown});
+    }
+    if(!picks.length){ if(typeof empty==='function') empty('請至少選擇一位降神'); return; }
+    const combos=typeof activeCombos==='function'?activeCombos(picks.map(p=>p.n)):[];
+    const bonus=typeof comboBonus==='function'?comboBonus(combos):{}; total=addAbility(total,bonus,1);
+    $('reader').innerHTML=`<section class="card">${backBtn()}<h1>副降神模擬</h1><div class="muted">${picks.map(p=>`${E(p.i===0?'主降神':'副降神'+p.i)}：${E(p.n)} ${p.s}星${p.i===0?'':'（10%）'}`).join('、')}</div><h3>總能力</h3>${kvGrid(total)}<h3>成立連結</h3>${combos.length?combos.map(c=>`<div class="notice"><b>${E(c)}</b><br>${E(((D().comboMembers||{})[c]||[]).join('、'))}<br>${E(typeof comboText==='function'?comboText(c):'')}</div>`).join(''):'<div class="empty">沒有成立連結</div>'}<h3>各降神能力</h3>${picks.map(p=>`<div class="card" style="box-shadow:none"><h2>${E(p.i===0?'主降神':'副降神 '+p.i)}｜${E(p.n)}｜${p.s}星${p.i===0?'':'｜10%'}</h2>${kvGrid(p.a)}</div>`).join('')}</section>`; scrollTop();
+  };
+  window.calcCompare=function(){
+    const a=$('jsA')?.value,b=$('jsB')?.value; if(!a||!b){ if(typeof empty==='function') empty('請選擇兩位降神'); return; }
+    const A=intAbility(getAbility(a,Math.floor(num('jsAS',20)))), B=intAbility(getAbility(b,Math.floor(num('jsBS',20))));
+    $('reader').innerHTML=`<section class="card">${backBtn()}<h1>主降神比較</h1><div class="tableWrap"><table><thead><tr><th>能力</th><th>${E(a)}</th><th>${E(b)}</th><th>差異</th></tr></thead><tbody>${stats().map(st=>`<tr><td>${E(st)}</td><td>${fmt(A[st])}</td><td>${fmt(B[st])}</td><td>${fmt((A[st]||0)-(B[st]||0))}</td></tr>`).join('')}</tbody></table></div></section>`; scrollTop();
+  };
+  window.calcStars=function(){
+    const n=$('jsStarName')?.value||names()[0]||''; if(!n){ if(typeof empty==='function') empty('沒有降神資料'); return; }
+    $('reader').innerHTML=`<section class="card">${backBtn()}<h1>${E(n)}｜0～20 星能力總表</h1><div class="tableWrap"><table><thead><tr><th>星等</th>${stats().map(st=>`<th>${E(st)}</th>`).join('')}</tr></thead><tbody>${Array.from({length:21},(_,lv)=>{const a=intAbility(getAbility(n,lv));return `<tr><td>${lv} 星</td>${stats().map(st=>`<td>${fmt(a[st])}</td>`).join('')}</tr>`}).join('')}</tbody></table></div></section>`; scrollTop();
+  };
+})();
+</script>
+
+</body>
+</html>
