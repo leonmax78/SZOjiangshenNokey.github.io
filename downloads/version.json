@@ -1,9 +1,9 @@
 {
-  "display_name": "武冠判讀DEMO",
-  "version": "260613-15",
-  "published_at": "2026-06-13 01:22",
-  "file_name": "Wuguan_DEMO_260613-15.zip",
-  "download_url": "https://leonmax78.github.io/downloads/Wuguan_DEMO_260613-15.zip",
+  "display_name": "武冠判讀 DEMO",
+  "version": "260614-16",
+  "published_at": "2026-06-14 01:04",
+  "file_name": "Wuguan_DEMO_260614-16.zip",
+  "download_url": "https://leonmax78.github.io/downloads/Wuguan_DEMO_260614-16.zip",
   "page_url": "downloads/",
-  "notes": "武冠判讀 DEMO 測試版，修正多螢幕截圖，支援神州放在第二螢幕時校正與偵測。"
+  "notes": "武冠判讀 DEMO 測試版，合併掉落位置清冊並更新本機教導模型，修正匯出未收錄時掉落位置空白。"
 }
