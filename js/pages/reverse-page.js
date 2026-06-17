@@ -93,7 +93,7 @@
     }
     const arr=(revObj[itemId]||[]).slice().sort(function(a,b){return (Number(b.rate)||0)-(Number(a.rate)||0)});
     window.v86LastView=backView;
-    try{history.pushState({app:'detail',view:'reverse'},'','#reverse-'+itemId);}catch(e){}
+    try{history.pushState({app:'detail',view:'reverse'},'',location.pathname+location.search);}catch(e){}
     const rows=arr.map(function(x){
       const m=x.monster||{};
       const mn=nameOfSafe(m);
