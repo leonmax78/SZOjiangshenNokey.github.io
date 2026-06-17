@@ -1350,14 +1350,6 @@ function clearSearchStateForReturn(view){
   window.v88MonsterRace='';
   window.v88MonsterSubtype='';
  }
- if(view==='item'){
-  window.v86ItemQ='';
-  window.v86ItemType='';
-  window.v86ItemMin='';
-  window.v86ItemMax='';
-  window.v110ItemEqSeries='';
-  window.v110ItemKind='';
- }
  if(view==='reverse'){
   window.v86ReverseQ='';
  }

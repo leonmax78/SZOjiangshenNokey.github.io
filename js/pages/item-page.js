@@ -283,6 +283,7 @@ async function renderItemPage(tab='item'){
         <div class="kv"><div class="k">系列快選</div><div class="v"><select id="itemEqSeries" onfocus="refreshItemSeriesWhenReady()" onchange="searchItems()"></select></div></div>
         <div class="kv"><div class="k">專剋屬性</div><div class="v"><select id="itemKind" onchange="searchItems()"></select></div></div>
       </div>
+      <div class="itemFilterActions"><button type="button" onclick="clearItemSearchFilters()">清空篩選</button></div>
       <div class="notice itemFilterNote">系列快選依合成模擬清單建立；類型依 ITEM.INI 原始欄位篩選。</div>
       <div class="results" id="itemResults"></div>
     </div>
@@ -363,6 +364,20 @@ function searchItems(){
  }).join('')||'<div class="muted">沒有符合的道具。</div>';
 }
 
+function clearItemSearchFilters(){
+ window.v86ItemQ='';
+ window.v86ItemType='';
+ window.v86ItemMin='';
+ window.v86ItemMax='';
+ window.v110ItemEqSeries='';
+ window.v110ItemKind='';
+ ['itemQ','itemType','itemMin','itemMax','itemEqSeries','itemKind'].forEach(id=>{
+  const el=byId(id);
+  if(el)el.value='';
+ });
+ searchItems();
+}
+
 function showItem(id,skipPush){
  window.v86LastView='item';
  if(!skipPush){try{history.pushState({app:'detail',view:'item'},'','#item-'+id);}catch(e){}}
@@ -387,4 +402,5 @@ window.renderItemPage=renderItemPage;
 window.openItemMenuOnly=openItemMenuOnly;
 window.setItemSub=setItemSub;
 window.searchItems=searchItems;
+window.clearItemSearchFilters=clearItemSearchFilters;
 window.showItem=showItem;

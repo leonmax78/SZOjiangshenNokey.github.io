@@ -2723,3 +2723,24 @@ body{
     align-items:flex-start;
   }
 }
+.itemFilterActions{
+  display:flex;
+  justify-content:flex-end;
+  margin:10px 0 0;
+}
+.itemFilterActions button{
+  border:1px solid var(--line);
+  background:var(--panel2);
+  color:var(--text);
+  border-radius:12px;
+  padding:9px 12px;
+  font-weight:900;
+}
+@media(max-width:700px){
+  .itemFilterActions{
+    justify-content:stretch;
+  }
+  .itemFilterActions button{
+    width:100%;
+  }
+}
