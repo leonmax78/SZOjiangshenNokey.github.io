@@ -1122,7 +1122,7 @@ function trainingGroupRank(g){
 }
 function trainingElementRank(text){
  const s=String(text||'');
- const order=['體魄','力量','智慧','靈敏','血量','精力','攻擊','防禦','術防','抗性'];
+ const order=['體魄','力量','智慧','靈敏','血量','生命','血','精力','精','綜合能力','全屬','自由分配能力值','自由分配','攻擊','防禦','術防','抗性'];
  const idx=order.findIndex(k=>s.includes(k));
  return idx>=0?idx:999;
 }
@@ -1158,10 +1158,37 @@ function sortedTrainingData(){
   return trainingDisplayName(a.x.name).localeCompare(trainingDisplayName(b.x.name),'zh-Hant');
  });
 }
-function sortMaterialEntries(entries){
- return entries.sort((a,b)=>String(a[0]||'').localeCompare(String(b[0]||''),'zh-Hant'));
+function trainingMaterialRank(item){
+ const name=String(item||'');
+ let best=null;
+ const before=(a,b)=>a[0]!==b[0]?a[0]<b[0]:a[1]!==b[1]?a[1]<b[1]:a[2]<b[2];
+ trainingData().forEach((x,i)=>{
+  if(String(x.item||'')!==name)return;
+  const rank=[
+   trainingGroupRank(x.group),
+   trainingElementRank(`${x.stat||''} ${x.name||''} ${x.item||''}`),
+   i,
+   name
+  ];
+  if(!best||before(rank,best))best=rank;
+ });
+ if(best)return best;
+ return [999,trainingElementRank(name),999,name];
 }
-function appendTrainingNote(x){return String((x&&x.note)||'').trim();}
+function sortMaterialEntries(entries){
+ return entries.sort((a,b)=>{
+  const ra=trainingMaterialRank(a[0]),rb=trainingMaterialRank(b[0]);
+  if(ra[0]!==rb[0])return ra[0]-rb[0];
+  if(ra[1]!==rb[1])return ra[1]-rb[1];
+  if(ra[2]!==rb[2])return ra[2]-rb[2];
+  return String(a[0]||'').localeCompare(String(b[0]||''),'zh-Hant');
+ });
+}
+function appendTrainingNote(x){
+ return String((x&&x.note)||'')
+  .replace(/原始表第28階看起來寫成 \+272；此版按前後規律修正為 \+372/g,'')
+  .trim();
+}
 function trainingLevelNeed(x,cur,tar){
  let need=0;
  for(let lv=cur;lv<tar;lv++)need+=Number((x.costs||[])[lv]||0);

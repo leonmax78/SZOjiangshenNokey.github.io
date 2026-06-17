@@ -526,6 +526,7 @@ function eqRenderRandomRecipePicker(){
 }
 
 function materialRank(item){
+ if(typeof trainingMaterialRank==='function')return trainingMaterialRank(item);
  const s=String(item||'');
  let group=99;
  if(s.includes('四聖諦'))group=0;
