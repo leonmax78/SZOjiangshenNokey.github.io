@@ -107,6 +107,76 @@
     const num = Number(value);
     return Number.isFinite(num) ? num.toFixed(6) + '%' : '-';
   }
+  function getItemName(item){
+    return String(item?.name || item?.Name || '').trim();
+  }
+  function getItemId(item){
+    return String(item?.id || item?.ID || '').trim();
+  }
+  function getDropMonsterName(drop){
+    return String(drop?.monsterName || drop?.monster?.Name || drop?.monster || '').trim();
+  }
+  function getDropMonsterLevel(drop){
+    return String(drop?.monster?.Level || drop?.level || '').trim();
+  }
+  function getDropMonsterLocations(drop){
+    if(Array.isArray(drop?.locations) && drop.locations.length) return drop.locations.filter(Boolean);
+    const name = getDropMonsterName(drop);
+    try{
+      const loc = typeof locOf === 'function' ? locOf(name) : '';
+      return loc ? [loc] : [];
+    }catch(e){
+      return [];
+    }
+  }
+  async function enrichCollectSourceDrops(row){
+    if(!row || row._sourceDropsReady) return row;
+    const reverseRows = Array.isArray(row.reverseDrops) ? row.reverseDrops : [];
+    const needNames = reverseRows
+      .filter(drop => !getDropMonsterLocations(drop).length)
+      .map(drop => getDropMonsterName(drop))
+      .filter(Boolean);
+    if(!needNames.length){
+      row._sourceDropsReady = true;
+      return row;
+    }
+    try{
+      const [itemData, reverseData, monsterData] = await Promise.all([
+        typeof loadDataBundle === 'function' ? loadDataBundle('items') : null,
+        typeof loadDataBundle === 'function' ? loadDataBundle('drop_reverse') : null,
+        typeof loadDataBundle === 'function' ? loadDataBundle('monsters') : null
+      ]);
+      const itemList = Array.isArray(itemData) ? itemData : [];
+      const reverseIndex = reverseData && typeof reverseData === 'object' ? reverseData : {};
+      const monsterById = {};
+      (Array.isArray(monsterData) ? monsterData : []).forEach(monster => {
+        const id = String(monster?.ID || monster?.id || '').trim();
+        if(id) monsterById[id] = monster;
+      });
+      const sourceDropsByName = {};
+      needNames.forEach(name => {
+        const item = itemList.find(it => getItemName(it) === name);
+        const id = getItemId(item);
+        const drops = id ? (reverseIndex[id] || []) : [];
+        if(!drops.length) return;
+        sourceDropsByName[name] = drops.map(drop => {
+          const monster = monsterById[String(drop?.monsterId || '').trim()] || drop?.monster || null;
+          const enriched = Object.assign({}, drop, { monster });
+          return {
+            monster: getDropMonsterName(enriched),
+            level: getDropMonsterLevel(enriched),
+            rate: drop?.rate,
+            locations: getDropMonsterLocations(enriched)
+          };
+        }).filter(drop => drop.monster);
+      });
+      row.sourceDropsByName = sourceDropsByName;
+    }catch(e){
+      row.sourceDropsByName = {};
+    }
+    row._sourceDropsReady = true;
+    return row;
+  }
   function findCollectRow(itemId){
     const id = String(itemId || '');
     const kinds = [state.active, 'weapon', 'artifact', 'recipe'].filter((kind, index, arr) => kind && arr.indexOf(kind) === index);
@@ -142,6 +212,54 @@
       reader.innerHTML = '<section class="card collectPage"><button class="backBtn" type="button" data-collect-back>← 返回武冠系統</button><div class="empty">找不到這筆掉落資料</div></section>';
       return;
     }
+    const reverseCount = Array.isArray(row.reverseDrops) ? row.reverseDrops.length : 0;
+    const shopSet = new Set(row.shops || []);
+    const dropCount = reverseCount || (row.excelSources || []).filter(x => !shopSet.has(x)).length;
+    reader.innerHTML = `<section class="card collectPage collectDropDetailPage">
+      <button class="backBtn" type="button" data-collect-back>← 返回武冠系統</button>
+      <h1>${escHtml(row.name || '-')}</h1>
+      <p class="muted collectDropDetailMetaLine">掉落反查｜共 ${dropCount} 筆</p>
+      <div class="collectDropDetailList">${collectDropDetailRows(row)}</div>
+    </section>`;
+    try{ window.scrollTo({top:0,behavior:'smooth'}); }catch(e){}
+  }
+  function collectDropDetailRows(row){
+    const reverse = Array.isArray(row?.reverseDrops) ? row.reverseDrops : [];
+    if(reverse.length){
+      return `<div class="tableWrap monsterDropTable collectDropDetailTable"><table>
+        <thead><tr><th>怪物</th><th>位置</th><th>機率</th></tr></thead>
+        <tbody>${reverse.map(drop => {
+          const sourceDrops = (row.sourceDropsByName || {})[drop.monster] || [];
+          const nested = sourceDrops.length ? `<div class="collectNestedDrops">${sourceDrops.map(source => {
+            const loc = (source.locations || []).filter(Boolean).join('、');
+            const level = source.level ? ` Lv.${escHtml(source.level)}` : '';
+            const rate = source.rate !== undefined && source.rate !== null && source.rate !== '' ? ` ${formatRate(source.rate)}` : '';
+            return `<div>${escHtml(source.monster || '-')}${level}${escHtml(rate)}${loc ? ` / ${escHtml(loc)}` : ''}</div>`;
+          }).join('')}</div>` : '';
+          const loc = (drop.locations || []).filter(Boolean).join('、');
+          return `<tr>
+            <td>${escHtml(drop.monster || '-')}</td>
+            <td>${loc ? escHtml(loc) : nested || '<span class="muted">沒有位置資料</span>'}</td>
+            <td>${escHtml(formatRate(drop.rate))}</td>
+          </tr>`;
+        }).join('')}</tbody>
+      </table></div>`;
+    }
+    const shopSet = new Set(row?.shops || []);
+    const drops = (row?.excelSources || []).filter(x => !shopSet.has(x));
+    return drops.length
+      ? `<div class="tableWrap monsterDropTable collectDropDetailTable"><table><thead><tr><th>怪物</th><th>位置</th><th>機率</th></tr></thead><tbody>${drops.map(name => `<tr><td>${escHtml(name)}</td><td>-</td><td>-</td></tr>`).join('')}</tbody></table></div>`
+      : '<div class="empty">沒有掉落資料</div>';
+  }
+  async function renderCollectDropDetail(itemId){
+    const row = findCollectRow(itemId);
+    const reader = by('reader');
+    if(!reader) return;
+    if(!row){
+      reader.innerHTML = '<section class="card collectPage"><button class="backBtn" type="button" data-collect-back>返回武冠系統</button><div class="empty">找不到掉落資料</div></section>';
+      return;
+    }
+    await enrichCollectSourceDrops(row);
     const reverseCount = Array.isArray(row.reverseDrops) ? row.reverseDrops.length : 0;
     const shopSet = new Set(row.shops || []);
     const dropCount = reverseCount || (row.excelSources || []).filter(x => !shopSet.has(x)).length;

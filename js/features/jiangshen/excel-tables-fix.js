@@ -89,11 +89,11 @@
         <div class="kv"><div class="k">目標星等</div><div class="v"><select id="needTar">${starOptions(20)}</select></div></div>
         <div class="kv"><div class="k">已有降神數量</div><div class="v"><input id="needOwned" type="number" value="0"></div></div>
         <div class="kv"><div class="k">倍率</div><div class="v"><input id="needRate" type="number" value="1" step="0.1"></div></div>
-      </div><div class="quick"><button id="calcNeeds" type="button">計算星等<small>依 Excel 降神總表累積</small></button></div><div id="starNeedResult"></div></div>
+      </div><div class="quick"><button id="calcNeeds" type="button">計算星等</button></div><div id="starNeedResult"></div></div>
       <div id="starTabAura" style="display:none"><h3>靈氣：所需靈氣</h3><div class="kvGrid">
         <div class="kv"><div class="k">目前等級</div><div class="v"><input id="auraCur" type="number" value="0"></div></div>
         <div class="kv"><div class="k">目標等級</div><div class="v"><input id="auraTar" type="number" value="20"></div></div>
-      </div><div class="quick"><button id="calcStarAura" type="button">計算靈氣<small>依 Excel 靈氣總表累積</small></button></div><div id="auraNeedResult"></div></div>
+      </div><div class="quick"><button id="calcStarAura" type="button">計算靈氣</button></div><div id="auraNeedResult"></div></div>
     </section>`;
   }
 

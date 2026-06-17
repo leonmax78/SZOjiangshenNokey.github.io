@@ -409,6 +409,13 @@ h1{font-size:24px;line-height:1.22;margin:0 0 8px}h2{font-size:19px;margin:0 0 1
 .collectDropDetailTable table td:nth-child(2){
   color:#b9d5ff;
 }
+.collectNestedDrops{
+  display:grid;
+  gap:4px;
+  color:#d7e7ff;
+  font-size:14px;
+  line-height:1.45;
+}
 .collectDropDetailPage .backBtn{
   background:#0b1527;
   border-color:rgba(96,165,250,.42);
