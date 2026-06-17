@@ -1,5 +1,8 @@
 // V242 script loader: load manifest files in order, then start the app.
 (function(){
+  if(/^#reverse-\d+$/i.test(location.hash || '')){
+    try{ history.replaceState(history.state, '', location.pathname + location.search); }catch(e){}
+  }
   window.SZO_READY = false;
   const list = window.SZO_SCRIPT_MANIFEST || [];
   const version = document.body?.dataset?.version || 'dev';
