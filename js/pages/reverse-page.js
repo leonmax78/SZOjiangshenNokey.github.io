@@ -80,18 +80,19 @@
     renderReverseResults(arr,src.length);
   };
 
-  window.showReverse=function(id){
+  window.showReverse=function(id,returnView){
     const itemId=String(id||'').trim();
+    const backView=returnView||'reverse';
     const itemIndexObj=getItemIndex();
     const revObj=getDropReverse();
     const it=itemIndexObj[itemId] || getItems().find(function(x){return String(x?.ID||'').trim()===itemId});
     const reader=by('reader');
     if(!it){
-      if(reader)reader.innerHTML='<section class="card"><button class="backBtn" onclick="goBackToPrevious()">← 返回查詢</button><h1>找不到道具</h1><div class="empty">ID '+escHtml(itemId)+' 不在 ITEM.INI 裡。</div></section>';
+      if(reader)reader.innerHTML='<section class="card"><button class="backBtn" onclick="goBackToPrevious(\''+escHtml(backView)+'\')">← 返回查詢</button><h1>找不到道具</h1><div class="empty">ID '+escHtml(itemId)+' 不在 ITEM.INI 裡。</div></section>';
       return;
     }
     const arr=(revObj[itemId]||[]).slice().sort(function(a,b){return (Number(b.rate)||0)-(Number(a.rate)||0)});
-    window.v86LastView='reverse';
+    window.v86LastView=backView;
     try{history.pushState({app:'detail',view:'reverse'},'','#reverse-'+itemId);}catch(e){}
     const rows=arr.map(function(x){
       const m=x.monster||{};
@@ -105,7 +106,7 @@
     }).join('');
     if(reader){
       reader.innerHTML='<section class="card">'
-        + '<button class="backBtn" onclick="goBackToPrevious()">← 返回查詢</button>'
+        + '<button class="backBtn" onclick="goBackToPrevious(\''+escHtml(backView)+'\')">← 返回查詢</button>'
         + '<h1>'+escHtml(nameOfSafe(it))+'</h1>'
         + '<div class="muted">掉落反查｜共 '+arr.length+' 筆</div>'
         + (arr.length?'<div class="tableWrap"><table><thead><tr><th>怪物</th><th>Lv.</th><th>機率</th><th>位置</th></tr></thead><tbody>'+rows+'</tbody></table></div>':'<div class="empty">沒有怪物掉落這個道具。</div>')
@@ -121,8 +122,9 @@
   document.addEventListener('click',function(ev){
     const btn=ev.target && ev.target.closest ? ev.target.closest('[data-rev],[data-reverse-item]') : null;
     if(!btn)return;
+    const fromItem=btn.hasAttribute('data-reverse-item');
     const id=btn.getAttribute('data-rev') || btn.getAttribute('data-reverse-item');
-    if(id){ev.preventDefault();ev.stopPropagation();window.showReverse(id);}
+    if(id){ev.preventDefault();ev.stopPropagation();window.showReverse(id,fromItem?'item':'reverse');}
   },true);
 
   window.SZO_REVERSE_MODULE={
