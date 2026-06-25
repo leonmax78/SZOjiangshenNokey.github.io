@@ -1,6 +1,6 @@
 {
-  "version": "shop_selected_11_fixed_v2",
-  "description": "指定11筆特殊商店，欄位保留網頁需要的物品、販售價格、回收價格。sellPrice或buyPrice為null代表該商店未提供該方向價格。",
+  "version": "shop_selected_11_fixed_v3_0625",
+  "description": "指定11筆特殊商店販售資訊；由 SHOP.INI 的 Sell/Buy 百分比乘以 ITEM.INI Value 產生。",
   "shops": [
     {
       "shopId": 430,
@@ -10,6 +10,12 @@
           "itemId": 32179,
           "name": "霹靂英雄戰旗",
           "sellPrice": 1500000000,
+          "buyPrice": null
+        },
+        {
+          "itemId": 32168,
+          "name": "異譜碎片",
+          "sellPrice": 1750000000,
           "buyPrice": null
         },
         {
@@ -307,6 +313,12 @@
           "buyPrice": null
         },
         {
+          "itemId": 32168,
+          "name": "異譜碎片",
+          "sellPrice": 1750000000,
+          "buyPrice": null
+        },
+        {
           "itemId": 29862,
           "name": "武魂碎片：紅夜叉",
           "sellPrice": 1500000000,
@@ -598,6 +610,12 @@
           "itemId": 32179,
           "name": "霹靂英雄戰旗",
           "sellPrice": 1500000000,
+          "buyPrice": null
+        },
+        {
+          "itemId": 32168,
+          "name": "異譜碎片",
+          "sellPrice": 1750000000,
           "buyPrice": null
         },
         {
@@ -919,6 +937,12 @@
           "buyPrice": null
         },
         {
+          "itemId": 32168,
+          "name": "異譜碎片",
+          "sellPrice": 1750000000,
+          "buyPrice": null
+        },
+        {
           "itemId": 29862,
           "name": "武魂碎片：紅夜叉",
           "sellPrice": 1500000000,
@@ -1201,6 +1225,12 @@
           "buyPrice": null
         },
         {
+          "itemId": 32168,
+          "name": "異譜碎片",
+          "sellPrice": 1750000000,
+          "buyPrice": null
+        },
+        {
           "itemId": 29862,
           "name": "武魂碎片：紅夜叉",
           "sellPrice": 1500000000,
@@ -1474,6 +1504,12 @@
           "itemId": 32179,
           "name": "霹靂英雄戰旗",
           "sellPrice": 1500000000,
+          "buyPrice": null
+        },
+        {
+          "itemId": 32168,
+          "name": "異譜碎片",
+          "sellPrice": 1750000000,
           "buyPrice": null
         },
         {
