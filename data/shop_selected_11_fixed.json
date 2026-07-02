@@ -7,12 +7,6 @@
       "shopName": "火雲洞府特殊商人",
       "items": [
         {
-          "itemId": 32179,
-          "name": "霹靂英雄戰旗",
-          "sellPrice": 1500000000,
-          "buyPrice": null
-        },
-        {
           "itemId": 32168,
           "name": "異譜碎片",
           "sellPrice": 1750000000,
@@ -307,12 +301,6 @@
       "shopName": "古北大營特殊商人",
       "items": [
         {
-          "itemId": 32179,
-          "name": "霹靂英雄戰旗",
-          "sellPrice": 1500000000,
-          "buyPrice": null
-        },
-        {
           "itemId": 32168,
           "name": "異譜碎片",
           "sellPrice": 1750000000,
@@ -606,12 +594,6 @@
       "shopId": 433,
       "shopName": "蠱毒洞府特殊商人",
       "items": [
-        {
-          "itemId": 32179,
-          "name": "霹靂英雄戰旗",
-          "sellPrice": 1500000000,
-          "buyPrice": null
-        },
         {
           "itemId": 32168,
           "name": "異譜碎片",
@@ -931,12 +913,6 @@
       "shopName": "統萬大營特殊商人",
       "items": [
         {
-          "itemId": 32179,
-          "name": "霹靂英雄戰旗",
-          "sellPrice": 1500000000,
-          "buyPrice": null
-        },
-        {
           "itemId": 32168,
           "name": "異譜碎片",
           "sellPrice": 1750000000,
@@ -1219,12 +1195,6 @@
       "shopName": "怒雪洞府特殊商人",
       "items": [
         {
-          "itemId": 32179,
-          "name": "霹靂英雄戰旗",
-          "sellPrice": 1500000000,
-          "buyPrice": null
-        },
-        {
           "itemId": 32168,
           "name": "異譜碎片",
           "sellPrice": 1750000000,
@@ -1500,12 +1470,6 @@
       "shopId": 438,
       "shopName": "蒼狼大營特殊商人",
       "items": [
-        {
-          "itemId": 32179,
-          "name": "霹靂英雄戰旗",
-          "sellPrice": 1500000000,
-          "buyPrice": null
-        },
         {
           "itemId": 32168,
           "name": "異譜碎片",

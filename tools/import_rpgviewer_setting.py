@@ -26,6 +26,7 @@ REQUIRED_RAW_ROOT_FILES = [
 OPTIONAL_RAW_ROOT_FILES = [
     "COMPOUN.INI",
     "CHANGEBODYITEM.INI",
+    "SHOP.INI",
 ]
 RAW_ROOT_FILES = [*REQUIRED_RAW_ROOT_FILES, *OPTIONAL_RAW_ROOT_FILES]
 SETTING_FILES = [
@@ -96,16 +97,6 @@ def plan_import(project: Path, setting_dir: Path) -> list[PlannedCopy]:
 
 
 def apply_import(project: Path, plans: list[PlannedCopy]) -> None:
-    raw = project / "raw"
-    current_monster = raw / "new" / "MONSTER_C.INI"
-    old_monster = raw / "old" / "MONSTER_C.INI"
-    incoming_monster = next((p.src for p in plans if p.dst == current_monster), None)
-
-    if incoming_monster and current_monster.exists() and not same_file_content(incoming_monster, current_monster):
-        old_monster.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(current_monster, old_monster)
-        print(f"backup old monster: {current_monster} -> {old_monster}")
-
     for plan in plans:
         plan.dst.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(plan.src, plan.dst)

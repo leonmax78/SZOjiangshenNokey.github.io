@@ -105,6 +105,9 @@ def main() -> int:
         import_rpgviewer_setting.apply_import(ROOT, plans)
 
     run([sys.executable, str(ROOT / "tools" / "build_data.py")])
+    run([sys.executable, str(ROOT / "tools" / "build_soul_data.py")])
+    if (ROOT / "raw" / "SHOP.INI").exists():
+        run([sys.executable, str(ROOT / "tools" / "build_shop_selected.py")])
 
     if not args.skip_collectbook:
         run(
@@ -120,7 +123,25 @@ def main() -> int:
         run(["git", "status", "--short"])
         if git_has_changes():
             message = args.message or f"Update SZO data from RPGViewer {setting_dir.parent.name}"
-            run(["git", "add", "raw", "data", "reports"])
+            run([
+                "git",
+                "add",
+                "raw/ITEM.INI",
+                "raw/MAGIC.INI",
+                "raw/STATUS.INI",
+                "raw/CHANGEBODYITEM.INI",
+                "raw/SHOP.INI",
+                "raw/new/MONSTER_C.INI",
+                "raw/MONSTER_C_MERGED.INI",
+                "js/data/soul-data.js",
+                "data",
+                "reports",
+                "tools/build_shop_selected.py",
+                "tools/build_soul_data.py",
+                "tools/import_rpgviewer_setting.py",
+                "tools/weekly_update_from_rpgviewer.py",
+                ".gitignore",
+            ])
             run(["git", "commit", "-m", message])
             run(["git", "push"])
         else:
