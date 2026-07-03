@@ -37,6 +37,21 @@ function monsterSearchIndexRows(){
  return data&&Array.isArray(data.monsters)?data.monsters:[];
 }
 function hasMonsterSearchIndex(){return monsterSearchIndexRows().length>0}
+let monsterSearchLocationPromise=null;
+function ensureMonsterSearchLocations(){
+ if(monsterLocations&&Object.keys(monsterLocations).length)return Promise.resolve(true);
+ if(monsterSearchLocationPromise)return monsterSearchLocationPromise;
+ if(typeof loadDataBundle!=='function')return Promise.resolve(false);
+ monsterSearchLocationPromise=loadDataBundle('locations').then(data=>{
+  if(data&&typeof data==='object'&&!Array.isArray(data))monsterLocations=data;
+  monsterSearchLocationPromise=null;
+  return !!(monsterLocations&&Object.keys(monsterLocations).length);
+ }).catch(()=>{
+  monsterSearchLocationPromise=null;
+  return false;
+ });
+ return monsterSearchLocationPromise;
+}
 function monsterIndexRace(row){return raceName(row.type)}
 function monsterIndexSubtype(row){return subtypeName(row.type,row.subType)}
 function monsterIndexSearchText(row){return `${row.name||''} ${row.id||''} ${row.level||''} ${row.exp||''} ${monsterIndexRace(row)} ${monsterIndexSubtype(row)}`.toLowerCase()}
@@ -88,7 +103,10 @@ function filterMonsterIndexList(q,min,max,race,subtype){
 }
 
 function monsterIndexResultsHTML(arr){
- return arr.map(m=>`<button type="button" class="resultItem" data-monster="${esc(m.id)}"><div class="rName">${esc(m.name)}</div><div class="rSub">Lv.${esc(m.level||'')} / EXP ${esc(m.exp||0)} / ${esc(monsterIndexRace(m))}${monsterIndexSubtype(m)?' / '+esc(monsterIndexSubtype(m)):''} / ID ${esc(m.id||'')}</div></button>`).join('')||'<div class="muted">找不到符合條件的怪物。</div>';
+ return arr.map(m=>{
+  const loc=locOf(m.name);
+  return `<button type="button" class="resultItem" data-monster="${esc(m.id)}"><div class="rName">${esc(m.name)}</div><div class="rSub">Lv.${esc(m.level||'')} / EXP ${esc(m.exp||0)} / ${esc(monsterIndexRace(m))}${monsterIndexSubtype(m)?' / '+esc(monsterIndexSubtype(m)):''}${loc?' / '+esc(loc):''}</div></button>`;
+ }).join('')||'<div class="muted">???????????</div>';
 }
 
 function filterMonsterList(q,min,max,race,subtype){
@@ -144,6 +162,7 @@ function renderMonsterPage(){
         <div class="kv"><div class="k">最低 Lv</div><div class="v"><input id="monsterMinMain" type="number" value="${esc(min)}" oninput="searchMonstersMain()"></div></div>
         <div class="kv"><div class="k">最高 Lv</div><div class="v"><input id="monsterMaxMain" type="number" value="${esc(max)}" oninput="searchMonstersMain()"></div></div>
       </div>
+      <div class="itemFilterActions"><button type="button" onclick="clearMonsterSearchFilters()">\u6e05\u7a7a\u7be9\u9078</button></div>
       <div class="results" id="monsterResultsMain"></div>
     </div>
     <aside class="latestSidePane">
@@ -153,6 +172,9 @@ function renderMonsterPage(){
     </aside>
   </div>
  </section>`;
+ ensureMonsterSearchLocations().then(ok=>{
+  if(ok&&byId('monsterResultsMain'))searchMonstersMain();
+ });
  searchMonstersMain();
 }
 
@@ -173,6 +195,23 @@ function searchMonstersMain(){
  const hasFilter=!!(String(window.v88MonsterQ||'').trim()||String(window.v88MonsterMin||'').trim()||String(window.v88MonsterMax||'').trim()||String(window.v88MonsterRace||'').trim()||String(window.v88MonsterSubtype||'').trim());
  if(!hasFilter){box.innerHTML='';return;}
  box.innerHTML=hasMonsterData()?monsterResultsHTML(filterMonsterList(window.v88MonsterQ,window.v88MonsterMin,window.v88MonsterMax,window.v88MonsterRace,window.v88MonsterSubtype)):monsterIndexResultsHTML(filterMonsterIndexList(window.v88MonsterQ,window.v88MonsterMin,window.v88MonsterMax,window.v88MonsterRace,window.v88MonsterSubtype));
+}
+
+function clearMonsterSearchFilters(){
+ window.v88MonsterQ='';
+ window.v88MonsterMin='';
+ window.v88MonsterMax='';
+ window.v88MonsterRace='';
+ window.v88MonsterSubtype='';
+ ['monsterQMain','monsterMinMain','monsterMaxMain','monsterRaceMain','monsterSubtypeMain'].forEach(id=>{
+  const el=byId(id);
+  if(el)el.value='';
+ });
+ const subSel=byId('monsterSubtypeMain');
+ if(subSel&&(hasMonsterData()||hasMonsterSearchIndex())){
+  subSel.innerHTML=hasMonsterData()?monsterSubtypeOptionsHTML('', ''):monsterIndexSubtypeOptionsHTML('', '');
+ }
+ searchMonstersMain();
 }
 
 function compactWanMonster(n){
@@ -347,6 +386,7 @@ window.parseDrop=parseDrop;
 window.renderMonsterPage=renderMonsterPage;
 window.searchMonstersMain=searchMonstersMain;
 window.searchMonsters=searchMonstersMain;
+window.clearMonsterSearchFilters=clearMonsterSearchFilters;
 window.monsterSkillText=monsterSkillText;
 window.showMonster=showMonster;
 window.showMonsterDropPage=showMonsterDropPage;

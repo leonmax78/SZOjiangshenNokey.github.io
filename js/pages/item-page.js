@@ -100,6 +100,15 @@ function itemSeriesLabel(series){
 
 function itemSeriesMap(){
  if(itemSeriesMapCache)return itemSeriesMapCache;
+ const bundle=window.SZO_DATA_BUNDLES&&window.SZO_DATA_BUNDLES.item_series;
+ if(bundle&&bundle.byId){
+  const map=new Map();
+  Object.entries(bundle.byId).forEach(([id,list])=>{
+   map.set(String(id),new Set((Array.isArray(list)?list:[]).map(itemSeriesLabel).filter(Boolean)));
+  });
+  itemSeriesMapCache=map;
+  return itemSeriesMapCache;
+ }
  const map=new Map();
  for(const eq of itemEquipmentRows()){
   const id=itemEquipmentId(eq);
@@ -119,6 +128,11 @@ function resetItemSeriesCache(){
 
 function itemSeriesOptions(){
  if(itemSeriesOptionsCache)return itemSeriesOptionsCache;
+ const bundle=window.SZO_DATA_BUNDLES&&window.SZO_DATA_BUNDLES.item_series;
+ if(bundle&&Array.isArray(bundle.series)){
+  itemSeriesOptionsCache=uniqText(bundle.series);
+  return itemSeriesOptionsCache;
+ }
  const preferred=['職業裝','世貿裝','特仕裝','五佐','五絕','掉寶','經驗','仙器'];
  const rawSeries=uniqText(itemEquipmentRows().map(eq=>itemSeriesLabel(itemEquipmentSeries(eq))));
  itemSeriesOptionsCache=rawSeries.sort((a,b)=>{
@@ -157,6 +171,12 @@ function itemMatchesSeries(it,series){
 function refreshItemSeriesWhenReady(){
  const seriesSel=byId('itemEqSeries');
  if(!seriesSel||itemSeriesRefreshPromise)return;
+ if(window.SZO_DATA_BUNDLES&&window.SZO_DATA_BUNDLES.item_series){
+  resetItemSeriesCache();
+  fillItemAdvancedFilters();
+  searchItems();
+  return;
+ }
  if(typeof ensureCompoundDataLoaded!=='function')return;
  itemSeriesRefreshPromise=ensureCompoundDataLoaded().then(ok=>{
   if(!ok||!byId('itemEqSeries'))return;
