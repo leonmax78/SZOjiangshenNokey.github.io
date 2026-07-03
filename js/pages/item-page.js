@@ -200,7 +200,7 @@ function itemSearchIndexRows(){
 function hasItemSearchIndex(){return itemSearchIndexRows().length>0}
 function itemIndexTypeName(row){return itemTypeName(row.type)||row.type||''}
 function itemIndexSearchText(row){return `${row.name||''} ${row.id||''} ${row.level||''} ${row.type||''} ${itemIndexTypeName(row)}`.toLowerCase()}
-function filterItemIndexList(q,type,min,max){
+function filterItemIndexList(q,type,min,max,series){
  const qText=(q||'').trim().toLowerCase();
  const minLv=min?intOf(min):null;
  const maxLv=max?intOf(max):null;
@@ -208,7 +208,8 @@ function filterItemIndexList(q,type,min,max){
   (!qText||itemIndexSearchText(it).includes(qText))&&
   (!type||it.type===type)&&
   (minLv===null||intOf(it.level)>=minLv)&&
-  (maxLv===null||intOf(it.level)<=maxLv)
+  (maxLv===null||intOf(it.level)<=maxLv)&&
+  (!series||itemMatchesSeries({ID:it.id},series))
  ).slice(0,180);
 }
 function itemIndexResultsHTML(arr){
@@ -367,7 +368,7 @@ function searchItems(){
  if(!hasItemData()&&!hasItemSearchIndex()){box.innerHTML='<div class="muted">資料載入中，請稍等。</div>';return;}
  if(!(q||type||window.v86ItemMin||window.v86ItemMax||series||kind)){box.innerHTML='';return;}
  if(!hasItemData()){
-  box.innerHTML=itemIndexResultsHTML(filterItemIndexList(q,type,window.v86ItemMin,window.v86ItemMax));
+  box.innerHTML=itemIndexResultsHTML(filterItemIndexList(q,type,window.v86ItemMin,window.v86ItemMax,series));
   return;
  }
  const arr=items.filter(it=>

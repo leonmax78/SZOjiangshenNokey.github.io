@@ -1,5 +1,34 @@
 // V256: monster search/detail/drop page with latest list and rich detail panels.
 let monsterOptionalRefreshPromise = null;
+const MONSTER_SEARCH_STATE_KEY='szo.monsterSearch.v1';
+
+function readMonsterSearchState(){
+ try{
+  const raw=sessionStorage.getItem(MONSTER_SEARCH_STATE_KEY);
+  return raw?JSON.parse(raw):{};
+ }catch(e){return {}}
+}
+
+function writeMonsterSearchState(){
+ try{
+  sessionStorage.setItem(MONSTER_SEARCH_STATE_KEY,JSON.stringify({
+   q:window.v88MonsterQ||'',
+   min:window.v88MonsterMin||'',
+   max:window.v88MonsterMax||'',
+   race:window.v88MonsterRace||'',
+   subtype:window.v88MonsterSubtype||''
+  }));
+ }catch(e){}
+}
+
+function restoreMonsterSearchState(){
+ const state=readMonsterSearchState();
+ if(window.v88MonsterQ===undefined)window.v88MonsterQ=state.q||'';
+ if(window.v88MonsterMin===undefined)window.v88MonsterMin=state.min||'';
+ if(window.v88MonsterMax===undefined)window.v88MonsterMax=state.max||'';
+ if(window.v88MonsterRace===undefined)window.v88MonsterRace=state.race||'';
+ if(window.v88MonsterSubtype===undefined)window.v88MonsterSubtype=state.subtype||'';
+}
 
 function parseDrop(v){
  const nums=String(v||'').split(',').map(x=>x.trim()).filter(Boolean);
@@ -146,6 +175,7 @@ function latestMonstersHTML(limit=260){
 }
 
 function renderMonsterPage(){
+ restoreMonsterSearchState();
  const q=window.v88MonsterQ||'',min=window.v88MonsterMin||'',max=window.v88MonsterMax||'',race=window.v88MonsterRace||'',subtype=window.v88MonsterSubtype||'';
  if(!hasMonsterData()&&!hasMonsterSearchIndex()&&typeof window.ensureMonsterSearchIndexLoaded==='function'){
   byId('reader').innerHTML='<section class="card monsterSearchPage"><h1>怪物查詢</h1><div class="muted">正在載入怪物搜尋索引，請稍等。</div></section>';
@@ -185,11 +215,12 @@ function searchMonstersMain(){
  window.v88MonsterMax=byId('monsterMaxMain')?.value||'';
  window.v88MonsterRace=byId('monsterRaceMain')?.value||'';
  window.v88MonsterSubtype=byId('monsterSubtypeMain')?.value||'';
+ writeMonsterSearchState();
  const subSel=byId('monsterSubtypeMain');
  if(subSel&&(hasMonsterData()||hasMonsterSearchIndex())){
   const old=window.v88MonsterSubtype;
   subSel.innerHTML=hasMonsterData()?monsterSubtypeOptionsHTML(old,window.v88MonsterRace):monsterIndexSubtypeOptionsHTML(old,window.v88MonsterRace);
-  if([...subSel.options].some(o=>o.value===old))subSel.value=old;else{subSel.value='';window.v88MonsterSubtype='';}
+  if([...subSel.options].some(o=>o.value===old))subSel.value=old;else{subSel.value='';window.v88MonsterSubtype='';writeMonsterSearchState();}
  }
  const box=byId('monsterResultsMain'); if(!box)return;
  const hasFilter=!!(String(window.v88MonsterQ||'').trim()||String(window.v88MonsterMin||'').trim()||String(window.v88MonsterMax||'').trim()||String(window.v88MonsterRace||'').trim()||String(window.v88MonsterSubtype||'').trim());
@@ -203,6 +234,7 @@ function clearMonsterSearchFilters(){
  window.v88MonsterMax='';
  window.v88MonsterRace='';
  window.v88MonsterSubtype='';
+ writeMonsterSearchState();
  ['monsterQMain','monsterMinMain','monsterMaxMain','monsterRaceMain','monsterSubtypeMain'].forEach(id=>{
   const el=byId(id);
   if(el)el.value='';
