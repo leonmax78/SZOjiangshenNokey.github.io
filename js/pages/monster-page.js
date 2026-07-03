@@ -23,11 +23,11 @@ function writeMonsterSearchState(){
 
 function restoreMonsterSearchState(){
  const state=readMonsterSearchState();
- if(window.v88MonsterQ===undefined)window.v88MonsterQ=state.q||'';
- if(window.v88MonsterMin===undefined)window.v88MonsterMin=state.min||'';
- if(window.v88MonsterMax===undefined)window.v88MonsterMax=state.max||'';
- if(window.v88MonsterRace===undefined)window.v88MonsterRace=state.race||'';
- if(window.v88MonsterSubtype===undefined)window.v88MonsterSubtype=state.subtype||'';
+ if(window.v88MonsterQ===undefined || (!window.v88MonsterQ && state.q))window.v88MonsterQ=state.q||'';
+ if(window.v88MonsterMin===undefined || (!window.v88MonsterMin && state.min))window.v88MonsterMin=state.min||'';
+ if(window.v88MonsterMax===undefined || (!window.v88MonsterMax && state.max))window.v88MonsterMax=state.max||'';
+ if(window.v88MonsterRace===undefined || (!window.v88MonsterRace && state.race))window.v88MonsterRace=state.race||'';
+ if(window.v88MonsterSubtype===undefined || (!window.v88MonsterSubtype && state.subtype))window.v88MonsterSubtype=state.subtype||'';
 }
 
 function parseDrop(v){
@@ -375,7 +375,7 @@ function showMonster(id,skipPush){
  if(!skipPush){try{history.pushState({app:'detail',view:'monster'},'','#monster-'+id);}catch(e){}}
  if(!hasMonsterData()&&typeof window.ensureMonsterDataLoaded==='function'){
   byId('reader').innerHTML=`<section class="card"><button class="backBtn" type="button" onclick="goBackToPrevious('monster')">← 返回怪物查詢</button><h1>怪物資料讀取中</h1><div class="muted">正在載入完整怪物資料，請稍等。</div></section>`;
-  window.ensureMonsterDataLoaded().then(ok=>{if(ok)showMonster(id,true);});
+  window.ensureMonsterDataLoaded().then(ok=>{if(ok&&location.hash==='#monster-'+id)showMonster(id,true);});
   return;
  }
  const m=monsters.find(x=>String(x.ID).trim()===String(id).trim()); if(!m)return;

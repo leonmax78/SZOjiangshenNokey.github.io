@@ -1370,13 +1370,6 @@ function calcTraining(){
  byId('trainingResult').scrollIntoView({behavior:'smooth',block:'start'});
 }
 function clearSearchStateForReturn(view){
- if(view==='monster'){
-  window.v88MonsterQ='';
-  window.v88MonsterMin='';
-  window.v88MonsterMax='';
-  window.v88MonsterRace='';
-  window.v88MonsterSubtype='';
- }
  if(view==='reverse'){
   window.v86ReverseQ='';
  }
@@ -1384,6 +1377,9 @@ function clearSearchStateForReturn(view){
 function goBackToPrevious(targetView){
  const v=targetView||window.v86LastView||currentView||'home';
  clearSearchStateForReturn(v);
+ if(v==='monster'){
+  try{history.replaceState(history.state,'',location.pathname+location.search);}catch(e){}
+ }
  if(v==='item'){
   openItemMenuOnly();
   ensureItemPageLoaded().then(()=>renderItemPage('item')).then(()=>{
