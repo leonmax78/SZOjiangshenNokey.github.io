@@ -2,6 +2,7 @@
 let itemOptionalRefreshPromise=null;
 let itemSeriesMapCache=null;
 let itemSeriesOptionsCache=null;
+let itemKindOptionsCache=null;
 let itemSeriesRefreshPromise=null;
 
 function itemTypeName(t){return ITEM_TYPE_MAP[String(t||'').trim()]||''}
@@ -126,6 +127,29 @@ function resetItemSeriesCache(){
  itemSeriesOptionsCache=null;
 }
 
+function itemKindBundle(){
+ return window.SZO_DATA_BUNDLES&&window.SZO_DATA_BUNDLES.item_kind;
+}
+
+function itemKindOptions(){
+ if(itemKindOptionsCache)return itemKindOptionsCache;
+ const bundle=itemKindBundle();
+ if(bundle&&Array.isArray(bundle.kinds)){
+  itemKindOptionsCache=uniqText(bundle.kinds);
+  return itemKindOptionsCache;
+ }
+ itemKindOptionsCache=uniqText((items||[]).map(it=>itemKind(it))).sort((a,b)=>a.localeCompare(b,'zh-Hant'));
+ return itemKindOptionsCache;
+}
+
+function itemMatchesKind(it,kind){
+ if(!kind)return true;
+ const id=String(it?.ID||it?.id||'').trim();
+ const bundle=itemKindBundle();
+ if(bundle&&bundle.byId&&id)return bundle.byId[id]===kind;
+ return itemKind(it)===kind;
+}
+
 function itemSeriesOptions(){
  if(itemSeriesOptionsCache)return itemSeriesOptionsCache;
  const bundle=window.SZO_DATA_BUNDLES&&window.SZO_DATA_BUNDLES.item_series;
@@ -151,7 +175,7 @@ function fillItemAdvancedFilters(){
  }
  const kindSel=byId('itemKind');
  if(kindSel){
-  const kinds=uniqText((items||[]).map(it=>itemKind(it))).sort((a,b)=>a.localeCompare(b,'zh-Hant'));
+  const kinds=itemKindOptions();
   kindSel.innerHTML=optionHtml(kinds,window.v110ItemKind||'','全部專剋');
  }
  const seriesSel=byId('itemEqSeries');
@@ -200,7 +224,7 @@ function itemSearchIndexRows(){
 function hasItemSearchIndex(){return itemSearchIndexRows().length>0}
 function itemIndexTypeName(row){return itemTypeName(row.type)||row.type||''}
 function itemIndexSearchText(row){return `${row.name||''} ${row.id||''} ${row.level||''} ${row.type||''} ${itemIndexTypeName(row)}`.toLowerCase()}
-function filterItemIndexList(q,type,min,max,series){
+function filterItemIndexList(q,type,min,max,series,kind){
  const qText=(q||'').trim().toLowerCase();
  const minLv=min?intOf(min):null;
  const maxLv=max?intOf(max):null;
@@ -209,7 +233,8 @@ function filterItemIndexList(q,type,min,max,series){
   (!type||it.type===type)&&
   (minLv===null||intOf(it.level)>=minLv)&&
   (maxLv===null||intOf(it.level)<=maxLv)&&
-  (!series||itemMatchesSeries({ID:it.id},series))
+  (!series||itemMatchesSeries({ID:it.id},series))&&
+  itemMatchesKind({ID:it.id},kind)
  ).slice(0,180);
 }
 function itemIndexResultsHTML(arr){
@@ -368,7 +393,7 @@ function searchItems(){
  if(!hasItemData()&&!hasItemSearchIndex()){box.innerHTML='<div class="muted">資料載入中，請稍等。</div>';return;}
  if(!(q||type||window.v86ItemMin||window.v86ItemMax||series||kind)){box.innerHTML='';return;}
  if(!hasItemData()){
-  box.innerHTML=itemIndexResultsHTML(filterItemIndexList(q,type,window.v86ItemMin,window.v86ItemMax,series));
+  box.innerHTML=itemIndexResultsHTML(filterItemIndexList(q,type,window.v86ItemMin,window.v86ItemMax,series,kind));
   return;
  }
  const arr=items.filter(it=>
@@ -376,7 +401,7 @@ function searchItems(){
   (!type||it.Type===type)&&
   (min===null||intOf(it.Level)>=min)&&
   (max===null||intOf(it.Level)<=max)&&
-  (!kind||itemKind(it)===kind)&&
+  itemMatchesKind(it,kind)&&
   itemMatchesSeries(it,series)
  ).slice(0,180);
  box.innerHTML=arr.map(it=>{
