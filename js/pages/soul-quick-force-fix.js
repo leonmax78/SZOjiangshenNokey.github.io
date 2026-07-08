@@ -20,6 +20,10 @@
   }
   function num(v, d){ v = Number(v); return Number.isFinite(v) ? v : (d || 0); }
   function fmt(n){ return Math.floor(Number(n) || 0).toLocaleString('zh-TW'); }
+  function soulPortraitHTML(soul){
+    const src = window.SZO_ASSET_MEDIA && window.SZO_ASSET_MEDIA.soulPortraitSrc(soul);
+    return src ? '<span class="assetHero soulHero" data-soul-portrait="' + esc(soul && soul.ID) + '"><img src="' + esc(src) + '" alt="' + esc(soul && soul.Name) + '" loading="eager" decoding="async"></span>' : '';
+  }
 
   function getSoulList(){
     try{
@@ -78,8 +82,18 @@
       const bonus = Math.floor(base * rate);
       return '<tr><td>' + esc(label) + '</td><td>' + fmt(base) + '</td><td style="color:#facc15;font-weight:1000">+' + fmt(bonus) + '</td><td>' + fmt(base + bonus) + '</td></tr>';
     }).join('');
-    out.innerHTML = '<div class="notice"><b>' + esc(soul.Name || '') + '</b><br>收藏數：' + fmt(count) + '｜加成：' + (rate * 100).toFixed(1).replace(/\.0$/, '') + '%</div><h3>能力預覽</h3><div class="soulStats">' + rows + '</div><h3>詳細表</h3><div class="tableWrap"><table><thead><tr><th>能力</th><th>原始能力</th><th>收藏加成</th><th>合計</th></tr></thead><tbody>' + totalRows + '</tbody></table></div>';
+    out.innerHTML = '<div class="soulPreviewPanel"><div class="notice soulNotice"><div class="assetDetailHead">' + soulPortraitHTML(soul) + '<div><b>' + esc(soul.Name || '') + '</b><span class="soulMetaLine">收藏數：' + fmt(count) + '</span><span class="soulMetaLine">加成：' + (rate * 100).toFixed(1).replace(/\.0$/, '') + '%</span></div></div></div><div class="soulPreviewStats"><h3>能力預覽</h3><div class="soulStats">' + rows + '</div></div></div><h3>詳細表</h3><div class="tableWrap"><table><thead><tr><th>能力</th><th>原始能力</th><th>收藏加成</th><th>合計</th></tr></thead><tbody>' + totalRows + '</tbody></table></div>';
     return true;
+  }
+
+  function updateSoulCalcPreferred(){
+    try{
+      if (typeof window.SZOLegacyUpdateSoulCalc === 'function') {
+        window.SZOLegacyUpdateSoulCalc();
+        return true;
+      }
+    }catch(e){}
+    return manualUpdateSoulCalc();
   }
 
   function normalizeQuickValue(v){
@@ -118,12 +132,10 @@
     try{ cnt.dispatchEvent(new Event('change', {bubbles:true})); }catch(e){}
     try{
       if (typeof window.SZOLegacySetSoulCount === 'function') window.SZOLegacySetSoulCount(v);
-      else if (typeof window.SZOLegacyUpdateSoulCalc === 'function') window.SZOLegacyUpdateSoulCalc();
-      else manualUpdateSoulCalc();
+      else updateSoulCalcPreferred();
     }catch(e){
       try{ manualUpdateSoulCalc(); }catch(err){ console.warn('V217 soul manual update failed', err); }
     }
-    try{ manualUpdateSoulCalc(); }catch(e){}
     return true;
   }
 
@@ -160,8 +172,8 @@
     document.querySelectorAll('[data-soul-count], [data-c], .soulQuick button, .quickBtns button').forEach(enhanceButton);
     const cnt = document.getElementById('soulCount');
     if (cnt && !cnt.__szoSoulCountV217) {
-      cnt.addEventListener('input', function(){ manualUpdateSoulCalc(); }, true);
-      cnt.addEventListener('change', function(){ manualUpdateSoulCalc(); }, true);
+      cnt.addEventListener('input', function(){ updateSoulCalcPreferred(); }, true);
+      cnt.addEventListener('change', function(){ updateSoulCalcPreferred(); }, true);
       cnt.__szoSoulCountV217 = true;
     }
   }
@@ -172,14 +184,14 @@
   window.addEventListener('touchstart', handleQuickEvent, {capture:true, passive:false});
   window.addEventListener('click', handleQuickEvent, true);
   document.addEventListener('click', handleQuickEvent, true);
-  document.addEventListener('change', function(e){ if (e.target && e.target.id === 'soulSelect') manualUpdateSoulCalc(); }, true);
+  document.addEventListener('change', function(e){ if (e.target && e.target.id === 'soulSelect') updateSoulCalcPreferred(); }, true);
 
   try{
     const mo = new MutationObserver(function(){ bindExistingButtons(); });
     mo.observe(document.documentElement, {childList:true, subtree:true});
   }catch(e){}
   window.SZOSetSoulCount = setSoulCount;
-  window.SZOUpdateSoulCalc = manualUpdateSoulCalc;
+  window.SZOUpdateSoulCalc = updateSoulCalcPreferred;
   bindExistingButtons();
   setInterval(bindExistingButtons, 800);
 })();
