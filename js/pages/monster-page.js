@@ -83,7 +83,8 @@ function ensureMonsterSearchLocations(){
 }
 function monsterIndexRace(row){return raceName(row.type)}
 function monsterIndexSubtype(row){return subtypeName(row.type,row.subType)}
-function monsterIndexSearchText(row){return `${row.name||''} ${row.id||''} ${row.level||''} ${row.exp||''} ${monsterIndexRace(row)} ${monsterIndexSubtype(row)}`.toLowerCase()}
+function monsterIndexLocation(row){return String(row.location||locOf(row.name)||'')}
+function monsterIndexSearchText(row){return `${row.name||''} ${row.id||''} ${row.level||''} ${row.exp||''} ${monsterIndexRace(row)} ${monsterIndexSubtype(row)} ${monsterIndexLocation(row)}`.toLowerCase()}
 function uniqueMonsterIndexValues(fn){const set=new Set();monsterSearchIndexRows().forEach(m=>{const v=String(fn(m)||'').trim();if(v)set.add(v)});return [...set]}
 
 function monsterSearchText(m){return `${nameOf(m)} ${m.ID||''} ${m.Level||''} ${m.DropExp||''} ${raceName(m.Type)} ${subtypeName(m.Type,m.SubType)} ${locOf(nameOf(m))}`.toLowerCase()}
@@ -133,7 +134,7 @@ function filterMonsterIndexList(q,min,max,race,subtype){
 
 function monsterIndexResultsHTML(arr){
  return arr.map(m=>{
-  const loc=locOf(m.name);
+  const loc=monsterIndexLocation(m);
   return `<button type="button" class="resultItem" data-monster="${esc(m.id)}"><div class="rName">${esc(m.name)}</div><div class="rSub">Lv.${esc(m.level||'')} / EXP ${esc(m.exp||0)} / ${esc(monsterIndexRace(m))}${monsterIndexSubtype(m)?' / '+esc(monsterIndexSubtype(m)):''}${loc?' / '+esc(loc):''}</div></button>`;
  }).join('')||'<div class="muted">???????????</div>';
 }
@@ -202,8 +203,13 @@ function renderMonsterPage(){
     </aside>
   </div>
  </section>`;
- ensureMonsterSearchLocations().then(ok=>{
-  if(ok&&byId('monsterResultsMain'))searchMonstersMain();
+ ensureMonsterSearchLocations().then(()=>{
+  const bundles=window.SZO_DATA_BUNDLES||{};
+  const index=bundles.search_monsters&&bundles.search_monsters.monsters;
+  if(Array.isArray(index)){
+   index.forEach(row=>{if(row&&!row.location)row.location=locOf(row.name);});
+  }
+  if(byId('monsterResultsMain'))searchMonstersMain();
  });
  searchMonstersMain();
 }
@@ -225,6 +231,12 @@ function searchMonstersMain(){
  const box=byId('monsterResultsMain'); if(!box)return;
  const hasFilter=!!(String(window.v88MonsterQ||'').trim()||String(window.v88MonsterMin||'').trim()||String(window.v88MonsterMax||'').trim()||String(window.v88MonsterRace||'').trim()||String(window.v88MonsterSubtype||'').trim());
  if(!hasFilter){box.innerHTML='';return;}
+ if(hasMonsterData()&&(!monsterLocations||!Object.keys(monsterLocations).length)&&!window.__monsterLocationLoadTried){
+  window.__monsterLocationLoadTried=true;
+  box.innerHTML='<div class="muted">載入怪物位置資料中...</div>';
+  ensureMonsterSearchLocations().then(()=>{if(byId('monsterResultsMain'))searchMonstersMain();});
+  return;
+ }
  box.innerHTML=hasMonsterData()?monsterResultsHTML(filterMonsterList(window.v88MonsterQ,window.v88MonsterMin,window.v88MonsterMax,window.v88MonsterRace,window.v88MonsterSubtype)):monsterIndexResultsHTML(filterMonsterIndexList(window.v88MonsterQ,window.v88MonsterMin,window.v88MonsterMax,window.v88MonsterRace,window.v88MonsterSubtype));
 }
 
