@@ -1282,6 +1282,9 @@ section.card:has(.supportPlan) > .notice{
   max-width:100px;
   max-height:100px;
 }
+.soulHero img:not([src]),.soulHero img[src=""]{
+  display:none;
+}
 .soulNotice .assetDetailHead{
   margin:0;
 }

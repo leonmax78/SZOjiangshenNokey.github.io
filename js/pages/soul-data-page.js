@@ -11,7 +11,10 @@
   function by(id){return document.getElementById(id)}
   function soulById(id){const list=getSoulListV106();return list.find(x=>String(x.ID)===String(id))||list[0]||{}}
   function bonusRate(count){count=Math.max(1,N(count,1));return (count-1)*0.025;}
-  function soulPortraitHTML(soul){const src=window.SZO_ASSET_MEDIA&&window.SZO_ASSET_MEDIA.soulPortraitSrc(soul);return window.SZO_ASSET_MEDIA?window.SZO_ASSET_MEDIA.img(src,soul&&soul.Name,'assetHero soulHero'):''}
+  function soulPortraitHTML(soul){
+    const src=window.SZO_ASSET_MEDIA&&window.SZO_ASSET_MEDIA.soulPortraitSrc(soul);
+    return src?'<span class="assetHero soulHero" data-soul-portrait="'+E(soul&&soul.ID)+'"><img src="'+E(src)+'" alt="'+E(soul&&soul.Name)+'" loading="eager" decoding="async"></span>':'';
+  }
   function renderSoulCalc(){
     const list=getSoulListV106(); const first=list[0]||{};
     const savedId=window.soulSelectedId||first.ID;
