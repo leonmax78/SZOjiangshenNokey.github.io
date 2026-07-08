@@ -1,7 +1,13 @@
 (function(){
   const cache={item:null,monster:null,soul:null};
   function manifest(){return (window.SZO_DATA_BUNDLES&&window.SZO_DATA_BUNDLES.asset_manifest)||{}}
-  function base(){return (manifest().base||'assets/test-media').replace(/\/$/,'')}
+  function base(){
+    const raw=(manifest().base||'assets/test-media').replace(/\/$/,'');
+    if(raw.startsWith('/')||/^https?:\/\//i.test(raw))return raw;
+    const path=String(location&&location.pathname||'');
+    const prefix=path==='/test'||path.startsWith('/test/')?'/test/':'/';
+    return prefix+raw.replace(/^\//,'');
+  }
   function setOf(key){
     if(cache[key])return cache[key];
     const m=manifest();
