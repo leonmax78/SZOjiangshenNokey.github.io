@@ -242,6 +242,16 @@ function itemIndexResultsHTML(arr){
 }
 
 function itemThumbHTML(it){const src=window.SZO_ASSET_MEDIA&&window.SZO_ASSET_MEDIA.itemIconSrc(it);return window.SZO_ASSET_MEDIA?window.SZO_ASSET_MEDIA.img(src,nameOf(it)||it.name,'assetThumb itemThumb'):''}
+function startItemFullDataLoad(){
+ if(hasItemData())return;
+ const loader=typeof window.ensureItemDataLoaded==='function'?window.ensureItemDataLoaded:window.ensureLookupDataLoaded;
+ if(typeof loader!=='function')return;
+ loader().then(ok=>{
+  if(!ok)return;
+  if(byId('itemLatestList'))byId('itemLatestList').innerHTML=latestItemsHTML();
+  if(byId('itemResults'))searchItems();
+ });
+}
 
 function hasReverseData(){
  const d=window.SZO_DATA||{};
@@ -300,11 +310,8 @@ function ensureItemOptionalData(id){
 }
 
 function latestItemsHTML(limit=320){
- if(!hasItemData()&&hasItemSearchIndex()){
-  return itemSearchIndexRows().slice().reverse().slice(0,limit).map(it=>`<button type="button" class="resultItem" data-item="${esc(it.id)}"><div class="rName">${esc(it.name)}</div><div class="rSub">Lv.${esc(it.level||'')} / ${esc(itemIndexTypeName(it))} / ID ${esc(it.id||'')}</div></button>`).join('');
- }
  if(!hasItemData())return '<div class="muted">資料載入中，請稍等。</div>';
- return (items||[]).slice().reverse().slice(0,limit).map(it=>`<button type="button" class="resultItem withAsset" data-item="${esc(it.ID)}">${itemThumbHTML(it)}<span class="resultText"><div class="rName">${esc(nameOf(it))}</div><div class="rSub">Lv.${esc(it.Level||'')}?${esc(itemTypeName(it.Type)||it.Type||'')}?ID ${esc(it.ID||'')}</div></span></button>`).join('');
+ return (items||[]).slice().reverse().slice(0,limit).map(it=>`<button type="button" class="resultItem withAsset" data-item="${esc(it.ID)}">${itemThumbHTML(it)}<span class="resultText"><div class="rName">${esc(nameOf(it))}</div><div class="rSub">Lv.${esc(it.Level||'')} / ${esc(itemTypeName(it.Type)||it.Type||'')} / ID ${esc(it.ID||'')}</div></span></button>`).join('');
 }
 
 async function renderItemPage(tab='item'){
@@ -347,6 +354,7 @@ async function renderItemPage(tab='item'){
  </section>`;
  fillItemAdvancedFilters();
  if(activeItem){
+  startItemFullDataLoad();
   if(hasItemData()||hasItemSearchIndex())searchItems();
   else{
    byId('itemResults').innerHTML='<div class="muted">資料載入中，請稍等。</div>';
@@ -437,12 +445,17 @@ function showItem(id,skipPush){
  const it=itemIndex[String(id).trim()]; if(!it)return;
  ensureItemOptionalData(String(id));
  const rows=itemDetailRows(it).filter(x=>x[1]!==''&&x[1]!==undefined&&x[1]!==null&&String(x[1]).trim()!=='0');
- const kvHtml=rows.map(([k,v])=>{
-  const cls=k==='說明'?' itemFullRow itemHelpRow':(String(v).length>32?' itemFullRow':'');
+ const compactRows=rows.filter(([k,v])=>k!=='說明'&&String(v).length<=32);
+ const fullRows=rows.filter(([k,v])=>k==='說明'||String(v).length>32);
+ const kvHtml=compactRows.map(([k,v])=>{
+  return `<div class="kv"><div class="k">${esc(k)}</div><div class="v">${esc(v)}</div></div>`;
+ }).join('');
+ const fullHtml=fullRows.map(([k,v])=>{
+  const cls=k==='說明'?' itemFullRow itemHelpRow':' itemFullRow';
   return `<div class="kv${cls}"><div class="k">${esc(k)}</div><div class="v">${esc(v)}</div></div>`;
  }).join('');
  const hero=itemThumbHTML(it).replace('assetThumb itemThumb','assetHero itemHero');
- byId('reader').innerHTML=`<section class="card itemCompact"><button class="backBtn" type="button" onclick="goBackToPrevious('item')">← 返回道具查詢</button><div class="assetDetailHead">${hero}<h1>${esc(nameOf(it))}</h1></div><div class="kvGrid">${kvHtml}</div><div class="quick"><button type="button" data-reverse-item="${esc(it.ID)}">反查掉落怪物<small>查看哪些怪物會掉這個道具</small></button></div></section>`;
+ byId('reader').innerHTML=`<section class="card itemCompact itemDetailCompact"><button class="backBtn" type="button" onclick="goBackToPrevious('item')">← 返回道具查詢</button><div class="assetPreviewPanel itemPreviewPanel"><div class="assetArtPanel">${hero}<h1>${esc(nameOf(it))}</h1></div><div class="assetInfoPanel"><div class="kvGrid itemDataGrid">${kvHtml}</div></div></div>${fullHtml?`<div class="kvGrid itemDetailExtra">${fullHtml}</div>`:''}<div class="quick"><button type="button" data-reverse-item="${esc(it.ID)}">反查掉落怪物<small>查看哪些怪物會掉這個道具</small></button></div></section>`;
  closeDrawer();window.scrollTo({top:0,behavior:'smooth'});
 }
 
