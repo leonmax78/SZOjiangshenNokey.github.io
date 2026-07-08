@@ -83,7 +83,7 @@ function ensureMonsterSearchLocations(){
 }
 function monsterIndexRace(row){return raceName(row.type)}
 function monsterIndexSubtype(row){return subtypeName(row.type,row.subType)}
-function monsterIndexSearchText(row){return `${row.name||''} ${row.id||''} ${row.level||''} ${row.exp||''} ${monsterIndexRace(row)} ${monsterIndexSubtype(row)}`.toLowerCase()}
+function monsterIndexSearchText(row){return `${row.name||''} ${row.id||''} ${row.level||''} ${row.exp||''} ${monsterIndexRace(row)} ${monsterIndexSubtype(row)} ${locOf(row.name||'')}`.toLowerCase()}
 function uniqueMonsterIndexValues(fn){const set=new Set();monsterSearchIndexRows().forEach(m=>{const v=String(fn(m)||'').trim();if(v)set.add(v)});return [...set]}
 
 function monsterSearchText(m){return `${nameOf(m)} ${m.ID||''} ${m.Level||''} ${m.DropExp||''} ${raceName(m.Type)} ${subtypeName(m.Type,m.SubType)} ${locOf(nameOf(m))}`.toLowerCase()}
@@ -225,6 +225,9 @@ function searchMonstersMain(){
  const box=byId('monsterResultsMain'); if(!box)return;
  const hasFilter=!!(String(window.v88MonsterQ||'').trim()||String(window.v88MonsterMin||'').trim()||String(window.v88MonsterMax||'').trim()||String(window.v88MonsterRace||'').trim()||String(window.v88MonsterSubtype||'').trim());
  if(!hasFilter){box.innerHTML='';return;}
+ if(String(window.v88MonsterQ||'').trim()&&!(monsterLocations&&Object.keys(monsterLocations).length)){
+  ensureMonsterSearchLocations().then(ok=>{if(ok&&byId('monsterResultsMain'))searchMonstersMain();});
+ }
  box.innerHTML=hasMonsterData()?monsterResultsHTML(filterMonsterList(window.v88MonsterQ,window.v88MonsterMin,window.v88MonsterMax,window.v88MonsterRace,window.v88MonsterSubtype)):monsterIndexResultsHTML(filterMonsterIndexList(window.v88MonsterQ,window.v88MonsterMin,window.v88MonsterMax,window.v88MonsterRace,window.v88MonsterSubtype));
 }
 
