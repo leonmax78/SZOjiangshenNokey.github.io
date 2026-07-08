@@ -4,6 +4,8 @@ window.SZO_SCRIPT_GROUPS = {
   "data": [
     "js/data/type-maps.js",
     "data/build_meta.bundle.js",
+    "data/asset_manifest.bundle.js",
+    "js/data/asset-media.js",
     "data/item_series.bundle.js",
     "data/item_kind.bundle.js"
   ],

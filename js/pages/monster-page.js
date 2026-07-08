@@ -138,6 +138,8 @@ function monsterIndexResultsHTML(arr){
  }).join('')||'<div class="muted">???????????</div>';
 }
 
+function monsterThumbHTML(m){const src=window.SZO_ASSET_MEDIA&&window.SZO_ASSET_MEDIA.monsterPortraitSrc(m);return window.SZO_ASSET_MEDIA?window.SZO_ASSET_MEDIA.img(src,nameOf(m)||m.name,'assetThumb monsterThumb'):''}
+
 function filterMonsterList(q,min,max,race,subtype){
  const qText=(q||'').trim().toLowerCase();
  const minLv=min?intOf(min):null;
@@ -163,7 +165,7 @@ function monsterResultLine(m){
 }
 
 function monsterResultsHTML(arr){
- return arr.map(m=>`<button type="button" class="resultItem" data-monster="${esc(m.ID)}"><div class="rName">${esc(nameOf(m))}</div><div class="rSub">${monsterResultLine(m)}</div></button>`).join('')||'<div class="muted">沒有符合的怪物。</div>';
+ return arr.map(m=>`<button type="button" class="resultItem withAsset" data-monster="${esc(m.ID)}">${monsterThumbHTML(m)}<span class="resultText"><div class="rName">${esc(nameOf(m))}</div><div class="rSub">${monsterResultLine(m)}</div></span></button>`).join('')||'<div class="muted">沒有符合的怪物。</div>';
 }
 
 function latestMonstersHTML(limit=260){
@@ -171,7 +173,7 @@ function latestMonstersHTML(limit=260){
   return monsterSearchIndexRows().slice().reverse().slice(0,limit).map(m=>`<button type="button" class="resultItem" data-monster="${esc(m.id)}"><div class="rName">${esc(m.name)}</div><div class="rSub">Lv.${esc(m.level||'')} / ${esc(monsterIndexRace(m))}${monsterIndexSubtype(m)?' / '+esc(monsterIndexSubtype(m)):''} / ID ${esc(m.id||'')}</div></button>`).join('');
  }
  if(!hasMonsterData())return '<div class="muted">資料載入中，請稍等。</div>';
- return (monsters||[]).slice().reverse().slice(0,limit).map(m=>`<button type="button" class="resultItem" data-monster="${esc(m.ID)}"><div class="rName">${esc(nameOf(m))}</div><div class="rSub">Lv.${esc(m.Level||'')}?${esc(raceName(m.Type))}${subtypeName(m.Type,m.SubType)?' / '+esc(subtypeName(m.Type,m.SubType)):''}?ID ${esc(m.ID||'')}</div></button>`).join('');
+ return (monsters||[]).slice().reverse().slice(0,limit).map(m=>`<button type="button" class="resultItem withAsset" data-monster="${esc(m.ID)}">${monsterThumbHTML(m)}<span class="resultText"><div class="rName">${esc(nameOf(m))}</div><div class="rSub">Lv.${esc(m.Level||'')}?${esc(raceName(m.Type))}${subtypeName(m.Type,m.SubType)?' / '+esc(subtypeName(m.Type,m.SubType)):''}?ID ${esc(m.ID||'')}</div></span></button>`).join('');
 }
 
 function renderMonsterPage(){
@@ -403,9 +405,10 @@ function showMonster(id,skipPush){
  const defenseVisible=defense.some(x=>x[1]!==''&&x[1]!==undefined&&x[1]!==null&&String(x[1]).trim()!=='0');
  const skillVisible=skills.some(x=>x[1]!==''&&x[1]!==undefined&&x[1]!==null&&String(x[1]).trim()!=='0');
  const breakNote=m.ExtraDef?`<div class="muted" style="margin-top:10px;font-weight:800">${esc(monsterBreakSuggestText(m.ExtraDef))}</div>`:'';
+ const hero=monsterThumbHTML(m).replace('assetThumb monsterThumb','assetHero monsterHero');
  byId('reader').innerHTML=`<section class="card monsterCompact">
   <button class="backBtn" type="button" onclick="goBackToPrevious()">← 返回怪物查詢</button>
-  <h1>${esc(nameOf(m))}</h1>
+  <div class="assetDetailHead">${hero}<h1>${esc(nameOf(m))}</h1></div>
   <div class="monsterTopActions"><button type="button" class="primary" onclick="showMonsterDropPage('${esc(id)}')">查看掉落資訊<small>${drops.length?`共 ${drops.length} 筆掉落資料`:'沒有掉落資料'}</small></button></div>
   <div class="monsterGrid">
     <div class="monsterPanel"><h3>怪物資料</h3>${monsterRowsHTML(basic,'monsterDataGrid')}</div>

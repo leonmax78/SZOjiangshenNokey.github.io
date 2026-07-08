@@ -241,6 +241,8 @@ function itemIndexResultsHTML(arr){
  return arr.map(it=>`<button class="resultItem" data-item="${esc(it.id)}"><div class="rName">${esc(it.name)}</div><div class="rSub">Lv.${esc(it.level||'')} / ${esc(itemIndexTypeName(it))} / ID ${esc(it.id||'')}</div></button>`).join('')||'<div class="muted">找不到符合條件的道具。</div>';
 }
 
+function itemThumbHTML(it){const src=window.SZO_ASSET_MEDIA&&window.SZO_ASSET_MEDIA.itemIconSrc(it);return window.SZO_ASSET_MEDIA?window.SZO_ASSET_MEDIA.img(src,nameOf(it)||it.name,'assetThumb itemThumb'):''}
+
 function hasReverseData(){
  const d=window.SZO_DATA||{};
  return (d.dropReverse&&Object.keys(d.dropReverse).length)||(window.dropReverse&&Object.keys(window.dropReverse).length);
@@ -302,7 +304,7 @@ function latestItemsHTML(limit=320){
   return itemSearchIndexRows().slice().reverse().slice(0,limit).map(it=>`<button type="button" class="resultItem" data-item="${esc(it.id)}"><div class="rName">${esc(it.name)}</div><div class="rSub">Lv.${esc(it.level||'')} / ${esc(itemIndexTypeName(it))} / ID ${esc(it.id||'')}</div></button>`).join('');
  }
  if(!hasItemData())return '<div class="muted">資料載入中，請稍等。</div>';
- return (items||[]).slice().reverse().slice(0,limit).map(it=>`<button type="button" class="resultItem" data-item="${esc(it.ID)}"><div class="rName">${esc(nameOf(it))}</div><div class="rSub">Lv.${esc(it.Level||'')}?${esc(itemTypeName(it.Type)||it.Type||'')}?ID ${esc(it.ID||'')}</div></button>`).join('');
+ return (items||[]).slice().reverse().slice(0,limit).map(it=>`<button type="button" class="resultItem withAsset" data-item="${esc(it.ID)}">${itemThumbHTML(it)}<span class="resultText"><div class="rName">${esc(nameOf(it))}</div><div class="rSub">Lv.${esc(it.Level||'')}?${esc(itemTypeName(it.Type)||it.Type||'')}?ID ${esc(it.ID||'')}</div></span></button>`).join('');
 }
 
 async function renderItemPage(tab='item'){
@@ -406,7 +408,7 @@ function searchItems(){
  ).slice(0,180);
  box.innerHTML=arr.map(it=>{
   const parts=[`Lv.${esc(it.Level||'')}`,esc(itemTypeName(it.Type)||it.Type||''),itemKind(it)?`專剋 ${esc(itemKind(it))}`:'',`ID ${esc(it.ID)}`].filter(Boolean);
-  return `<button class="resultItem" data-item="${esc(it.ID)}"><div class="rName">${esc(nameOf(it))}</div><div class="rSub">${parts.join(' / ')}</div></button>`;
+  return `<button class="resultItem withAsset" data-item="${esc(it.ID)}">${itemThumbHTML(it)}<span class="resultText"><div class="rName">${esc(nameOf(it))}</div><div class="rSub">${parts.join(' / ')}</div></span></button>`;
  }).join('')||'<div class="muted">沒有符合的道具。</div>';
 }
 
@@ -439,7 +441,8 @@ function showItem(id,skipPush){
   const cls=k==='說明'?' itemFullRow itemHelpRow':(String(v).length>32?' itemFullRow':'');
   return `<div class="kv${cls}"><div class="k">${esc(k)}</div><div class="v">${esc(v)}</div></div>`;
  }).join('');
- byId('reader').innerHTML=`<section class="card itemCompact"><button class="backBtn" type="button" onclick="goBackToPrevious('item')">← 返回道具查詢</button><h1>${esc(nameOf(it))}</h1><div class="kvGrid">${kvHtml}</div><div class="quick"><button type="button" data-reverse-item="${esc(it.ID)}">反查掉落怪物<small>查看哪些怪物會掉這個道具</small></button></div></section>`;
+ const hero=itemThumbHTML(it).replace('assetThumb itemThumb','assetHero itemHero');
+ byId('reader').innerHTML=`<section class="card itemCompact"><button class="backBtn" type="button" onclick="goBackToPrevious('item')">← 返回道具查詢</button><div class="assetDetailHead">${hero}<h1>${esc(nameOf(it))}</h1></div><div class="kvGrid">${kvHtml}</div><div class="quick"><button type="button" data-reverse-item="${esc(it.ID)}">反查掉落怪物<small>查看哪些怪物會掉這個道具</small></button></div></section>`;
  closeDrawer();window.scrollTo({top:0,behavior:'smooth'});
 }
 

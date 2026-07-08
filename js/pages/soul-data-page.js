@@ -11,6 +11,7 @@
   function by(id){return document.getElementById(id)}
   function soulById(id){const list=getSoulListV106();return list.find(x=>String(x.ID)===String(id))||list[0]||{}}
   function bonusRate(count){count=Math.max(1,N(count,1));return (count-1)*0.025;}
+  function soulPortraitHTML(soul){const src=window.SZO_ASSET_MEDIA&&window.SZO_ASSET_MEDIA.soulPortraitSrc(soul);return window.SZO_ASSET_MEDIA?window.SZO_ASSET_MEDIA.img(src,soul&&soul.Name,'assetHero soulHero'):''}
   function renderSoulCalc(){
     const list=getSoulListV106(); const first=list[0]||{};
     const savedId=window.soulSelectedId||first.ID;
@@ -58,7 +59,7 @@
       const bonus=Math.floor(base*rate);
       return '<tr><td>'+E(label)+'</td><td>'+F(base)+'</td><td style="color:#facc15;font-weight:1000">+'+F(bonus)+'</td><td>'+F(base+bonus)+'</td></tr>';
     }).join('');
-    out.innerHTML='<div class="notice"><b>'+E(soul.Name||'')+'</b><br>收藏數：'+F(count)+'｜加成：'+(rate*100).toFixed(1).replace(/.0$/,'')+'%</div><h3>能力預覽</h3><div class="soulStats">'+rows+'</div><h3>詳細表</h3><div class="tableWrap"><table><thead><tr><th>能力</th><th>原始能力</th><th>收藏加成</th><th>合計</th></tr></thead><tbody>'+totalRows+'</tbody></table></div>';
+    out.innerHTML='<div class="notice soulNotice"><div class="assetDetailHead">'+soulPortraitHTML(soul)+'<div><b>'+E(soul.Name||'')+'</b><br>收藏數：'+F(count)+'｜加成：'+(rate*100).toFixed(1).replace(/.0$/,'')+'%</div></div></div><h3>能力預覽</h3><div class="soulStats">'+rows+'</div><h3>詳細表</h3><div class="tableWrap"><table><thead><tr><th>能力</th><th>原始能力</th><th>收藏加成</th><th>合計</th></tr></thead><tbody>'+totalRows+'</tbody></table></div>';
   }
   function closeDrawerSafe(){try{ if(typeof closeDrawer==='function') closeDrawer(); }catch(e){}}
   function openItemMenuKeep(){

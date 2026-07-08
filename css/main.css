@@ -723,6 +723,15 @@ h1{font-size:24px;line-height:1.22;margin:0 0 8px}h2{font-size:19px;margin:0 0 1
 .monsterCompact .monsterTopActions{display:flex;justify-content:flex-end;margin:-8px 0 10px}.monsterCompact .monsterTopActions button{min-width:210px}.monsterCompact h1{margin-bottom:8px}.monsterCompact h3{margin:10px 0 7px}.monsterCompact .kv{padding:8px 10px;border-radius:12px}.monsterCompact .k{font-size:11px;margin-bottom:2px}.monsterCompact .v{font-size:14px;line-height:1.28}.monsterCompact .monsterGrid{display:grid;grid-template-columns:1fr;gap:8px}.monsterCompact .monsterPanel{border:1px solid rgba(96,165,250,.18);border-radius:16px;padding:10px;background:rgba(8,18,37,.38)}
 @media(min-width:901px){.monsterCompact.card{max-width:1400px;padding:14px 18px}.monsterCompact .monsterDataGrid{grid-template-columns:repeat(5,minmax(0,1fr))}.monsterCompact .monsterStatGrid{grid-template-columns:repeat(4,minmax(0,1fr))}.monsterCompact .monsterDefenseGrid{grid-template-columns:repeat(4,minmax(0,1fr))}.monsterCompact .monsterSkillGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.monsterDropPage.card{max-width:1100px}.monsterDropTable table th:first-child,.monsterDropTable table td:first-child{text-align:left}}
 @media(max-width:700px){.monsterCompact .monsterTopActions{justify-content:stretch}.monsterCompact .monsterTopActions button{width:100%}.monsterCompact .kvGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.monsterCompact .monsterSkillGrid{grid-template-columns:1fr}.monsterCompact .monsterDefenseGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.monsterCompact .v{font-size:13px}.monsterCompact .kv{padding:8px}}
+@media(max-width:560px){
+  .assetDetailHead{gap:10px;align-items:flex-start}
+  .assetHero{width:68px;height:68px;border-radius:14px}
+  .assetHero img{max-width:62px;max-height:62px}
+  .monsterHero{width:88px;height:88px}
+  .monsterHero img{max-width:82px;max-height:82px}
+  .soulHero{width:78px;height:78px}
+  .soulHero img{max-width:72px;max-height:72px}
+}
 
 /* =========================
    Extracted from index.html
@@ -1192,6 +1201,90 @@ section.card:has(.supportPlan) > .notice{
 .resultItem .rSub{
   padding-left:6px;
 }
+.resultItem.withAsset{
+  display:grid;
+  grid-template-columns:44px minmax(0,1fr);
+  align-items:center;
+  gap:10px;
+  min-height:64px;
+}
+.resultItem.withAsset .rName,
+.resultItem.withAsset .rSub{
+  padding-left:0;
+}
+.resultText{
+  min-width:0;
+}
+.assetThumb{
+  width:44px;
+  height:44px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid rgba(125,211,252,.24);
+  border-radius:10px;
+  background:rgba(3,7,18,.38);
+  overflow:hidden;
+}
+.assetThumb img{
+  max-width:40px;
+  max-height:40px;
+  width:auto;
+  height:auto;
+  object-fit:contain;
+  image-rendering:auto;
+}
+.monsterThumb img{
+  max-width:42px;
+  max-height:42px;
+}
+.assetDetailHead{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  min-width:0;
+  margin:4px 0 12px;
+}
+.assetDetailHead h1{
+  margin:0;
+  min-width:0;
+}
+.assetHero{
+  flex:0 0 auto;
+  width:86px;
+  height:86px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid rgba(125,211,252,.28);
+  border-radius:16px;
+  background:linear-gradient(135deg,rgba(15,23,42,.82),rgba(8,18,37,.72));
+  overflow:hidden;
+}
+.assetHero img{
+  max-width:78px;
+  max-height:78px;
+  object-fit:contain;
+}
+.monsterHero{
+  width:132px;
+  height:132px;
+}
+.monsterHero img{
+  max-width:122px;
+  max-height:122px;
+}
+.soulHero{
+  width:108px;
+  height:108px;
+}
+.soulHero img{
+  max-width:100px;
+  max-height:100px;
+}
+.soulNotice .assetDetailHead{
+  margin:0;
+}
 .resultItem:hover{
   border-color:var(--accent2)!important;
   background:
@@ -1231,6 +1324,19 @@ section.card:has(.supportPlan) > .notice{
   .resultItem{
     border-radius:13px;
     padding:11px 10px 11px 12px;
+  }
+  .resultItem.withAsset{
+    grid-template-columns:40px minmax(0,1fr);
+    min-height:58px;
+    gap:9px;
+  }
+  .assetThumb{
+    width:40px;
+    height:40px;
+  }
+  .assetThumb img{
+    max-width:36px;
+    max-height:36px;
   }
   .latestSidePane{
     border-color:color-mix(in srgb,var(--accent2) 34%,var(--line))!important;
