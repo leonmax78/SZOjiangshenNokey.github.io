@@ -1324,6 +1324,10 @@ section.card:has(.supportPlan) > .notice{
 .soulPreviewStats .soulStat{
   min-height:54px;
 }
+.soulMetaLine{
+  display:block;
+  margin-top:4px;
+}
 .soulHero img:not([src]),.soulHero img[src=""]{
   display:none;
 }
