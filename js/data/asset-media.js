@@ -15,6 +15,10 @@
     cache[key]=new Set(Array.isArray(list)?list.map(String):[]);
     return cache[key];
   }
+  function mediaVersion(){
+    const v=String(manifest().version||'').trim();
+    return v?`?v=${encodeURIComponent(v)}`:'';
+  }
   function pad4(v){const n=parseInt(String(v||'').trim(),10);return Number.isFinite(n)?String(n%10000).padStart(4,'0'):''}
   function legacyIconSuffixes(iconId,itemType){
     const n=parseInt(String(iconId||'').trim(),10);
@@ -32,15 +36,15 @@
     const tries=[pad4(icon),...legacyIconSuffixes(icon,item&&(item.Type||item.type))].filter(Boolean);
     const set=setOf('item');
     const suffix=tries.find(x=>set.has(x));
-    return suffix?`${base()}/item-icons/i${suffix}.png`:'';
+    return suffix?`${base()}/item-icons/i${suffix}.png${mediaVersion()}`:'';
   }
   function monsterPortraitSrc(monster){
     const pic=String(monster&&(monster.Pic!==undefined?monster.Pic:monster.pic)||'').trim();
-    return pic&&setOf('monster').has(pic)?`${base()}/monster-portraits/m${pic}.png`:'';
+    return pic&&setOf('monster').has(pic)?`${base()}/monster-portraits/m${pic}.png${mediaVersion()}`:'';
   }
   function soulPortraitSrc(soul){
     const id=String(soul&&(soul.ID!==undefined?soul.ID:soul.id)||'').trim();
-    return id&&setOf('soul').has(id)?`${base()}/soul-portraits/s${id}.png`:'';
+    return id&&setOf('soul').has(id)?`${base()}/soul-portraits/s${id}.png${mediaVersion()}`:'';
   }
   function img(src,alt,cls){
     return src?`<span class="${cls||'assetThumb'}"><img src="${esc(src)}" alt="${esc(alt||'')}" loading="lazy" decoding="async" onerror="this.closest('.assetThumb,.assetHero')?.remove()"></span>`:'';
