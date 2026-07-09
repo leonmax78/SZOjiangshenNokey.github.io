@@ -122,7 +122,7 @@ def main() -> None:
         })
 
     output = {
-        "version": "shop_selected_11_fixed_v3_0625",
+        "version": "shop_selected_11_fixed_v4_0709",
         "description": "指定11筆特殊商店販售資訊；由 SHOP.INI 的 Sell/Buy 百分比乘以 ITEM.INI Value 產生。",
         "shops": shops,
     }
