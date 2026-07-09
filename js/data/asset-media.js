@@ -19,6 +19,9 @@
     const v=String(manifest().version||'').trim();
     return v?`?v=${encodeURIComponent(v)}`:'';
   }
+  const monsterPortraitOverrides={
+    '15714':'monster-portraits/m15714.png'
+  };
   function pad4(v){const n=parseInt(String(v||'').trim(),10);return Number.isFinite(n)?String(n%10000).padStart(4,'0'):''}
   function legacyIconSuffixes(iconId,itemType){
     const n=parseInt(String(iconId||'').trim(),10);
@@ -39,6 +42,8 @@
     return suffix?`${base()}/item-icons/i${suffix}.png${mediaVersion()}`:'';
   }
   function monsterPortraitSrc(monster){
+    const id=String(monster&&(monster.ID!==undefined?monster.ID:monster.id)||'').trim();
+    if(id&&monsterPortraitOverrides[id])return `${base()}/${monsterPortraitOverrides[id]}${mediaVersion()}`;
     const pic=String(monster&&(monster.Pic!==undefined?monster.Pic:monster.pic)||'').trim();
     return pic&&setOf('monster').has(pic)?`${base()}/monster-portraits/m${pic}.png${mediaVersion()}`:'';
   }
