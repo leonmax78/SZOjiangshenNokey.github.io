@@ -256,7 +256,7 @@ function viewLoadingLabel(view){
  const labels={
   monster:'怪物查詢',
   collect:'武冠收錄資料',
-  shop:'特殊商店販賣資訊',
+  shop:'商店販賣資訊',
   map:'地圖查詢',
   downloads:'工具下載區',
   soul:'武魂能力試算',
@@ -306,7 +306,7 @@ function viewLoadingLabel(view){
  const labels={
   monster:'怪物查詢',
   collect:'武冠收錄資料',
-  shop:'特殊商店販賣資訊',
+  shop:'商店販賣資訊',
   downloads:'工具下載區',
   soul:'武魂能力試算',
   reverse:'掉落反查'
@@ -1487,7 +1487,7 @@ function backLabelFor(view){
  if(view==='monster')return '返回怪物查詢';
  if(view==='item')return '返回道具查詢';
  if(view==='reverse')return '返回道具反查';
- if(view==='shop')return '返回特殊商店販賣資訊';
+ if(view==='shop')return '返回商店販賣資訊';
  if(view==='downloads')return '返回工具下載區';
  if(view==='jiang')return '返回降神、經驗、修練試算';
  return '返回首頁';

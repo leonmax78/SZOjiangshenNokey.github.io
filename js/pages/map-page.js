@@ -219,6 +219,9 @@
   }
 
   async function showMapMonsterPanel(marker){
+    closeMapMonsterPanel();
+    window.__szoMapMonsterMarker = marker;
+    document.body.insertAdjacentHTML('beforeend', mapMonsterPanelHtml(marker, {}));
     await ensureMapMonsterDataLoaded();
     await ensureMapItemDataLoaded();
     const monster = monsterById(marker.id) || {};
@@ -623,6 +626,11 @@
       if(first) state.stageId = Number(first.stageId);
     }
     renderLoaded();
+    const prewarmMonsterData = () => {
+      ensureMapMonsterDataLoaded().catch(() => {});
+    };
+    if(typeof requestIdleCallback === 'function') requestIdleCallback(prewarmMonsterData, { timeout: 1500 });
+    else setTimeout(prewarmMonsterData, 250);
   }
 
   document.addEventListener('compositionstart', ev => {

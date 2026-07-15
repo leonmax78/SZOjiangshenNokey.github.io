@@ -3367,3 +3367,8 @@ body{
   .mapShopItem{grid-template-columns:42px minmax(0,1fr)}
   .mapShopPrice{grid-column:2;justify-self:start}
 }
+
+.reverseMapLink{border:0;background:transparent;color:#93c5fd;text-align:left;padding:0;font:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.reverseMapLink:hover{color:#67e8f9}
+.reverseDropMonsterName{border:0;background:transparent;color:var(--text);padding:0;text-align:left;font:inherit;font-weight:1000;cursor:pointer}
+.reverseDropMonsterName:hover{color:#67e8f9}

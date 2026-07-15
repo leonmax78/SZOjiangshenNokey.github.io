@@ -1,6 +1,8 @@
 // V226: formal reverse lookup module.
 // Flow: search ITEM.INI records, use the selected item ID, then read the prebuilt MONSTER_C.INI DropItem reverse index.
 (function(){
+  let reverseMapPromise=null;
+  let reverseMapMonsterIds=null;
   function by(id){return document.getElementById(id)}
   function escHtml(s){
     if(typeof esc==='function')return esc(s);
@@ -14,6 +16,28 @@
   }
   function locSafe(monsterName){
     try{return typeof locOf==='function'?locOf(monsterName):''}catch(e){return ''}
+  }
+  async function ensureReverseMapData(){
+    if(reverseMapMonsterIds)return reverseMapMonsterIds;
+    if(!reverseMapPromise){
+      reverseMapPromise=fetch('data/stage_maps.json?v='+encodeURIComponent(document.body?.dataset?.version||'dev'),{cache:'no-store'})
+        .then(function(res){if(!res.ok)throw new Error('stage map data load failed');return res.json();})
+        .then(function(data){
+          const ids=new Set();
+          (data?.stages||[]).forEach(function(stage){
+            (stage.monsters||[]).forEach(function(monster){
+              if(monster?.id!==undefined && monster?.id!==null)ids.add(String(monster.id));
+            });
+          });
+          reverseMapMonsterIds=ids;
+          return ids;
+        })
+        .catch(function(){reverseMapMonsterIds=new Set();return reverseMapMonsterIds;});
+    }
+    return reverseMapPromise;
+  }
+  function hasMapPoint(monsterId){
+    return !!(reverseMapMonsterIds && reverseMapMonsterIds.has(String(monsterId||'')));
   }
   function sync(){
     try{ if(typeof window.SZO_SYNC_DATA==='function') window.SZO_SYNC_DATA(); }catch(e){console.warn('SZO_SYNC_DATA failed',e)}
@@ -201,6 +225,7 @@
       }catch(e){}
     }
     sync();
+    await ensureReverseMapData();
   }
   function getItems(){
     const d=sync();
@@ -254,13 +279,17 @@
         + '<div class="reverseDropRate">'+escHtml(rate)+'</div>'
         + '</div>';
     }
-    return '<button type="button" class="reverseDropCard" data-monster="'+escHtml(mid)+'">'
+    const loc=locSafe(name)||'??????';
+    const locHtml=mid && hasMapPoint(mid)
+      ? '<button type="button" class="reverseDropLoc reverseMapLink" data-reverse-map-monster="'+escHtml(mid)+'" data-reverse-map-name="'+escHtml(name)+'">'+escHtml(loc)+'</button>'
+      : '<div class="reverseDropLoc">'+escHtml(loc)+'</div>';
+    return '<div class="reverseDropCard reverseDropCardMonster">'
       + '<div class="reverseDropMain">'
-      + '<div class="reverseDropName">'+escHtml(name)+'</div>'
-      + '<div class="reverseDropLoc">'+escHtml(locSafe(name)||'沒有位置資料')+'</div>'
+      + '<button type="button" class="reverseDropName reverseDropMonsterName" data-monster="'+escHtml(mid)+'">'+escHtml(name)+'</button>'
+      + locHtml
       + '</div>'
       + '<div class="reverseDropRate">'+escHtml(rate)+'</div>'
-      + '</button>';
+      + '</div>';
   }
 
   window.showReverse=async function(id,returnView,parentItemId){
@@ -299,4 +328,19 @@
     try{if(typeof closeDrawer==='function')closeDrawer();}catch(e){}
     try{window.scrollTo({top:0,behavior:'smooth'});}catch(e){}
   };
+
+  document.addEventListener('click',function(ev){
+    const btn=ev.target && ev.target.closest ? ev.target.closest('[data-reverse-map-monster]') : null;
+    if(!btn)return;
+    ev.preventDefault();
+    ev.stopPropagation();
+    const id=btn.getAttribute('data-reverse-map-monster')||'';
+    const name=btn.getAttribute('data-reverse-map-name')||'';
+    (async function(){
+      if(typeof showPageLoading==='function')showPageLoading('????','????????...');
+      if(typeof window.ensureMapPageLoaded==='function')await window.ensureMapPageLoaded();
+      else if(typeof window.loadScriptGroupOnce==='function')await window.loadScriptGroupOnce('page_map');
+      if(typeof window.openMonsterMapLocations==='function')await window.openMonsterMapLocations(id,name);
+    })();
+  },true);
 })();

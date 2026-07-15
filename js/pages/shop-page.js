@@ -13,7 +13,8 @@
     loading: null,
     composing: false,
     focusedSearch: false,
-    inputTimer: null
+    inputTimer: null,
+    exactItemName: ''
   };
 
   function by(id){ return document.getElementById(id); }
@@ -120,7 +121,9 @@
   }
   function itemMatches(item, loc){
     const q = state.query.trim().toLowerCase();
-    return !q || itemSearchText(item, loc).includes(q);
+    if(!q) return true;
+    if(state.exactItemName) return String(item.name || '').trim() === state.exactItemName;
+    return itemSearchText(item, loc).includes(q);
   }
   function matchingItemCount(mode){
     const q = state.query.trim().toLowerCase();
@@ -155,10 +158,13 @@
       const items = filteredItems(loc);
       const direct = [loc.stageName, loc.npcName, loc.shopId].join(' ').toLowerCase().includes(q);
       const prices = items.map(item => Number(modePrice(item))).filter(Number.isFinite);
-      const bestPrice = prices.length ? Math.max(...prices) : -1;
-      return Object.assign({}, loc, { matchCount: items.length, direct, bestPrice, order });
+      const rankPrice = prices.length ? (state.mode === 'buy' ? Math.max(...prices) : Math.min(...prices)) : -1;
+      return Object.assign({}, loc, { matchCount: items.length, direct, rankPrice, order });
     }).filter(loc => loc.matchCount || loc.direct).sort((a,b) => {
-      if(a.matchCount && b.matchCount) return b.bestPrice - a.bestPrice || b.matchCount - a.matchCount || a.order - b.order;
+      if(a.matchCount && b.matchCount){
+        const priceSort = state.mode === 'buy' ? b.rankPrice - a.rankPrice : a.rankPrice - b.rankPrice;
+        return priceSort || b.matchCount - a.matchCount || a.order - b.order;
+      }
       if(a.matchCount !== b.matchCount) return b.matchCount - a.matchCount;
       return a.order - b.order;
     });
@@ -173,9 +179,12 @@
         const name = String(item.name || '').trim();
         if(!name || !name.toLowerCase().includes(q)) continue;
         const priceValue = Number(state.mode === 'buy' ? item.buyPrice : item.sellPrice);
-        const current = rows.get(name) || { name, count: 0, bestPrice: -1 };
+        const current = rows.get(name) || { name, count: 0, bestPrice: -1, lowPrice: Infinity };
         current.count += 1;
-        if(Number.isFinite(priceValue)) current.bestPrice = Math.max(current.bestPrice, priceValue);
+        if(Number.isFinite(priceValue)){
+          current.bestPrice = Math.max(current.bestPrice, priceValue);
+          current.lowPrice = Math.min(current.lowPrice, priceValue);
+        }
         rows.set(name, current);
       }
     }
@@ -186,7 +195,8 @@
       const aStarts = an.startsWith(q);
       const bStarts = bn.startsWith(q);
       if(aStarts !== bStarts) return aStarts ? -1 : 1;
-      return b.bestPrice - a.bestPrice || b.count - a.count || a.name.localeCompare(b.name, 'zh-Hant');
+      const priceSort = state.mode === 'buy' ? b.bestPrice - a.bestPrice : a.lowPrice - b.lowPrice;
+      return priceSort || b.count - a.count || a.name.localeCompare(b.name, 'zh-Hant');
     }).slice(0, limit);
   }
   function renderItemSuggestions(){
@@ -315,7 +325,7 @@
       <div class="shopPicker">
         ${stageSelect(loc)}
         ${npcSelect(loc)}
-        ${isSearching ? `<div class="shopSearchHint">符合搜尋的商店會依${state.mode === 'buy' ? '回收高價' : '販賣高價'}優先排列。</div>` : ''}
+        ${isSearching ? `<div class="shopSearchHint">符合搜尋的商店會依${state.mode === 'buy' ? '回收高價' : '販賣低價'}優先排列。</div>` : ''}
       </div>
       ${isSearching ? searchResults() : shopBlock(loc, items)}
     </section>`;
@@ -416,11 +426,13 @@
     if(ev.target?.id === 'shopSearch'){
       state.composing = false;
       state.query = ev.target.value || '';
+      state.exactItemName = '';
     }
   }, true);
   document.addEventListener('input', ev => {
     if(ev.target?.id === 'shopSearch'){
       state.query = ev.target.value || '';
+      state.exactItemName = '';
     }
   }, true);
   document.addEventListener('focusin', ev => {
@@ -468,6 +480,7 @@
       ev.preventDefault();
       const input = by('shopSearch');
       if(input) state.query = input.value || '';
+      state.exactItemName = '';
       state.composing = false;
       runSearch();
       return;
@@ -476,6 +489,7 @@
     if(suggest){
       ev.preventDefault();
       state.query = suggest.dataset.shopSuggest || '';
+      state.exactItemName = state.query.trim();
       state.composing = false;
       maybeSwitchModeForQuery();
       renderLoaded();
