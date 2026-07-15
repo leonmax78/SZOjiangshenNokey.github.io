@@ -64,6 +64,9 @@
         if(state.stageId === null) state.stageId = first.stageId;
         if(!state.activeKey) state.activeKey = first.key;
       }
+    }).catch(err => {
+      state.loading = null;
+      throw err;
     });
     return state.loading;
   }

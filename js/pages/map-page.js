@@ -60,16 +60,29 @@
     return res.json();
   }
 
+  async function fetchMapBundle(key, jsonUrl){
+    if(typeof loadDataBundle === 'function'){
+      try{
+        const data = await loadDataBundle(key);
+        if(Array.isArray(data)) return data;
+      }catch(e){}
+    }
+    return fetchMapJson(jsonUrl);
+  }
+
   async function ensureMapMonsterDataLoaded(){
     if(monsterData) return monsterData;
     if(!monsterDataPromise){
       monsterDataPromise = Promise.all([
-        fetchMapJson('data/monsters.json'),
-        fetchMapJson('data/items.json')
+        fetchMapBundle('monsters', 'data/monsters.json'),
+        fetchMapBundle('items', 'data/items.json')
       ]).then(([monsters, items]) => {
         monsterData = Array.isArray(monsters) ? monsters : [];
         itemData = Array.isArray(items) ? items : [];
         return monsterData;
+      }).catch(err => {
+        monsterDataPromise = null;
+        throw err;
       });
     }
     return monsterDataPromise;
@@ -78,9 +91,12 @@
   async function ensureMapItemDataLoaded(){
     if(itemData) return itemData;
     if(!itemDataPromise){
-      itemDataPromise = fetchMapJson('data/items.json').then(items => {
+      itemDataPromise = fetchMapBundle('items', 'data/items.json').then(items => {
         itemData = Array.isArray(items) ? items : [];
         return itemData;
+      }).catch(err => {
+        itemDataPromise = null;
+        throw err;
       });
     }
     return itemDataPromise;
@@ -186,6 +202,7 @@
 
   function mapMonsterPanelHtml(marker, monster){
     const name = monsterName(monster, marker);
+    const isLoading = monster && monster.__loading;
     const drops = mapMonsterDropRows(monster);
     const portrait = markerImage(Object.assign({ kind: 'monster' }, marker, { pic: monster?.Pic || marker?.pic }));
     const level = monsterLevel(monster, marker);
@@ -205,7 +222,7 @@
           <strong>掉落資訊</strong>
         </div>
         <div class="mapShopItems">
-          ${drops.map(item => `<button type="button" class="mapShopItem" data-map-monster-item="${htmlEscape(item.itemId)}">
+          ${isLoading ? '<div class="empty">掉落資料載入中，請稍等。</div>' : drops.map(item => `<button type="button" class="mapShopItem" data-map-monster-item="${htmlEscape(item.itemId)}">
             ${monsterDropItemIcon(item)}
             <span class="mapShopText"><strong>${htmlEscape(item.name)}</strong></span>
             <span class="mapShopPrice">${htmlEscape(item.rate)}</span>
@@ -221,7 +238,7 @@
   async function showMapMonsterPanel(marker){
     closeMapMonsterPanel();
     window.__szoMapMonsterMarker = marker;
-    document.body.insertAdjacentHTML('beforeend', mapMonsterPanelHtml(marker, {}));
+    document.body.insertAdjacentHTML('beforeend', mapMonsterPanelHtml(marker, { __loading: true }));
     await ensureMapMonsterDataLoaded();
     await ensureMapItemDataLoaded();
     const monster = monsterById(marker.id) || {};
