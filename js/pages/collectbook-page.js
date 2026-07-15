@@ -10,6 +10,7 @@
   };
   const state = {
     data: null,
+    locations: {},
     loading: null,
     active: 'weapon',
     composing: false,
@@ -31,6 +32,26 @@
   function textList(values, emptyText){
     const list = (values || []).filter(Boolean);
     return list.length ? list.map(x => `<span class="collectTag">${escHtml(x)}</span>`).join('') : `<span class="muted">${escHtml(emptyText || '-')}</span>`;
+  }
+  function splitLocationText(value){
+    return String(value || '').split(/[、,，/／]+/).map(x => x.trim()).filter(Boolean);
+  }
+  function uniqueList(values){
+    const out = [];
+    const seen = new Set();
+    (values || []).forEach(value => {
+      splitLocationText(value).forEach(part => {
+        if(!part || seen.has(part)) return;
+        seen.add(part);
+        out.push(part);
+      });
+    });
+    return out;
+  }
+  function beastMergedLocations(row){
+    if(!row || row.kind !== 'beast') return row?.locations || [];
+    const monsterLoc = state.locations && row.name ? state.locations[row.name] : '';
+    return uniqueList([...(row.locations || []), monsterLoc]);
   }
   function normDropName(value){
     return String(value || '')
@@ -92,7 +113,7 @@
     }).join('')}</div>`;
   }
   function dropLocationText(row){
-    if(row.kind === 'beast') return textList(row.locations, '沒有捕抓地點');
+    if(row.kind === 'beast') return textList(beastMergedLocations(row), '沒有捕抓地點');
     const shopSet = new Set(row.shops || []);
     const drops = (row.excelSources || []).filter(x => !shopSet.has(x));
     const reverseCount = Array.isArray(row.reverseDrops) ? row.reverseDrops.length : 0;
@@ -346,19 +367,22 @@
       if(source.task && !row.taskFlag) return false;
       if(source.shop && !(row.shopFlag || (row.shops || []).length)) return false;
       if(!q) return true;
-      return [row.name, row.itemId].filter(Boolean).join(' ').toLowerCase().includes(q);
+      return [row.name, row.itemId, row.searchText, ...(kind === 'beast' ? beastMergedLocations(row) : [])].filter(Boolean).join(' ').toLowerCase().includes(q);
     });
   }
   async function loadData(){
     if(state.data) return state.data;
     if(state.loading) return state.loading;
-    state.loading = fetch(DATA_URL + '?v=' + encodeURIComponent(document.body?.dataset?.version || 'dev'))
-      .then(res => {
+    const version = encodeURIComponent(document.body?.dataset?.version || 'dev');
+    state.loading = Promise.all([
+      fetch(DATA_URL + '?v=' + version).then(res => {
         if(!res.ok) throw new Error('Collect book data load failed');
         return res.json();
-      })
-      .then(data => {
+      }),
+      typeof loadDataBundle === 'function' ? loadDataBundle('locations').catch(() => ({})) : Promise.resolve({})
+    ]).then(([data, locations]) => {
         state.data = data;
+        state.locations = locations && typeof locations === 'object' && !Array.isArray(locations) ? locations : {};
         return data;
       });
     return state.loading;
