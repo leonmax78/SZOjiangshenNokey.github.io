@@ -1389,6 +1389,13 @@ function goBackToPrevious(targetView){
  }
  else if(v==='reverse')setView('reverse');
  else if(v==='monster')setView('monster');
+ else if(v==='collect'){
+  showPageLoading(viewLoadingLabel('collect'));
+  ensureCollectPageLoaded().then(()=>{
+   const kind=window.SZO_COLLECT_ACTIVE||'menu';
+   if(typeof renderCollectBookPage==='function')renderCollectBookPage(kind);
+  });
+ }
  else if(v==='jiang')setView('jiang');
  else setView('home');
 }

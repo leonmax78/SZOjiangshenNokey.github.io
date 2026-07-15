@@ -154,11 +154,13 @@
         if(id) monsterById[id] = monster;
       });
       const sourceDropsByName = {};
+      const sourceItemIdsByName = {};
       needNames.forEach(name => {
         const item = itemList.find(it => getItemName(it) === name);
         const id = getItemId(item);
         const drops = id ? (reverseIndex[id] || []) : [];
         if(!drops.length) return;
+        sourceItemIdsByName[name] = id;
         sourceDropsByName[name] = drops.map(drop => {
           const monster = monsterById[String(drop?.monsterId || '').trim()] || drop?.monster || null;
           const enriched = Object.assign({}, drop, { monster });
@@ -171,8 +173,10 @@
         }).filter(drop => drop.monster);
       });
       row.sourceDropsByName = sourceDropsByName;
+      row.sourceItemIdsByName = sourceItemIdsByName;
     }catch(e){
       row.sourceDropsByName = {};
+      row.sourceItemIdsByName = {};
     }
     row._sourceDropsReady = true;
     return row;
@@ -226,24 +230,21 @@
   function collectDropDetailRows(row){
     const reverse = Array.isArray(row?.reverseDrops) ? row.reverseDrops : [];
     if(reverse.length){
-      return `<div class="tableWrap monsterDropTable collectDropDetailTable"><table>
-        <thead><tr><th>怪物</th><th>位置</th><th>機率</th></tr></thead>
-        <tbody>${reverse.map(drop => {
+      return `<div class="collectReverseCompactList">${reverse.map(drop => {
           const sourceDrops = (row.sourceDropsByName || {})[drop.monster] || [];
-          const nested = sourceDrops.length ? `<div class="collectNestedDrops">${sourceDrops.map(source => {
-            const loc = (source.locations || []).filter(Boolean).join('、');
-            const level = source.level ? ` Lv.${escHtml(source.level)}` : '';
-            const rate = source.rate !== undefined && source.rate !== null && source.rate !== '' ? ` ${formatRate(source.rate)}` : '';
-            return `<div>${escHtml(source.monster || '-')}${level}${escHtml(rate)}${loc ? ` / ${escHtml(loc)}` : ''}</div>`;
-          }).join('')}</div>` : '';
+          const sourceItemId = (row.sourceItemIdsByName || {})[drop.monster] || '';
           const loc = (drop.locations || []).filter(Boolean).join('、');
-          return `<tr>
-            <td>${escHtml(drop.monster || '-')}</td>
-            <td>${loc ? escHtml(loc) : nested || '<span class="muted">沒有位置資料</span>'}</td>
-            <td>${escHtml(formatRate(drop.rate))}</td>
-          </tr>`;
-        }).join('')}</tbody>
-      </table></div>`;
+          const hasNested = sourceDrops.length && sourceItemId;
+          return `<div class="collectReverseCompactRow">
+            <div class="collectReverseCompactMain">
+              <div class="collectReverseCompactName">${escHtml(drop.monster || '-')}</div>
+              ${hasNested
+                ? `<button type="button" class="collectNestedReverseBtn" data-collect-nested-reverse="${escHtml(sourceItemId)}" data-collect-parent="${escHtml(row.itemId || '')}">掉落位置</button>`
+                : `<div class="collectReverseCompactLoc">${loc ? escHtml(loc) : '<span class="muted">沒有位置資料</span>'}</div>`}
+            </div>
+            <div class="collectReverseCompactRate">${escHtml(formatRate(drop.rate))}</div>
+          </div>`;
+        }).join('')}</div>`;
     }
     const shopSet = new Set(row?.shops || []);
     const drops = (row?.excelSources || []).filter(x => !shopSet.has(x));
@@ -420,6 +421,7 @@
   function renderLoaded(kind){
     state.active = labels[kind] ? kind : 'weapon';
     kind = state.active;
+    window.SZO_COLLECT_ACTIVE = kind;
     syncNav(kind);
     const rows = filteredRows(kind);
     const reader = by('reader');
@@ -456,6 +458,7 @@
   async function renderCollectBookPage(kind){
     if(!labels[kind]){
       state.active = 'menu';
+      window.SZO_COLLECT_ACTIVE = 'menu';
       window.v86LastView = 'collect';
       renderCollectMenu();
       try{ if(typeof closeDrawer === 'function') closeDrawer(); }catch(e){}
@@ -463,6 +466,7 @@
       return;
     }
     kind = labels[kind] ? kind : 'weapon';
+    window.SZO_COLLECT_ACTIVE = kind;
     state.query[kind] = '';
     window.v86LastView = 'collect';
     const reader = by('reader');
@@ -486,6 +490,17 @@
       ev.stopPropagation();
       state.returnScroll = window.scrollY || document.documentElement.scrollTop || 0;
       renderCollectDropDetail(reverseBtn.dataset.collectReverse);
+      return;
+    }
+    const nestedReverseBtn = ev.target && ev.target.closest ? ev.target.closest('[data-collect-nested-reverse]') : null;
+    if(nestedReverseBtn){
+      ev.preventDefault();
+      ev.stopPropagation();
+      const id = nestedReverseBtn.dataset.collectNestedReverse;
+      const parent = nestedReverseBtn.dataset.collectParent;
+      if(id && typeof window.showReverse === 'function'){
+        window.showReverse(id,'collect','collect:'+parent);
+      }
       return;
     }
     const backBtn = ev.target && ev.target.closest ? ev.target.closest('[data-collect-back]') : null;
@@ -534,5 +549,6 @@
     }
   }, true);
   window.renderCollectBookPage = renderCollectBookPage;
+  window.renderCollectDropDetail = renderCollectDropDetail;
   window.clearCollectBookSearch = clearCollectBookSearch;
 })();

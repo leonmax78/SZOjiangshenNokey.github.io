@@ -50,6 +50,28 @@ h1{font-size:24px;line-height:1.22;margin:0 0 8px}h2{font-size:19px;margin:0 0 1
 .quick{display:grid;grid-template-columns:1fr;gap:10px;margin-top:14px}.quick button{border:1px solid color-mix(in srgb,var(--accent2) 42%,var(--line));background:color-mix(in srgb,var(--panel2) 88%,var(--accent2));color:#fff;border-radius:16px;padding:14px;text-align:left;font-weight:1000}.quick small{display:block;color:var(--muted);font-weight:700;margin-top:4px}
 .kvGrid{display:grid;grid-template-columns:1fr;gap:8px}.kv{border:1px solid rgba(148,163,184,.22);background:color-mix(in srgb,var(--panel2) 88%,#000);border-radius:14px;padding:10px}.k{font-size:12px;color:color-mix(in srgb,var(--accent2) 72%,#eaf2ff);font-weight:900;margin-bottom:4px}.v{font-size:15px;word-break:break-word;line-height:1.45}
 .tableWrap{overflow:auto;border:1px solid var(--line);border-radius:16px;background:color-mix(in srgb,var(--panel2) 88%,#000);-webkit-overflow-scrolling:touch}table{border-collapse:collapse;width:100%;min-width:520px}th,td{border-bottom:1px solid rgba(148,163,184,.18);padding:10px;text-align:left;font-size:14px}th{color:#bfdbfe;background:color-mix(in srgb,var(--panel) 82%,var(--accent2));position:sticky;top:0}tr:last-child td{border-bottom:0}
+.reverseDetailCard{max-width:980px}
+.reverseBackActions{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.reverseBackActions .backBtn{margin:0}
+.reverseDropList{display:grid;gap:10px;margin-top:14px}
+.reverseDropCard{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:14px;width:100%;min-height:54px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:color-mix(in srgb,var(--panel2) 88%,#000);color:var(--text);text-align:left}
+.reverseDropCard:is(button){cursor:pointer}
+.reverseDropCard:is(button):hover,.reverseDropCardLinked:hover{border-color:var(--accent);background:color-mix(in srgb,var(--panel2) 76%,var(--accent2))}
+.reverseDropMain{display:flex;align-items:center;gap:12px;min-width:0}
+.reverseDropName{font-weight:800;font-size:16px;color:var(--text);line-height:1.35;min-width:8em}
+.reverseDropLoc{min-width:0;color:var(--muted);line-height:1.45;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.reverseDropRate{justify-self:end;color:#eef6ff;font-variant-numeric:tabular-nums;white-space:nowrap}
+.reverseDropLink,.reverseDropAction{border:0;background:transparent;color:var(--text);font:inherit;cursor:pointer;padding:0}
+.reverseDropLink:hover,.reverseDropAction:hover{text-decoration:underline}
+.reverseDropAction{display:inline-flex;align-items:center;min-height:34px;padding:6px 12px;border:1px solid var(--line);border-radius:999px;background:rgba(14,165,233,.12);color:#bfdbfe;font-weight:700;white-space:nowrap}
+.collectReverseCompactList{display:grid;gap:10px}
+.collectReverseCompactRow{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:14px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:color-mix(in srgb,var(--panel2) 88%,#000)}
+.collectReverseCompactMain{display:flex;align-items:center;gap:12px;min-width:0}
+.collectReverseCompactName{font-weight:800;min-width:8em}
+.collectReverseCompactLoc{min-width:0;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.collectReverseCompactRate{justify-self:end;color:#eef6ff;font-variant-numeric:tabular-nums;white-space:nowrap}
+.collectNestedReverseBtn{display:inline-flex;align-items:center;min-height:34px;padding:6px 12px;border:1px solid var(--line);border-radius:999px;background:rgba(14,165,233,.12);color:#bfdbfe;font-weight:800;white-space:nowrap;cursor:pointer}
+.collectNestedReverseBtn:hover{border-color:var(--accent);text-decoration:underline}
 .floatMenu{position:fixed;right:14px;bottom:calc(10px + var(--safe));z-index:45;border:0;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#04111f;border-radius:999px;padding:13px 16px;font-weight:1000;box-shadow:var(--shadow)}
 .authModal{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.72);padding:16px}.authBox{width:min(560px,100%);background:#111827;border:1px solid #475569;border-radius:18px;padding:18px}.authBox textarea{width:100%;min-height:120px;background:#0c1424;color:#fff;border:1px solid #3a4a68;border-radius:12px;padding:10px}.error{color:#fda4af;font-weight:900;margin-top:8px}
 .loadLine{margin:4px 0;color:#bfdbfe}.loadOk{color:var(--ok)}.loadBad{color:#fda4af}
@@ -689,6 +711,8 @@ h1{font-size:24px;line-height:1.22;margin:0 0 8px}h2{font-size:19px;margin:0 0 1
 .trainLevels{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.trainLevels label{margin:0 0 5px}.trainLevels input{min-height:44px;font-size:18px;text-align:center;padding:8px 10px}
 .trainNote{font-size:12px;color:#dbeafe;line-height:1.55;border-left:3px solid var(--accent);padding-left:8px;margin-top:8px}
 @media (max-width:700px){.trainingList{gap:8px}.trainCard{padding:10px;border-radius:16px}.trainName{font-size:15px}.trainBadge{font-size:11px;padding:4px 7px}.trainLevels input{font-size:18px;min-height:42px}.trainNeedBox{font-size:14px}.trainSub,.trainNote{font-size:11px}.tableWrap table{min-width:420px}}
+@media (max-width:700px){.reverseDetailCard{padding:14px}.reverseDropCard{grid-template-columns:1fr;gap:8px;padding:12px}.reverseDropMain{align-items:flex-start;flex-direction:column;gap:8px}.reverseDropName{min-width:0;font-size:15px}.reverseDropLoc{white-space:normal}.reverseDropRate{justify-self:start;font-size:14px}.reverseDropAction{min-height:32px;padding:5px 10px}}
+@media (max-width:700px){.collectReverseCompactRow{grid-template-columns:1fr;gap:8px}.collectReverseCompactMain{align-items:flex-start;flex-direction:column;gap:8px}.collectReverseCompactName{min-width:0}.collectReverseCompactLoc{white-space:normal}.collectReverseCompactRate{justify-self:start;font-size:14px}}
 
 
 /* v88s equipment compound */
