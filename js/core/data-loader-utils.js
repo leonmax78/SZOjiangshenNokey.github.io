@@ -100,17 +100,54 @@ function parseCSVLine(line){
 
 function parseLocations(text){
   const map = {};
-  for(const raw of String(text || '').replace(/^\ufeff/, '').split(/\r?\n/)){
-    const line = raw.trim();
-    if(!line || line.startsWith('//')) continue;
-    let p = line.includes(',') ? parseCSVLine(line) : line.split(/\t+/).map(x => x.trim());
+  const sep = '\u3001';
+  const nameCol = '\u602a\u7269\u540d\u7a31';
+  const mapCol = '\u5730\u5716\u540d\u7a31';
+  const idCol = '\u602a\u7269ID';
+  const floorCol = '\u7d42\u672b\u6a13\u5c64';
+  function formatLocation(loc, floor){
+    const tower = '\u7d42\u672b\u4e4b\u5854';
+    const romanSuffix = '\u2160\u2161\u2162\u2163\u2164\u2165\u2166\u2167\u2168\u2169';
+    loc = String(loc || '').trim().replace(/[\u300c\u300d]/g, '');
+    floor = String(floor || '').trim().replace(/[\u300c\u300d]/g, '');
+    if(loc.startsWith(tower)) loc = tower;
+    else loc = loc.replace(new RegExp(`[${romanSuffix}]+$`), '');
+    if(!floor) return loc;
+    const floors = floor.split(sep).map(x => x.trim()).filter(Boolean);
+    if(!floors.length) return loc;
+    return floors.map(part => `${loc}${part.startsWith('\u7b2c') ? part : '\u7b2c' + part}`).join(sep);
+  }
+
+  function addLocation(name, loc){
+    name = String(name || '').trim();
+    loc = String(loc || '').trim();
+    if(!name || !loc) return;
+    const existing = (map[name] || '').split(sep).map(x => x.trim()).filter(Boolean);
+    if(existing.includes(loc)) return;
+    existing.push(loc);
+    map[name] = existing.join(sep);
+  }
+  const lines = String(text || '').replace(/^\ufeff/, '').split(/\r?\n/).filter(raw => raw.trim() && !raw.trim().startsWith('//'));
+  if(!lines.length) return map;
+  const first = lines[0].includes(',') ? parseCSVLine(lines[0]) : lines[0].split(/\t+/).map(x => x.trim());
+  const headerMap = {};
+  first.forEach((name, idx) => { headerMap[String(name || '').trim()] = idx; });
+  if(headerMap[nameCol] !== undefined && headerMap[mapCol] !== undefined){
+    for(const raw of lines.slice(1)){
+      const p = raw.includes(',') ? parseCSVLine(raw) : raw.split(/\t+/).map(x => x.trim());
+      const get = key => p[headerMap[key]] || '';
+      if(get('StageID') === '347' && get(idCol) === '17986' && get('Pic') === '5678') continue;
+      addLocation(get(nameCol), formatLocation(get(mapCol), get(floorCol)));
+    }
+    return map;
+  }
+  for(const raw of lines){
+    let p = raw.includes(',') ? parseCSVLine(raw) : raw.split(/\t+/).map(x => x.trim());
     p = p.filter(Boolean);
     if(p.length < 2) continue;
     const name = p[0];
-    const loc = p.slice(1).join('、');
-    if(!name || name === '怪物名稱' || name.toLowerCase() === 'name') continue;
-    if(map[name] && !map[name].includes(loc)) map[name] += '、' + loc;
-    else map[name] = loc;
+    if(!name || name === nameCol || name.toLowerCase() === 'name') continue;
+    addLocation(name, formatLocation(p.slice(1).join(sep)));
   }
   return map;
 }

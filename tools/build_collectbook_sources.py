@@ -148,10 +148,56 @@ def load_locations(path: Path) -> dict[str, list[str]]:
     loc_by_name: dict[str, list[str]] = {}
     if not path.exists():
         return loc_by_name
+
+    def add_location(name: str, loc: str) -> None:
+        name = clean(name)
+        loc = clean(loc)
+        if not name or not loc:
+            return
+        loc_by_name.setdefault(name, [])
+        if loc not in loc_by_name[name]:
+            loc_by_name[name].append(loc)
+
+    def format_location(loc: str, floor: str = "") -> str:
+        sep = "、"
+        tower = "終末之塔"
+        roman_suffix = "ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩ"
+        loc = clean(loc).replace("「", "").replace("」", "")
+        floor = clean(floor).replace("「", "").replace("」", "")
+        if loc.startswith(tower):
+            loc = tower
+        else:
+            loc = loc.rstrip(roman_suffix)
+        if not floor:
+            return loc
+        floors = [x.strip() for x in floor.split(sep) if x.strip()]
+        if not floors:
+            return loc
+        formatted = []
+        for part in floors:
+            if not part.startswith("第"):
+                part = "第" + part
+            formatted.append(f"{loc}{part}")
+        return sep.join(formatted)
+
+
     with path.open("r", encoding="utf-8-sig", newline="") as handle:
-        for row in csv.reader(handle):
-            if len(row) >= 2 and clean(row[0]):
-                loc_by_name.setdefault(clean(row[0]), []).append(clean(row[1]))
+        reader = csv.reader(handle)
+        rows = list(reader)
+    if not rows:
+        return loc_by_name
+    header = [clean(x) for x in rows[0]]
+    header_map = {name: idx for idx, name in enumerate(header)}
+    if "怪物名稱" in header_map and "地圖名稱" in header_map:
+        for row_values in rows[1:]:
+            row = {name: clean(row_values[idx]) if idx < len(row_values) else "" for name, idx in header_map.items()}
+            if row.get("StageID") == "347" and row.get("怪物ID") == "17986" and row.get("Pic") == "5678":
+                continue
+            add_location(row.get("怪物名稱", ""), format_location(row.get("地圖名稱", ""), row.get("終末樓層", "")))
+        return {name: uniq(values) for name, values in loc_by_name.items()}
+    for row in rows:
+        if len(row) >= 2:
+            add_location(row[0], row[1])
     return {name: uniq(values) for name, values in loc_by_name.items()}
 
 

@@ -435,6 +435,32 @@
     const input = by('collectSearch');
     if(input) input.focus({preventScroll:true});
   }
+  function renderCollectMenu(){
+    state.active = 'menu';
+    syncNav('menu');
+    const reader = by('reader');
+    if(!reader) return;
+    reader.innerHTML = `<section class="card collectPage">
+      <div class="collectHeader">
+        <h1>??????</h1>
+        <div class="shopCount">???????</div>
+      </div>
+      <div class="collectList">
+        <button type="button" class="collectRow" data-collect-open="weapon">
+          <div class="collectItemHead"><div><div class="collectName">????</div><div class="collectCategory">????????</div></div><div class="collectScore">?</div></div>
+        </button>
+        <button type="button" class="collectRow" data-collect-open="artifact">
+          <div class="collectItemHead"><div><div class="collectName">????</div><div class="collectCategory">???????</div></div><div class="collectScore">?</div></div>
+        </button>
+        <button type="button" class="collectRow" data-collect-open="recipe">
+          <div class="collectItemHead"><div><div class="collectName">????</div><div class="collectCategory">???????</div></div><div class="collectScore">?</div></div>
+        </button>
+        <button type="button" class="collectRow" data-collect-open="beast">
+          <div class="collectItemHead"><div><div class="collectName">????</div><div class="collectCategory">???????</div></div><div class="collectScore">?</div></div>
+        </button>
+      </div>
+    </section>`;
+  }
   function renderCollectResults(){
     const kind = state.active;
     const rows = filteredRows(kind);
@@ -444,14 +470,15 @@
     if(results) results.innerHTML = list(kind, rows);
   }
   async function renderCollectBookPage(kind){
-    kind = labels[kind] ? kind : 'weapon';
-    state.query[kind] = '';
+    const menuMode = !labels[kind];
+    if(!menuMode) state.query[kind] = '';
     window.v86LastView = 'collect';
     const reader = by('reader');
     if(reader) reader.innerHTML = '<section class="card collectPage"><h1>武冠收錄資料</h1><div class="muted">資料載入中...</div></section>';
     try{
       await loadData();
-      renderLoaded(kind);
+      if(menuMode) renderCollectMenu();
+      else renderLoaded(kind);
     }catch(err){
       if(reader) reader.innerHTML = '<section class="card collectPage"><h1>武冠收錄資料</h1><div class="empty">武冠收錄資料載入失敗，請重新整理一次。</div></section>';
     }

@@ -249,20 +249,68 @@ def parse_locations(path: Path) -> dict:
         return {}
     text = read_text(path)
     out: dict[str, str] = {}
-    for parts in csv.reader(text.splitlines()):
+    sep = "、"
+
+    name_col = "怪物名稱"
+    map_col = "地圖名稱"
+    id_col = "怪物ID"
+    floor_col = "終末樓層"
+
+    def format_location(loc: str, floor: str = "") -> str:
+        sep = "、"
+        tower = "終末之塔"
+        roman_suffix = "ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩ"
+        loc = str(loc or "").strip().replace("「", "").replace("」", "")
+        floor = str(floor or "").strip().replace("「", "").replace("」", "")
+        if loc.startswith(tower):
+            loc = tower
+        else:
+            loc = loc.rstrip(roman_suffix)
+        if not floor:
+            return loc
+        floors = [x.strip() for x in floor.split(sep) if x.strip()]
+        if not floors:
+            return loc
+        formatted = []
+        for part in floors:
+            if not part.startswith("第"):
+                part = "第" + part
+            formatted.append(f"{loc}{part}")
+        return sep.join(formatted)
+
+
+    def add_location(name: str, loc: str) -> None:
+        name = str(name or "").strip()
+        loc = str(loc or "").strip()
+        if not name or not loc:
+            return
+        existing = [x.strip() for x in out.get(name, "").split(sep) if x.strip()]
+        if loc in existing:
+            return
+        out[name] = sep.join([*existing, loc])
+
+    rows = list(csv.reader(text.splitlines()))
+    if not rows:
+        return out
+    header = [str(x).strip() for x in rows[0]]
+    header_map = {name: idx for idx, name in enumerate(header)}
+    if name_col in header_map and map_col in header_map:
+        for parts in rows[1:]:
+            row = {name: (parts[idx].strip() if idx < len(parts) else "") for name, idx in header_map.items()}
+            if row.get("StageID") == "347" and row.get(id_col) == "17986" and row.get("Pic") == "5678":
+                continue
+            add_location(row.get(name_col, ""), format_location(row.get(map_col, ""), row.get(floor_col, "")))
+        return out
+
+    for parts in rows:
         cells = [str(x).strip() for x in parts if str(x).strip()]
         if len(cells) < 2:
             continue
         name = cells[0]
-        if name.lower() == "name" or name == "怪物名稱":
+        if name.lower() == "name" or name == name_col:
             continue
-        loc = "、".join(cells[1:])
-        if name in out and loc not in out[name]:
-            out[name] += "、" + loc
-        else:
-            out[name] = loc
+        add_location(name, format_location(sep.join(cells[1:])))
     return out
-
 
 def build_drop_reverse(monsters: list[dict]) -> dict:
     reverse: dict[str, list[dict]] = {}

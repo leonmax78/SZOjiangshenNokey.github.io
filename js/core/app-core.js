@@ -285,7 +285,7 @@ async function setView(view){
  else if(view==='jiang'){openJiangMenuOnly();}
  else if(view==='monster'){showPageLoading(viewLoadingLabel(view)); await ensureMonsterPageLoaded(); renderMonsterPage(); closeDrawer(); window.scrollTo({top:0,behavior:'smooth'});}
  else if(view==='item'){openItemMenuOnly(); showPageLoading('道具查詢'); await ensureItemPageLoaded(); await renderItemPage('item'); closeDrawer(); window.scrollTo({top:0,behavior:'smooth'});}
- else if(view==='collect'){showPageLoading(viewLoadingLabel(view)); await ensureCollectPageLoaded(); if(typeof renderCollectBookPage==='function')renderCollectBookPage('weapon');}
+ else if(view==='collect'){showPageLoading(viewLoadingLabel(view)); await ensureCollectPageLoaded(); if(typeof renderCollectBookPage==='function')renderCollectBookPage('menu');}
  else if(view==='shop'){showPageLoading(viewLoadingLabel(view)); await ensureShopPageLoaded(); if(typeof renderShopPage==='function')renderShopPage();}
  else if(view==='downloads'){showPageLoading(viewLoadingLabel(view)); await ensureDownloadsPageLoaded(); if(typeof renderDownloadsPage==='function')renderDownloadsPage(); closeDrawer(); window.scrollTo({top:0,behavior:'smooth'});}
  else if(view==='soul'){

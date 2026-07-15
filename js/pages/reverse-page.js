@@ -19,6 +19,27 @@
     try{ if(typeof window.SZO_SYNC_DATA==='function') window.SZO_SYNC_DATA(); }catch(e){console.warn('SZO_SYNC_DATA failed',e)}
     return window.SZO_DATA || {};
   }
+  let reverseDataPromise=null;
+  async function ensureReverseDataLoaded(){
+    if(reverseDataPromise)return reverseDataPromise;
+    reverseDataPromise=(async function(){
+      if(typeof window.ensureLookupDataLoaded==='function'){
+        try{await window.ensureLookupDataLoaded();}catch(e){}
+      }
+      const d=sync();
+      if((!d.locations || !Object.keys(d.locations||{}).length) && typeof loadDataBundle==='function'){
+        try{
+          const locs=await loadDataBundle('locations');
+          if(locs && typeof locs==='object' && !Array.isArray(locs)){
+            try{monsterLocations=locs;}catch(e){}
+            window.monsterLocations=locs;
+          }
+        }catch(e){}
+      }
+      sync();
+    })();
+    try{await reverseDataPromise;}finally{reverseDataPromise=null;}
+  }
   function getItems(){
     const d=sync();
     if(Array.isArray(d.items) && d.items.length)return d.items;
@@ -80,13 +101,15 @@
     renderReverseResults(arr,src.length);
   };
 
-  window.showReverse=function(id,returnView){
+  window.showReverse=async function(id,returnView){
     const itemId=String(id||'').trim();
     const backView=returnView||'reverse';
+    const reader=by('reader');
+    if(reader)reader.innerHTML='<section class="card"><h1>掉落反查</h1><div class="muted">資料讀取中...</div></section>';
+    await ensureReverseDataLoaded();
     const itemIndexObj=getItemIndex();
     const revObj=getDropReverse();
     const it=itemIndexObj[itemId] || getItems().find(function(x){return String(x?.ID||'').trim()===itemId});
-    const reader=by('reader');
     if(!it){
       if(reader)reader.innerHTML='<section class="card"><button class="backBtn" onclick="goBackToPrevious(\''+escHtml(backView)+'\')">← 返回查詢</button><h1>找不到道具</h1><div class="empty">ID '+escHtml(itemId)+' 不在 ITEM.INI 裡。</div></section>';
       return;
