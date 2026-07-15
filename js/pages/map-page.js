@@ -25,7 +25,7 @@
   async function ensureMapDataLoaded(){
     if(mapData) return mapData;
     if(!mapDataPromise){
-      mapDataPromise = fetch('data/stage_maps.json?v=' + encodeURIComponent(document.body?.dataset?.version || 'dev'), { cache: 'no-store' })
+      mapDataPromise = fetch('data/stage_maps.json?v=' + encodeURIComponent(document.body?.dataset?.version || 'dev'), { cache: 'force-cache' })
         .then(res => {
           if(!res.ok) throw new Error('地圖資料讀取失敗');
           return res.json();
@@ -41,7 +41,7 @@
   async function ensureMapShopDataLoaded(){
     if(shopData) return shopData;
     if(!shopDataPromise){
-      shopDataPromise = fetch('data/shop_all.json?v=' + encodeURIComponent(document.body?.dataset?.version || 'dev'), { cache: 'no-store' })
+      shopDataPromise = fetch('data/shop_all.json?v=' + encodeURIComponent(document.body?.dataset?.version || 'dev'), { cache: 'force-cache' })
         .then(res => {
           if(!res.ok) throw new Error('shop data load failed');
           return res.json();
@@ -55,7 +55,7 @@
   }
 
   async function fetchMapJson(url){
-    const res = await fetch(url + '?v=' + encodeURIComponent(document.body?.dataset?.version || 'dev'), { cache: 'no-store' });
+    const res = await fetch(url + '?v=' + encodeURIComponent(document.body?.dataset?.version || 'dev'), { cache: 'force-cache' });
     if(!res.ok) throw new Error(url + ' load failed');
     return res.json();
   }
@@ -100,6 +100,13 @@
       });
     }
     return itemDataPromise;
+  }
+
+
+  async function preloadStageMapData(){
+    try{ await ensureMapDataLoaded(); }catch(e){}
+    try{ await ensureMapMonsterDataLoaded(); }catch(e){}
+    try{ await ensureMapShopDataLoaded(); }catch(e){}
   }
 
   function shopById(shopId){

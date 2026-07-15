@@ -49,7 +49,7 @@
     catch(e){ return String(row?.Name || row?.name || '').trim(); }
   }
   async function fetchJson(url){
-    const res = await fetch(url + '?v=' + encodeURIComponent(document.body?.dataset?.version || 'dev'), { cache: 'no-store' });
+    const res = await fetch(url + '?v=' + encodeURIComponent(document.body?.dataset?.version || 'dev'), { cache: 'force-cache' });
     if(!res.ok) throw new Error(url + ' load failed');
     return res.json();
   }
@@ -172,32 +172,37 @@
       return a.order - b.order;
     });
   }
-  function itemSuggestionRows(limit = 10){
-    const q = state.query.trim().toLowerCase();
-    if(!q) return [];
+  function itemSuggestionRows(limit = 12){
+    const rawQuery = state.query.trim();
+    const q = rawQuery.toLowerCase();
+    if(!q || state.exactItemName) return [];
     const rows = new Map();
     for(const loc of shopLocations()){
       for(const item of loc.shop?.items || []){
-        if(!itemHasMode(item, state.mode)) continue;
         const name = String(item.name || '').trim();
         if(!name || !name.toLowerCase().includes(q)) continue;
-        const priceValue = Number(state.mode === 'buy' ? item.buyPrice : item.sellPrice);
-        const current = rows.get(name) || { name, count: 0, bestPrice: -1, lowPrice: Infinity };
+        const buyPrice = Number(item.buyPrice);
+        const sellPrice = Number(item.sellPrice);
+        const current = rows.get(name) || { name, count: 0, bestPrice: -1, lowPrice: Infinity, modeHits: 0 };
         current.count += 1;
-        if(Number.isFinite(priceValue)){
-          current.bestPrice = Math.max(current.bestPrice, priceValue);
-          current.lowPrice = Math.min(current.lowPrice, priceValue);
-        }
+        if(itemHasMode(item, state.mode)) current.modeHits += 1;
+        if(Number.isFinite(buyPrice)) current.bestPrice = Math.max(current.bestPrice, buyPrice);
+        if(Number.isFinite(sellPrice)) current.lowPrice = Math.min(current.lowPrice, sellPrice);
         rows.set(name, current);
       }
     }
-    if(rows.size <= 1 && rows.has(state.query.trim())) return [];
+    if(rows.size <= 1 && rows.has(rawQuery)) return [];
     return [...rows.values()].sort((a,b) => {
       const an = a.name.toLowerCase();
       const bn = b.name.toLowerCase();
+      const aExact = an === q;
+      const bExact = bn === q;
+      if(aExact !== bExact) return aExact ? -1 : 1;
       const aStarts = an.startsWith(q);
       const bStarts = bn.startsWith(q);
       if(aStarts !== bStarts) return aStarts ? -1 : 1;
+      if(a.name.length !== b.name.length) return a.name.length - b.name.length;
+      if(a.modeHits !== b.modeHits) return b.modeHits - a.modeHits;
       const priceSort = state.mode === 'buy' ? b.bestPrice - a.bestPrice : a.lowPrice - b.lowPrice;
       return priceSort || b.count - a.count || a.name.localeCompare(b.name, 'zh-Hant');
     }).slice(0, limit);
@@ -518,6 +523,7 @@
   }, true);
 
   window.renderShopPage = renderShopPage;
+  window.preloadShopData = loadShopData;
   window.showShopItem = showShopItem;
   window.openShopLocation = openShopLocation;
 })();

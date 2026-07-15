@@ -155,6 +155,16 @@ function warmLookupDataInBackground(){
  scheduleIdleTask(()=>ensureLookupDataLoaded().then(()=>{if(currentView==='home')renderHome();}),1800);
 }
 
+function warmHeavyLookupPages(){
+ if(navigator.connection&&navigator.connection.saveData)return;
+ scheduleIdleTask(()=>{
+  Promise.all([
+   loadScriptGroupOnce('page_map').then(()=>window.preloadStageMapData&&window.preloadStageMapData()).catch(()=>{}),
+   loadScriptGroupOnce('page_shop').then(()=>window.preloadShopData&&window.preloadShopData()).catch(()=>{})
+  ]).catch(()=>{});
+ },2600);
+}
+
 // V210d: keep shared data references synced for extracted modules.
 function SZO_SYNC_DATA(){
   try{
@@ -1515,5 +1525,7 @@ async function init(){
  adoptPreloadedMonsterBundle();
  renderHome();
  const ok=initAuth();
+ warmLookupDataInBackground();
+ warmHeavyLookupPages();
 }
 window.SZOAppInit = init;
