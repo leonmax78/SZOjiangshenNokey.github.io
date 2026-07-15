@@ -156,13 +156,13 @@ function warmLookupDataInBackground(){
 }
 
 function warmHeavyLookupPages(){
- if(navigator.connection&&navigator.connection.saveData)return;
- scheduleIdleTask(()=>{
-  Promise.all([
-   loadScriptGroupOnce('page_map').then(()=>window.preloadStageMapData&&window.preloadStageMapData()).catch(()=>{}),
-   loadScriptGroupOnce('page_shop').then(()=>window.preloadShopData&&window.preloadShopData()).catch(()=>{})
-  ]).catch(()=>{});
- },2600);
+  if(navigator.connection&&navigator.connection.saveData)return;
+  scheduleIdleTask(()=>{
+   Promise.all([
+    loadScriptGroupOnce('page_map').then(()=>window.preloadStageMapData&&window.preloadStageMapData()).catch(()=>{}),
+    loadScriptGroupOnce('page_shop').then(()=>window.preloadShopData&&window.preloadShopData()).catch(()=>{})
+   ]).catch(()=>{});
+  },5200);
 }
 
 // V210d: keep shared data references synced for extracted modules.

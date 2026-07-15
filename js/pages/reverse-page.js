@@ -20,7 +20,7 @@
   async function ensureReverseMapData(){
     if(reverseMapMonsterIds)return reverseMapMonsterIds;
     if(!reverseMapPromise){
-      reverseMapPromise=fetch('data/stage_maps.json?v='+encodeURIComponent(document.body?.dataset?.version||'dev'),{cache:'no-store'})
+      reverseMapPromise=fetch('data/stage_maps.json?v='+encodeURIComponent(document.body?.dataset?.version||'dev'),{cache:'force-cache'})
         .then(function(res){if(!res.ok)throw new Error('stage map data load failed');return res.json();})
         .then(function(data){
           const ids=new Set();
@@ -225,7 +225,7 @@
       }catch(e){}
     }
     sync();
-    await ensureReverseMapData();
+    ensureReverseMapData().catch(function(){});
   }
   function getItems(){
     const d=sync();

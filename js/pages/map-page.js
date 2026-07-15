@@ -105,7 +105,6 @@
 
   async function preloadStageMapData(){
     try{ await ensureMapDataLoaded(); }catch(e){}
-    try{ await ensureMapMonsterDataLoaded(); }catch(e){}
     try{ await ensureMapShopDataLoaded(); }catch(e){}
   }
 
