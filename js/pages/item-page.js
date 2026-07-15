@@ -257,59 +257,27 @@ function hasReverseData(){
  const d=window.SZO_DATA||{};
  return (d.dropReverse&&Object.keys(d.dropReverse).length)||(window.dropReverse&&Object.keys(window.dropReverse).length);
 }
+function hasReverseSearchData(){
+ return hasItemSearchIndex() || hasItemData();
+}
 
 async function ensureReverseBundlesLoaded(){
- if(hasReverseData())return true;
+ if(hasReverseSearchData())return true;
  try{
    if(typeof loadDataBundle==='function'){
-    const [itemData,monsterData,reverseData]=await Promise.all([
-     loadDataBundle('items'),
-     loadDataBundle('monsters'),
-     loadDataBundle('drop_reverse')
-    ]);
+    const searchData=await loadDataBundle('search_items');
+    if(searchData&&Array.isArray(searchData.items)&&searchData.items.length)return true;
+    const itemData=await loadDataBundle('items');
     if(Array.isArray(itemData)&&itemData.length){
      items=itemData;
      itemIndex={};
      for(const it of items)itemIndex[String(it.ID).trim()]=it;
+     if(typeof window.SZO_SYNC_DATA==='function')window.SZO_SYNC_DATA();
+     return true;
     }
-    if(Array.isArray(monsterData)&&monsterData.length){
-     monsters=monsterData;
-     const monsterById={};
-     for(const m of monsters)monsterById[String(m.ID).trim()]=m;
-     dropReverse={};
-     if(reverseData&&typeof reverseData==='object'&&!Array.isArray(reverseData)){
-      for(const [itemId,rows] of Object.entries(reverseData)){
-       dropReverse[String(itemId)]=(rows||[]).map(row=>{
-        const monster=monsterById[String(row.monsterId)]||{ID:row.monsterId,Name:row.monsterName};
-        return {monster,rate:Number(row.rate)||0,weight:Number(row.weight)||0};
-       }).filter(x=>x.monster);
-      }
-     }else{
-      for(const m of monsters){
-       for(const [iid,rate] of parseDrop(m.DropItem)){
-        if(!dropReverse[iid])dropReverse[iid]=[];
-        dropReverse[iid].push({monster:m,rate});
-       }
-      }
-     }
-     for(const iid of Object.keys(dropReverse)){
-      const map=new Map();
-      for(const row of dropReverse[iid]){
-       const key=String(row.monster?.ID||nameOf(row.monster)||'').trim();
-       if(!map.has(key)||(row.rate||0)>(map.get(key).rate||0))map.set(key,row);
-      }
-      dropReverse[iid]=[...map.values()].sort((a,b)=>(b.rate||0)-(a.rate||0));
-     }
-    }
-    if(typeof window.SZO_SYNC_DATA==='function')window.SZO_SYNC_DATA();
-    if(hasReverseData())return true;
    }
   }catch(e){console.warn('ensureReverseBundlesLoaded failed',e)}
- if(typeof window.ensureLookupDataLoaded==='function'){
-  const ok=await window.ensureLookupDataLoaded();
-  if(ok)return hasReverseData();
- }
- return hasReverseData();
+ return hasReverseSearchData();
 }
 
 function ensureItemOptionalData(id){
@@ -383,8 +351,8 @@ async function renderItemPage(tab='item'){
    const loader=typeof window.ensureItemSearchIndexLoaded==='function'?window.ensureItemSearchIndexLoaded:(typeof window.ensureSearchIndexLoaded==='function'?window.ensureSearchIndexLoaded:window.ensureLookupDataLoaded);
    if(typeof loader==='function')loader().then(ok=>{if(ok)renderItemPage('item');else byId('itemResults').innerHTML='<div class="empty">?????????</div>';});
   }
- }else if(activeReverse){
-  if(hasReverseData())searchReverseItems();
+  }else if(activeReverse){
+   if(hasReverseSearchData())searchReverseItems();
   else{
    byId('reverseResults').innerHTML='<div class="muted">資料載入中，請稍等。</div>';
    ensureReverseBundlesLoaded().then(ok=>{if(ok)searchReverseItems();else byId('reverseResults').innerHTML='<div class="empty">反查資料載入失敗。</div>';});

@@ -39,6 +39,8 @@
   function hasMapPoint(monsterId){
     return !!(reverseMapMonsterIds && reverseMapMonsterIds.has(String(monsterId||'')));
   }
+  window.ensureReverseMapData=ensureReverseMapData;
+  window.hasReverseMapPoint=hasMapPoint;
   function sync(){
     try{ if(typeof window.SZO_SYNC_DATA==='function') window.SZO_SYNC_DATA(); }catch(e){console.warn('SZO_SYNC_DATA failed',e)}
     return window.SZO_DATA || {};
@@ -47,8 +49,10 @@
   async function ensureReverseDataLoaded(){
     if(reverseDataPromise)return reverseDataPromise;
     reverseDataPromise=(async function(){
-      if(typeof window.ensureLookupDataLoaded==='function'){
-        try{await window.ensureLookupDataLoaded();}catch(e){}
+      if(typeof window.ensureReverseBundlesLoaded==='function'){
+        try{await window.ensureReverseBundlesLoaded();}catch(e){}
+      }else if(typeof loadDataBundle==='function'){
+        try{await loadDataBundle('search_items');}catch(e){}
       }
       const d=sync();
       if((!d.locations || !Object.keys(d.locations||{}).length) && typeof loadDataBundle==='function'){
@@ -64,11 +68,21 @@
     })();
     try{await reverseDataPromise;}finally{reverseDataPromise=null;}
   }
+  function getSearchItems(){
+    const bundles=window.SZO_DATA_BUNDLES||{};
+    const data=bundles.search_items||bundles.search_index;
+    return data&&Array.isArray(data.items)?data.items:[];
+  }
+  function liteItem(row){
+    return {ID:String(row.id||row.ID||''),Name:row.name||row.Name||'',Type:row.type||row.Type||'',Level:row.level||row.Level||''};
+  }
   function getItems(){
     const d=sync();
     if(Array.isArray(d.items) && d.items.length)return d.items;
     try{ if(Array.isArray(items) && items.length)return items; }catch(e){}
     if(Array.isArray(window.items) && window.items.length)return window.items;
+    const searchRows=getSearchItems();
+    if(searchRows.length)return searchRows.map(liteItem);
     return [];
   }
   function getItemIndex(){
@@ -195,6 +209,7 @@
 // V406: compact reverse detail cards.  Bag-like pseudo monsters are easier to read
 // as "drop location" drill-down links instead of a very wide nested table.
 (function(){
+  let reverseShardPromises={};
   function by(id){return document.getElementById(id)}
   function escHtml(s){
     if(typeof esc==='function')return esc(s);
@@ -227,13 +242,25 @@
       }catch(e){}
     }
     sync();
-    ensureReverseMapData().catch(function(){});
+    if(typeof window.ensureReverseMapData==='function')window.ensureReverseMapData().catch(function(){});
   }
   function getItems(){
     const d=sync();
     if(Array.isArray(d.items) && d.items.length)return d.items;
     try{ if(Array.isArray(items) && items.length)return items; }catch(e){}
     return Array.isArray(window.items) ? window.items : [];
+  }
+  function getSearchItems(){
+    const bundles=window.SZO_DATA_BUNDLES||{};
+    const data=bundles.search_items||bundles.search_index;
+    return data&&Array.isArray(data.items)?data.items:[];
+  }
+  function itemLiteById(id){
+    const itemId=String(id||'').trim();
+    const full=getItemIndex()[itemId] || getItems().find(function(x){return String(x?.ID||x?.id||'').trim()===itemId});
+    if(full)return full;
+    const row=getSearchItems().find(function(x){return String(x?.id||x?.ID||'').trim()===itemId});
+    return row?{ID:String(row.id||row.ID||''),Name:row.name||row.Name||'',Type:row.type||row.Type||'',Level:row.level||row.Level||''}:null;
   }
   function getItemIndex(){
     const d=sync();
@@ -250,8 +277,54 @@
   function itemByName(name){
     const target=String(name||'').trim();
     if(!target)return null;
-    return getItems().find(function(it){return nameOfSafe(it)===target;}) || null;
+    return getItems().find(function(it){return nameOfSafe(it)===target;})
+      || getSearchItems().map(function(row){return {ID:String(row.id||row.ID||''),Name:row.name||row.Name||'',Type:row.type||row.Type||'',Level:row.level||row.Level||''};}).find(function(it){return nameOfSafe(it)===target;})
+      || null;
   }
+  async function ensureReverseItemDataLoaded(itemId){
+    const id=String(itemId||'').trim();
+    if(!id)return false;
+    if(getDropReverse()[id])return true;
+    const version=encodeURIComponent(document.body?.dataset?.version||'dev');
+    const prefix=(id.slice(0,3)||'misc').replace(/[^0-9A-Za-z_-]/g,'');
+    if(!reverseShardPromises[prefix]){
+      reverseShardPromises[prefix]=fetch('data/drop_reverse_shards/'+prefix+'.json?v='+version,{cache:'force-cache'})
+        .then(function(res){if(!res.ok)return {};return res.json();})
+        .catch(function(){return {};});
+    }
+    const tasks=[reverseShardPromises[prefix]];
+    if(typeof loadDataBundle==='function'){
+      if(!getSearchItems().length)tasks.push(loadDataBundle('search_items').catch(function(){return null;}));
+      tasks.push(loadDataBundle('locations').catch(function(){return null;}));
+    }
+    const results=await Promise.all(tasks);
+    const shard=results[0]||{};
+    try{
+      if(typeof dropReverse==='undefined' || !dropReverse)dropReverse={};
+    }catch(e){}
+    const target=shard[id]||[];
+    const mapped=(target||[]).map(function(row){
+      return {monster:{ID:row.monsterId,Name:row.monsterName},monsterId:row.monsterId,monsterName:row.monsterName,rate:Number(row.rate)||0,weight:Number(row.weight)||0};
+    });
+    try{dropReverse[id]=mapped;}catch(e){}
+    window.dropReverse=window.dropReverse||{};
+    window.dropReverse[id]=mapped;
+    window.SZO_DATA=window.SZO_DATA||{};
+    window.SZO_DATA.dropReverse=window.SZO_DATA.dropReverse||{};
+    window.SZO_DATA.dropReverse[id]=mapped;
+    const lite=itemLiteById(id);
+    if(lite){
+      try{itemIndex=itemIndex||{}; itemIndex[id]=itemIndex[id]||lite;}catch(e){}
+      window.itemIndex=window.itemIndex||{};
+      window.itemIndex[id]=window.itemIndex[id]||lite;
+      window.SZO_DATA.itemIndex=window.SZO_DATA.itemIndex||{};
+      window.SZO_DATA.itemIndex[id]=window.SZO_DATA.itemIndex[id]||lite;
+    }
+    sync();
+    if(typeof window.ensureReverseMapData==='function')window.ensureReverseMapData().catch(function(){});
+    return true;
+  }
+  window.ensureReverseItemDataLoaded=ensureReverseItemDataLoaded;
   function sourceItemForRow(rowName, monsterId){
     const sameName=itemByName(rowName);
     if(!sameName)return null;
@@ -282,7 +355,7 @@
         + '</div>';
     }
     const loc=locSafe(name)||'??????';
-    const locHtml=mid && hasMapPoint(mid)
+    const locHtml=mid && typeof window.hasReverseMapPoint==='function' && window.hasReverseMapPoint(mid)
       ? '<button type="button" class="reverseDropLoc reverseMapLink" data-reverse-map-monster="'+escHtml(mid)+'" data-reverse-map-name="'+escHtml(name)+'">'+escHtml(loc)+'</button>'
       : '<div class="reverseDropLoc">'+escHtml(loc)+'</div>';
     return '<div class="reverseDropCard reverseDropCardMonster">'
@@ -299,8 +372,8 @@
     const backView=returnView||'reverse';
     const reader=by('reader');
     if(reader)reader.innerHTML='<section class="card"><h1>掉落反查</h1><div class="muted">資料讀取中...</div></section>';
-    await ensureReverseDataLoaded();
-    const it=getItemIndex()[itemId] || getItems().find(function(x){return String(x?.ID||x?.id||'').trim()===itemId});
+    await ensureReverseItemDataLoaded(itemId);
+    const it=itemLiteById(itemId);
     if(!it){
       if(reader)reader.innerHTML='<section class="card"><button class="backBtn" onclick="goBackToPrevious(\''+escHtml(backView)+'\')">← 返回查詢</button><h1>找不到道具</h1><div class="empty">ID '+escHtml(itemId)+' 不在 ITEM.INI 資料內。</div></section>';
       return;
