@@ -211,7 +211,9 @@
     return window.SZO_DATA || {};
   }
   async function ensureReverseDataLoaded(){
-    if(typeof window.ensureLookupDataLoaded==='function'){
+    if(typeof window.ensureReverseBundlesLoaded==='function'){
+      try{await window.ensureReverseBundlesLoaded();}catch(e){}
+    }else if(typeof window.ensureLookupDataLoaded==='function'){
       try{await window.ensureLookupDataLoaded();}catch(e){}
     }
     const d=sync();

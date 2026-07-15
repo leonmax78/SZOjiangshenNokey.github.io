@@ -486,5 +486,6 @@ window.renderItemPage=renderItemPage;
 window.openItemMenuOnly=openItemMenuOnly;
 window.setItemSub=setItemSub;
 window.searchItems=searchItems;
+window.ensureReverseBundlesLoaded=ensureReverseBundlesLoaded;
 window.clearItemSearchFilters=clearItemSearchFilters;
 window.showItem=showItem;
