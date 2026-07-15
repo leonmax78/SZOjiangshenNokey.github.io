@@ -15,7 +15,17 @@
     try{return (typeof itemTypeName==='function'?itemTypeName(it?.Type):'') || it?.Type || ''}catch(e){return it?.Type||''}
   }
   function locSafe(monsterName){
-    try{return typeof locOf==='function'?locOf(monsterName):''}catch(e){return ''}
+    const key=String(monsterName||'').trim();
+    if(!key)return '';
+    const sources=[
+      window.SZO_DATA&&window.SZO_DATA.locations,
+      window.SZO_DATA_BUNDLES&&window.SZO_DATA_BUNDLES.locations,
+      window.monsterLocations
+    ];
+    for(const src of sources){
+      if(src && typeof src==='object' && !Array.isArray(src) && src[key])return src[key];
+    }
+    try{return typeof locOf==='function'?locOf(key):''}catch(e){return ''}
   }
   async function ensureReverseMapData(){
     if(reverseMapMonsterIds)return reverseMapMonsterIds;
@@ -219,7 +229,17 @@
     try{return typeof nameOf==='function'?nameOf(o):String(o?.Name||o?.name||'').trim()}catch(e){return String(o?.Name||o?.name||'').trim()}
   }
   function locSafe(monsterName){
-    try{return typeof locOf==='function'?locOf(monsterName):''}catch(e){return ''}
+    const key=String(monsterName||'').trim();
+    if(!key)return '';
+    const sources=[
+      window.SZO_DATA&&window.SZO_DATA.locations,
+      window.SZO_DATA_BUNDLES&&window.SZO_DATA_BUNDLES.locations,
+      window.monsterLocations
+    ];
+    for(const src of sources){
+      if(src && typeof src==='object' && !Array.isArray(src) && src[key])return src[key];
+    }
+    try{return typeof locOf==='function'?locOf(key):''}catch(e){return ''}
   }
   function sync(){
     try{ if(typeof window.SZO_SYNC_DATA==='function') window.SZO_SYNC_DATA(); }catch(e){console.warn('SZO_SYNC_DATA failed',e)}
@@ -281,10 +301,33 @@
       || getSearchItems().map(function(row){return {ID:String(row.id||row.ID||''),Name:row.name||row.Name||'',Type:row.type||row.Type||'',Level:row.level||row.Level||''};}).find(function(it){return nameOfSafe(it)===target;})
       || null;
   }
+  function applyReverseLocations(locs){
+    if(!locs || typeof locs!=='object' || Array.isArray(locs))return false;
+    const vals=Object.values(locs);
+    if(!vals.length || !vals.some(function(v){return typeof v==='string';}))return false;
+    try{monsterLocations=locs;}catch(e){}
+    window.monsterLocations=locs;
+    window.SZO_DATA=window.SZO_DATA||{};
+    window.SZO_DATA.locations=locs;
+    return true;
+  }
+  async function ensureReverseLocationsLoaded(){
+    const d=sync();
+    if(d.locations && Object.keys(d.locations||{}).length){
+      applyReverseLocations(d.locations);
+      return true;
+    }
+    if(typeof loadDataBundle!=='function')return false;
+    const locs=await loadDataBundle('locations').catch(function(){return null;});
+    return applyReverseLocations(locs);
+  }
   async function ensureReverseItemDataLoaded(itemId){
     const id=String(itemId||'').trim();
     if(!id)return false;
-    if(getDropReverse()[id])return true;
+    if(getDropReverse()[id]){
+      await ensureReverseLocationsLoaded();
+      return true;
+    }
     const version=encodeURIComponent(document.body?.dataset?.version||'dev');
     const prefix=(id.slice(0,3)||'misc').replace(/[^0-9A-Za-z_-]/g,'');
     if(!reverseShardPromises[prefix]){
@@ -299,13 +342,7 @@
     }
     const results=await Promise.all(tasks);
     const shard=results[0]||{};
-    const locs=results.find(function(x){return x && typeof x==='object' && !Array.isArray(x) && !Object.keys(x).some(function(k){return /^2\d\d$/.test(k);});});
-    if(locs){
-      try{monsterLocations=locs;}catch(e){}
-      window.monsterLocations=locs;
-      window.SZO_DATA=window.SZO_DATA||{};
-      window.SZO_DATA.locations=locs;
-    }
+    results.forEach(applyReverseLocations);
     try{
       if(typeof dropReverse==='undefined' || !dropReverse)dropReverse={};
     }catch(e){}
