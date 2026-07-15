@@ -287,9 +287,10 @@
       const parentItem=parentToken ? (getItemIndex()[parentToken] || getItems().find(function(x){return String(x?.ID||x?.id||'').trim()===parentToken})) : null;
       parentButton=parentItem ? '<button class="backBtn reverseParentBackBtn" type="button" onclick="showReverse(\''+escHtml(parentToken)+'\',\''+escHtml(backView)+'\')">← 返回'+escHtml(nameOfSafe(parentItem))+'</button>' : '';
     }
+    const fallbackBackButton='<button class="backBtn" onclick="goBackToPrevious(\''+escHtml(backView)+'\')">← 返回查詢</button>';
     if(reader){
       reader.innerHTML='<section class="card reverseDetailCard">'
-        + '<div class="reverseBackActions">'+parentButton+'<button class="backBtn" onclick="goBackToPrevious(\''+escHtml(backView)+'\')">← 返回查詢</button></div>'
+        + '<div class="reverseBackActions">'+(parentButton||fallbackBackButton)+'</div>'
         + '<h1>'+escHtml(nameOfSafe(it))+'</h1>'
         + '<div class="muted">掉落反查｜共 '+arr.length+' 筆</div>'
         + (arr.length?'<div class="reverseDropList">'+arr.map(function(row){return renderReverseCard(row,itemId,backView)}).join('')+'</div>':'<div class="empty">沒有怪物掉落這個道具。</div>')
