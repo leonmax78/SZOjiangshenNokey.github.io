@@ -498,8 +498,17 @@
       ev.stopPropagation();
       const id = nestedReverseBtn.dataset.collectNestedReverse;
       const parent = nestedReverseBtn.dataset.collectParent;
-      if(id && typeof window.showReverse === 'function'){
-        window.showReverse(id,'collect','collect:'+parent);
+      if(id){
+        const openNestedReverse = () => {
+          if(typeof window.showReverse === 'function'){
+            window.showReverse(id,'collect','collect:'+parent);
+          }
+        };
+        if(typeof window.showReverse === 'function'){
+          openNestedReverse();
+        }else if(typeof window.ensureItemPageLoaded === 'function'){
+          window.ensureItemPageLoaded().then(openNestedReverse);
+        }
       }
       return;
     }
