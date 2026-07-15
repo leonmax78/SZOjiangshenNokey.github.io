@@ -150,19 +150,11 @@ function prefetchLookupBundles(){
 }
 
 function warmLookupDataInBackground(){
- if(mainDataReady||mainDataLoadPromise)return;
- if(navigator.connection&&navigator.connection.saveData)return;
- scheduleIdleTask(()=>ensureLookupDataLoaded().then(()=>{if(currentView==='home')renderHome();}),1800);
+ return;
 }
 
 function warmHeavyLookupPages(){
-  if(navigator.connection&&navigator.connection.saveData)return;
-  scheduleIdleTask(()=>{
-   Promise.all([
-    loadScriptGroupOnce('page_map').then(()=>window.preloadStageMapData&&window.preloadStageMapData()).catch(()=>{}),
-    loadScriptGroupOnce('page_shop').then(()=>window.preloadShopData&&window.preloadShopData()).catch(()=>{})
-   ]).catch(()=>{});
-  },5200);
+  return;
 }
 
 // V210d: keep shared data references synced for extracted modules.
@@ -384,7 +376,7 @@ async function setView(view){
   if(typeof window.renderSoulCalcPage==='function') window.renderSoulCalcPage();
   closeDrawer(); window.scrollTo({top:0,behavior:'smooth'});
  }
- else if(view==='reverse'){showPageLoading(viewLoadingLabel(view)); await ensureItemPageLoaded(); await renderItemPage('reverse'); closeDrawer(); window.scrollTo({top:0,behavior:'smooth'});}
+ else if(view==='reverse'){await ensureItemPageLoaded(); await renderItemPage('reverse'); closeDrawer(); window.scrollTo({top:0,behavior:'smooth'});}
 }
 function setJiang(kind){
  openJiangMenuOnly();
@@ -447,11 +439,15 @@ function openItemMenuOnly(){
 }
 async function setItemSub(kind){
  openItemMenuOnly();
- showPageLoading(itemSubLoadingLabel(kind));
- if(kind==='compound'){if(await ensureCompoundDataLoaded())renderEquipmentCompoundPage(); closeDrawer(); window.scrollTo({top:0,behavior:'smooth'}); return;}
- await ensureItemPageLoaded();
- if(kind==='item'){await renderItemPage('item'); closeDrawer(); window.scrollTo({top:0,behavior:'smooth'});}
- if(kind==='reverse'){await renderItemPage('reverse'); closeDrawer(); window.scrollTo({top:0,behavior:'smooth'});}
+ try{
+  if(kind==='compound'){showPageLoading(itemSubLoadingLabel(kind)); if(await ensureCompoundDataLoaded())renderEquipmentCompoundPage(); closeDrawer(); window.scrollTo({top:0,behavior:'smooth'}); return;}
+  await ensureItemPageLoaded();
+  if(kind==='item'){await renderItemPage('item'); closeDrawer(); window.scrollTo({top:0,behavior:'smooth'});}
+  if(kind==='reverse'){await renderItemPage('reverse'); closeDrawer(); window.scrollTo({top:0,behavior:'smooth'});}
+ }catch(e){
+  console.error(e);
+  byId('reader').innerHTML='<section class="card"><h1>頁面讀取失敗</h1><div class="empty">請重新整理後再試一次。</div></section>';
+ }
 }
 function renderHome(){
  document.body.classList.add('isHomeView');
