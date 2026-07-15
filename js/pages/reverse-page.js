@@ -299,6 +299,13 @@
     }
     const results=await Promise.all(tasks);
     const shard=results[0]||{};
+    const locs=results.find(function(x){return x && typeof x==='object' && !Array.isArray(x) && !Object.keys(x).some(function(k){return /^2\d\d$/.test(k);});});
+    if(locs){
+      try{monsterLocations=locs;}catch(e){}
+      window.monsterLocations=locs;
+      window.SZO_DATA=window.SZO_DATA||{};
+      window.SZO_DATA.locations=locs;
+    }
     try{
       if(typeof dropReverse==='undefined' || !dropReverse)dropReverse={};
     }catch(e){}
