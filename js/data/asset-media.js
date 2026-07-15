@@ -1,6 +1,6 @@
 (function(){
   const cache={item:null,monster:null,soul:null};
-  function manifest(){return (window.SZO_DATA_BUNDLES&&window.SZO_DATA_BUNDLES.asset_manifest)||{}}
+  function manifest(){return (window.SZO_DATA_BUNDLES&&window.SZO_DATA_BUNDLES.asset_manifest)||window.SZO_ASSET_MANIFEST||{}}
   function base(){
     const raw=(manifest().base||'assets/test-media').replace(/\/$/,'');
     if(raw.startsWith('/')||/^https?:\/\//i.test(raw))return raw;

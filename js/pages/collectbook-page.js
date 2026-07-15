@@ -435,32 +435,6 @@
     const input = by('collectSearch');
     if(input) input.focus({preventScroll:true});
   }
-  function renderCollectMenu(){
-    state.active = 'menu';
-    syncNav('menu');
-    const reader = by('reader');
-    if(!reader) return;
-    reader.innerHTML = `<section class="card collectPage">
-      <div class="collectHeader">
-        <h1>??????</h1>
-        <div class="shopCount">???????</div>
-      </div>
-      <div class="collectList">
-        <button type="button" class="collectRow" data-collect-open="weapon">
-          <div class="collectItemHead"><div><div class="collectName">????</div><div class="collectCategory">????????</div></div><div class="collectScore">?</div></div>
-        </button>
-        <button type="button" class="collectRow" data-collect-open="artifact">
-          <div class="collectItemHead"><div><div class="collectName">????</div><div class="collectCategory">???????</div></div><div class="collectScore">?</div></div>
-        </button>
-        <button type="button" class="collectRow" data-collect-open="recipe">
-          <div class="collectItemHead"><div><div class="collectName">????</div><div class="collectCategory">???????</div></div><div class="collectScore">?</div></div>
-        </button>
-        <button type="button" class="collectRow" data-collect-open="beast">
-          <div class="collectItemHead"><div><div class="collectName">????</div><div class="collectCategory">???????</div></div><div class="collectScore">?</div></div>
-        </button>
-      </div>
-    </section>`;
-  }
   function renderCollectResults(){
     const kind = state.active;
     const rows = filteredRows(kind);
@@ -469,16 +443,33 @@
     if(count) count.textContent = rows.length + ' 筆';
     if(results) results.innerHTML = list(kind, rows);
   }
+  function renderCollectMenu(){
+    syncNav('menu');
+    const reader = by('reader');
+    if(!reader) return;
+    const entries = ['weapon', 'artifact', 'recipe', 'beast'];
+    reader.innerHTML = `<section class="card collectPage collectMenuPage">
+      <h1>武冠收錄資料</h1>
+      <div class="collectList">${entries.map(kind => `<button type="button" class="resultItem" data-collect-open="${escHtml(kind)}"><div class="rName">${escHtml(labels[kind])}</div><div class="rSub">查看${escHtml(labels[kind])}的來源與掉落資料</div></button>`).join('')}</div>
+    </section>`;
+  }
   async function renderCollectBookPage(kind){
-    const menuMode = !labels[kind];
-    if(!menuMode) state.query[kind] = '';
+    if(!labels[kind]){
+      state.active = 'menu';
+      window.v86LastView = 'collect';
+      renderCollectMenu();
+      try{ if(typeof closeDrawer === 'function') closeDrawer(); }catch(e){}
+      try{ window.scrollTo({top:0,behavior:'smooth'}); }catch(e){}
+      return;
+    }
+    kind = labels[kind] ? kind : 'weapon';
+    state.query[kind] = '';
     window.v86LastView = 'collect';
     const reader = by('reader');
     if(reader) reader.innerHTML = '<section class="card collectPage"><h1>武冠收錄資料</h1><div class="muted">資料載入中...</div></section>';
     try{
       await loadData();
-      if(menuMode) renderCollectMenu();
-      else renderLoaded(kind);
+      renderLoaded(kind);
     }catch(err){
       if(reader) reader.innerHTML = '<section class="card collectPage"><h1>武冠收錄資料</h1><div class="empty">武冠收錄資料載入失敗，請重新整理一次。</div></section>';
     }
