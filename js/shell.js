@@ -34,6 +34,7 @@
         <button class="navBtn sub" data-item-open="reverse">掉落反查 <span>›</span></button>
         <button class="navBtn sub" data-item-open="compound">常用裝備配方合成模擬 <span>›</span></button>
       </div>
+      <button class="navBtn major" data-view="map">地圖查詢 <span>›</span></button>
       <button class="navBtn major" data-view="soul">武魂能力試算 <span>›</span></button>
       <button class="navBtn major" data-view="collect">武冠收錄資料 <span>›</span></button>
       <div class="formBox" id="collectForm">

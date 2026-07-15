@@ -378,6 +378,16 @@ function showMonsterDropPage(id){
  closeDrawer();window.scrollTo({top:0,behavior:'smooth'});
 }
 
+async function showMonsterMapLocations(id, name){
+ if(typeof showPageLoading==='function')showPageLoading('地圖查詢','正在載入這隻怪物的地圖位置，請稍候。');
+ if(typeof ensureMapPageLoaded==='function')await ensureMapPageLoaded();
+ if(typeof openMonsterMapLocations==='function')await openMonsterMapLocations(id, name);
+ document.querySelectorAll('.navBtn[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view==='map'));
+ document.querySelectorAll('.formBox').forEach(f=>f.classList.remove('active'));
+ if(typeof closeDrawer==='function')closeDrawer();
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+
 function monsterRowsHTML(rows,cls=''){
  const show=rows.filter(x=>x[1]!==''&&x[1]!==undefined&&x[1]!==null&&String(x[1]).trim()!=='0');
  return `<div class="kvGrid ${cls}">${show.map(([k,v])=>`<div class="kv"><div class="k">${esc(k)}</div><div class="v">${esc(v)}</div></div>`).join('')}</div>`;
@@ -419,7 +429,10 @@ function showMonster(id,skipPush){
   <div class="assetPreviewPanel monsterPreviewPanel">
     <div class="assetArtPanel">${hero}<h1>${esc(nameOf(m))}</h1></div>
     <div class="assetInfoPanel">
-      <div class="monsterTopActions"><button type="button" class="primary" onclick="showMonsterDropPage('${esc(id)}')">查看掉落資訊<small>${drops.length?`共 ${drops.length} 筆掉落資料`:'沒有掉落資料'}</small></button></div>
+      <div class="monsterTopActions">
+        <button type="button" class="mapJumpBtn" onclick="showMonsterMapLocations('${esc(id)}','${esc(nameOf(m))}')">查看地圖位置<small>顯示出現地圖與點位</small></button>
+        <button type="button" class="primary" onclick="showMonsterDropPage('${esc(id)}')">查看掉落資訊<small>${drops.length?`共 ${drops.length} 筆掉落資料`:'沒有掉落資料'}</small></button>
+      </div>
       <div class="monsterPanel"><h3>怪物資料</h3>${monsterRowsHTML(basic,'monsterDataGrid')}</div>
       <div class="monsterPanel"><h3>能力資訊</h3>${monsterRowsHTML(stats,'monsterStatGrid')}</div>
     </div>
@@ -440,3 +453,4 @@ window.clearMonsterSearchFilters=clearMonsterSearchFilters;
 window.monsterSkillText=monsterSkillText;
 window.showMonster=showMonster;
 window.showMonsterDropPage=showMonsterDropPage;
+window.showMonsterMapLocations=showMonsterMapLocations;

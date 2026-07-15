@@ -49,6 +49,7 @@ window.SZO_SCRIPT_GROUPS = {
     "js/pages/item-page.js",
     "js/pages/reverse-page.js",
     "js/pages/compound-page.js",
+    "js/pages/map-page.js",
     "js/pages/collectbook-page.js",
     "js/pages/shop-page.js",
     "js/pages/downloads-page.js"
@@ -68,6 +69,9 @@ window.SZO_SCRIPT_GROUPS = {
   ],
   "page_shop": [
     "js/pages/shop-page.js"
+  ],
+  "page_map": [
+    "js/pages/map-page.js"
   ],
   "page_downloads": [
     "js/pages/downloads-page.js"
