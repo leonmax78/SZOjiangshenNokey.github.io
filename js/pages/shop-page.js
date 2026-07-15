@@ -1,12 +1,19 @@
-// V300: shop sale information page with item detail and container contents.
+// Full shop lookup page: SHOP.INI + NPC map placements.
 (function(){
-  const SHOP_DATA_URL = 'data/shop_selected_11_fixed.json';
-  const SHOP_ORDER = [430,433,436,432,435,438,911,890,891,893,895];
+  const SHOP_DATA_URL = 'data/shop_all.json';
+  const MAP_DATA_URL = 'data/stage_maps.json';
+  const SHOW_SHOP_COORDS = false;
   const state = {
     data: null,
-    activeShopId: '430',
+    maps: null,
+    stageId: null,
+    activeKey: '',
+    mode: 'sell',
     query: '',
-    loading: null
+    loading: null,
+    composing: false,
+    focusedSearch: false,
+    inputTimer: null
   };
 
   function by(id){ return document.getElementById(id); }
@@ -14,16 +21,17 @@
     if(typeof esc === 'function') return esc(value);
     return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   }
-  function itemName(item){ return String(item?.name || item?.Name || '').trim(); }
-  function nameOfSafe(row){
-    try{ return typeof nameOf === 'function' ? nameOf(row) : String(row?.Name || row?.name || '').trim(); }
-    catch(e){ return String(row?.Name || row?.name || '').trim(); }
-  }
   function price(value){
-    if(value === null || value === undefined || value === '') return '-';
-    const n = Number(value);
-    if(!Number.isFinite(n)) return escHtml(value);
-    return n.toLocaleString('zh-TW');
+    const n = Math.floor(Number(value));
+    if(!Number.isFinite(n)) return '-';
+    const yi = Math.floor(n / 100000000);
+    const wan = Math.floor((n % 100000000) / 10000);
+    const rest = n % 10000;
+    let text = '';
+    if(yi) text += yi + '億';
+    if(wan) text += wan + '萬';
+    if(rest || !text) text += rest;
+    return text + '兩';
   }
   function syncData(){
     try{ if(typeof window.SZO_SYNC_DATA === 'function') window.SZO_SYNC_DATA(); }catch(e){}
@@ -35,159 +43,304 @@
     try{ if(itemIndex && Object.keys(itemIndex).length) return itemIndex; }catch(e){}
     return window.itemIndex || {};
   }
-  function getMonsters(){
-    const d = syncData();
-    if(Array.isArray(d.monsters) && d.monsters.length) return d.monsters;
-    try{ if(Array.isArray(monsters) && monsters.length) return monsters; }catch(e){}
-    return Array.isArray(window.monsters) ? window.monsters : [];
+  function nameOfSafe(row){
+    try{ return typeof nameOf === 'function' ? nameOf(row) : String(row?.Name || row?.name || '').trim(); }
+    catch(e){ return String(row?.Name || row?.name || '').trim(); }
   }
-  function normalizedName(value){
-    return String(value || '').replace(/\s+/g, '').trim();
-  }
-  function parseDropRows(value){
-    try{ if(typeof parseDropSafe === 'function') return parseDropSafe(value); }catch(e){}
-    try{ if(typeof parseDrop === 'function') return parseDrop(value); }catch(e){}
-    const nums = String(value || '').split(',').map(x => x.trim()).filter(Boolean);
-    if(nums.length < 4) return [];
-    const raw = [];
-    for(let i = 2; i + 1 < nums.length; i += 2){
-      const id = String(nums[i]).trim();
-      const weight = Number(nums[i + 1]);
-      if(id && id !== '0' && Number.isFinite(weight) && weight > 0) raw.push([id, weight]);
-    }
-    const total = raw.reduce((sum, row) => sum + row[1], 0);
-    return total ? raw.map(([dropId, weight]) => [dropId, weight / total * 100, weight, total]) : [];
-  }
-  function findContainerForItem(itemId, names){
-    const id = String(itemId || '').trim();
-    const wanted = names.map(normalizedName).filter(Boolean);
-    const list = getMonsters().filter(row => String(row?.DropItem || '').trim() !== '');
-    const byName = list.find(row => wanted.includes(normalizedName(nameOfSafe(row))));
-    if(byName) return byName;
-    return list.find(row => String(row?.ID || '').trim() === id) || null;
-  }
-  function containerContents(container){
-    const itemsById = getItemIndex();
-    return parseDropRows(container?.DropItem).map(([dropId, rate]) => {
-      const iid = String(dropId || '').trim();
-      const it = itemsById[iid] || null;
-      return { itemId: iid, rate: Number(rate) || 0, item: it, name: it ? nameOfSafe(it) : ('道具 ID ' + iid) };
-    }).sort((a,b) => b.rate - a.rate || Number(a.itemId) - Number(b.itemId));
-  }
-  function orderedShops(){
-    const shops = Array.isArray(state.data?.shops) ? state.data.shops : [];
-    const map = new Map(shops.map(shop => [Number(shop.shopId), shop]));
-    const ordered = SHOP_ORDER.map(id => map.get(id)).filter(Boolean);
-    shops.forEach(shop => { if(!SHOP_ORDER.includes(Number(shop.shopId))) ordered.push(shop); });
-    return ordered;
+  async function fetchJson(url){
+    const res = await fetch(url + '?v=' + encodeURIComponent(document.body?.dataset?.version || 'dev'), { cache: 'no-store' });
+    if(!res.ok) throw new Error(url + ' load failed');
+    return res.json();
   }
   async function loadShopData(){
-    if(state.data) return state.data;
+    if(state.data && state.maps) return;
     if(state.loading) return state.loading;
-    state.loading = fetch(SHOP_DATA_URL + '?v=' + encodeURIComponent(document.body?.dataset?.version || 'dev'))
-      .then(res => {
-        if(!res.ok) throw new Error('Shop data load failed');
-        return res.json();
-      })
-      .then(data => {
-        state.data = data;
-        const first = orderedShops()[0];
-        if(first) state.activeShopId = String(first.shopId);
-        return data;
-      });
+    state.loading = Promise.all([fetchJson(SHOP_DATA_URL), fetchJson(MAP_DATA_URL)]).then(([data, maps]) => {
+      state.data = data || { shops: [] };
+      state.maps = maps || { stages: [] };
+      const first = shopLocations()[0];
+      if(first){
+        if(state.stageId === null) state.stageId = first.stageId;
+        if(!state.activeKey) state.activeKey = first.key;
+      }
+    });
     return state.loading;
   }
-  function matches(item, shop){
-    const q = state.query.trim().toLowerCase();
-    if(!q) return true;
-    return [
-      shop.shopName,
-      shop.shopId,
-      item.itemId,
-      item.name,
-      item.sellPrice,
-      item.buyPrice
-    ].join(' ').toLowerCase().includes(q);
+  function shopMap(){
+    return new Map((state.data?.shops || []).map(shop => [String(shop.shopId), shop]));
   }
-  function shopNav(shops){
-    return '<aside class="shopSideNav">'
-      + '<div class="shopSideTitle">商店販售資訊</div>'
-      + shops.map(shop => {
-        const active = String(shop.shopId) === state.activeShopId;
-        return `<button type="button" class="shopSideBtn ${active ? 'active' : ''}" data-shop-tab="${escHtml(shop.shopId)}"><span>${escHtml(shop.shopName)}</span><small>${escHtml(shop.items?.length || 0)} 筆</small></button>`;
-      }).join('')
-      + '</aside>';
-  }
-  function shopTable(shop, items){
-    const rows = items.map(item => `<tr>
-      <td><button type="button" class="shopItemLink" data-shop-item="${escHtml(item.itemId)}" data-shop-name="${escHtml(itemName(item))}">${escHtml(itemName(item))}<small>ID ${escHtml(item.itemId)}</small></button></td>
-      <td class="num">${price(item.sellPrice)}</td>
-      <td class="num">${price(item.buyPrice)}</td>
-    </tr>`).join('');
-    return `<section class="shopBlock">
-      <div class="shopBlockHead">
-        <h2>${escHtml(shop.shopName)}</h2>
-        <span>${items.length} / ${shop.items?.length || 0} 筆</span>
-      </div>
-      <div class="tableWrap shopTableWrap">
-        <table class="shopTable">
-          <thead><tr><th>物品</th><th>販賣金額</th><th>回收金額</th></tr></thead>
-          <tbody>${rows || '<tr><td colspan="3" class="muted">沒有符合條件的物品。</td></tr>'}</tbody>
-        </table>
-      </div>
-    </section>`;
-  }
-  function shopBlocksHTML(shops){
-    const searching = state.query.trim() !== '';
-    if(searching){
-      const blocks = shops.map(shop => {
-        const items = (shop.items || []).filter(item => matches(item, shop));
-        return items.length ? shopTable(shop, items) : '';
-      }).join('');
-      return blocks || '<div class="empty">全部商店都沒有符合條件的物品。</div>';
+  function shopLocations(){
+    const shops = shopMap();
+    const rows = [];
+    for(const stage of state.maps?.stages || []){
+      for(const npc of stage.npcs || []){
+        const shopId = String(npc.shop || '').trim();
+        if(!shopId || !shops.has(shopId)) continue;
+        rows.push({
+          key: `${stage.stageId}:${npc.id}:${npc.rawX ?? npc.x}:${npc.rawY ?? npc.y}:${shopId}`,
+          stageId: Number(stage.stageId),
+          stageName: stage.stageName || '',
+          npcId: String(npc.id || ''),
+          npcName: npc.name || '',
+          shopId,
+          x: npc.coordX ?? npc.x ?? '',
+          y: npc.coordY ?? npc.y ?? '',
+          rawX: npc.rawX ?? npc.x ?? '',
+          rawY: npc.rawY ?? npc.y ?? '',
+          shop: shops.get(shopId)
+        });
+      }
     }
-    const visible = shops.filter(shop => String(shop.shopId) === state.activeShopId);
-    return visible.map(shop => shopTable(shop, shop.items || [])).join('') || '<div class="empty">沒有商店資料。</div>';
+    return rows.sort((a,b) => a.stageId - b.stageId || a.npcName.localeCompare(b.npcName, 'zh-Hant') || Number(a.shopId) - Number(b.shopId));
   }
-  function updateShopBlocks(){
-    const box = document.querySelector('.shopBlocks');
-    if(box) box.innerHTML = shopBlocksHTML(orderedShops());
+  function stagesWithShops(){
+    const seen = new Map();
+    for(const loc of shopLocations()){
+      if(!seen.has(loc.stageId)) seen.set(loc.stageId, { stageId: loc.stageId, stageName: loc.stageName });
+    }
+    return [...seen.values()].sort((a,b) => a.stageId - b.stageId);
+  }
+  function modePrice(item){
+    return state.mode === 'buy' ? item.buyPrice : item.sellPrice;
+  }
+  function mergeDisplayItems(items){
+    const seen = new Map();
+    for(const item of items || []){
+      const key = [item.name || '', modePrice(item), item.icon || '', item.type || ''].join('|');
+      if(!seen.has(key)) seen.set(key, item);
+    }
+    return [...seen.values()];
+  }
+  function itemHasMode(item, mode){
+    const value = mode === 'buy' ? item.buyPrice : item.sellPrice;
+    return value !== null && value !== undefined && value !== '';
+  }
+  function itemSearchText(item, loc){
+    return [item.name, loc.stageName, loc.npcName, loc.shopId].join(' ').toLowerCase();
+  }
+  function itemMatches(item, loc){
+    const q = state.query.trim().toLowerCase();
+    return !q || itemSearchText(item, loc).includes(q);
+  }
+  function matchingItemCount(mode){
+    const q = state.query.trim().toLowerCase();
+    if(!q) return 0;
+    let count = 0;
+    for(const loc of shopLocations()){
+      for(const item of loc.shop?.items || []){
+        if(itemHasMode(item, mode) && itemSearchText(item, loc).includes(q)) count++;
+      }
+    }
+    return count;
+  }
+  function maybeSwitchModeForQuery(){
+    const q = state.query.trim();
+    if(!q) return;
+    if(matchingItemCount(state.mode)) return;
+    const other = state.mode === 'buy' ? 'sell' : 'buy';
+    if(matchingItemCount(other)) state.mode = other;
+  }
+  function filteredItems(loc){
+    if(!loc?.shop) return [];
+    const rows = (loc.shop.items || [])
+      .filter(item => itemHasMode(item, state.mode))
+      .filter(item => itemMatches(item, loc));
+    return mergeDisplayItems(rows);
+  }
+  function rankedLocations(){
+    const q = state.query.trim().toLowerCase();
+    const rows = shopLocations();
+    if(!q) return rows;
+    return rows.map((loc, order) => {
+      const items = filteredItems(loc);
+      const direct = [loc.stageName, loc.npcName, loc.shopId].join(' ').toLowerCase().includes(q);
+      const prices = items.map(item => Number(modePrice(item))).filter(Number.isFinite);
+      const bestPrice = prices.length ? Math.max(...prices) : -1;
+      return Object.assign({}, loc, { matchCount: items.length, direct, bestPrice, order });
+    }).filter(loc => loc.matchCount || loc.direct).sort((a,b) => {
+      if(a.matchCount && b.matchCount) return b.bestPrice - a.bestPrice || b.matchCount - a.matchCount || a.order - b.order;
+      if(a.matchCount !== b.matchCount) return b.matchCount - a.matchCount;
+      return a.order - b.order;
+    });
+  }
+  function itemSuggestionRows(limit = 10){
+    const q = state.query.trim().toLowerCase();
+    if(!q) return [];
+    const rows = new Map();
+    for(const loc of shopLocations()){
+      for(const item of loc.shop?.items || []){
+        if(!itemHasMode(item, state.mode)) continue;
+        const name = String(item.name || '').trim();
+        if(!name || !name.toLowerCase().includes(q)) continue;
+        const priceValue = Number(state.mode === 'buy' ? item.buyPrice : item.sellPrice);
+        const current = rows.get(name) || { name, count: 0, bestPrice: -1 };
+        current.count += 1;
+        if(Number.isFinite(priceValue)) current.bestPrice = Math.max(current.bestPrice, priceValue);
+        rows.set(name, current);
+      }
+    }
+    if(rows.size <= 1 && rows.has(state.query.trim())) return [];
+    return [...rows.values()].sort((a,b) => {
+      const an = a.name.toLowerCase();
+      const bn = b.name.toLowerCase();
+      const aStarts = an.startsWith(q);
+      const bStarts = bn.startsWith(q);
+      if(aStarts !== bStarts) return aStarts ? -1 : 1;
+      return b.bestPrice - a.bestPrice || b.count - a.count || a.name.localeCompare(b.name, 'zh-Hant');
+    }).slice(0, limit);
+  }
+  function renderItemSuggestions(){
+    const rows = itemSuggestionRows();
+    if(!rows.length) return '';
+    return `<div class="shopSuggestions">
+      <span>你是不是想找：</span>
+      ${rows.map(row => `<button type="button" class="shopSuggestBtn" data-shop-suggest="${escHtml(row.name)}">${escHtml(row.name)}</button>`).join('')}
+    </div>`;
+  }
+  function activeLocation(){
+    const ranked = rankedLocations();
+    if(!ranked.some(row => row.key === state.activeKey) && ranked[0]){
+      state.activeKey = ranked[0].key;
+      state.stageId = ranked[0].stageId;
+    }
+    const rows = shopLocations();
+    return rows.find(row => row.key === state.activeKey) || ranked[0] || rows[0] || null;
+  }
+  function setStage(stageId){
+    state.stageId = Number(stageId);
+    const first = shopLocations().find(loc => Number(loc.stageId) === Number(state.stageId));
+    if(first) state.activeKey = first.key;
+  }
+  function locationTitle(loc){
+    return `${loc.stageName} / ${loc.npcName}`;
+  }
+  function locationSub(loc){
+    return SHOW_SHOP_COORDS ? `Shop ${loc.shopId} / (${loc.x}, ${loc.y})` : `Shop ${loc.shopId}`;
+  }
+  function stageSelect(loc){
+    const selected = loc?.stageId ?? state.stageId;
+    return `<label class="shopSelectLabel">地圖
+      <select id="shopStageSelect">
+        ${stagesWithShops().map(stage => `<option value="${stage.stageId}" ${Number(stage.stageId) === Number(selected) ? 'selected' : ''}>${String(stage.stageId).padStart(3, '0')} ${escHtml(stage.stageName)}</option>`).join('')}
+      </select>
+    </label>`;
+  }
+  function npcSelect(loc){
+    const stageId = loc?.stageId ?? state.stageId;
+    let rows = shopLocations().filter(row => Number(row.stageId) === Number(stageId));
+    const q = state.query.trim();
+    if(q){
+      const hitKeys = new Set(rankedLocations().filter(row => Number(row.stageId) === Number(stageId)).map(row => row.key));
+      if(hitKeys.size) rows = rows.filter(row => hitKeys.has(row.key));
+    }
+    if(!rows.length) rows = shopLocations().filter(row => Number(row.stageId) === Number(stageId));
+    return `<label class="shopSelectLabel">商店 NPC
+      <select id="shopNpcSelect">
+        ${rows.map(row => {
+          const count = filteredItems(row).length;
+          return `<option value="${escHtml(row.key)}" ${row.key === loc?.key ? 'selected' : ''}>${escHtml(row.npcName)} / ${escHtml(locationSub(row))}${q ? ` / ${count}筆` : ''}</option>`;
+        }).join('')}
+      </select>
+    </label>`;
+  }
+  function itemThumb(item){
+    const src = window.SZO_ASSET_MEDIA && window.SZO_ASSET_MEDIA.itemIconSrc({
+      Icon: item.icon,
+      Type: item.type,
+      ID: item.itemId,
+      Name: item.name
+    });
+    return src ? `<span class="shopItemThumb"><img src="${escHtml(src)}" alt="" loading="lazy" decoding="async"></span>` : '<span class="shopItemThumb emptyThumb"></span>';
+  }
+  function shopRows(items){
+    if(!items.length) return '<div class="empty">找不到符合目前條件的商品。</div>';
+    return `<div class="shopItemList">
+      ${items.map(item => `<button type="button" class="shopItemCard" data-shop-item="${escHtml(item.itemId)}" data-shop-name="${escHtml(item.name)}">
+        ${itemThumb(item)}
+        <span class="shopItemText"><strong>${escHtml(item.name)}</strong></span>
+        <span class="shopItemPrice">${price(modePrice(item))}</span>
+      </button>`).join('')}
+    </div>`;
+  }
+  function shopBlock(loc, items, extraClass){
+    if(!loc) return '<div class="empty">沒有商店資料。</div>';
+    return `<div class="shopBlock ${extraClass || ''}">
+      <div class="shopBlockHead">
+        <div>
+          <h2>${escHtml(locationTitle(loc))}</h2>
+          <div class="muted">${escHtml(locationSub(loc))}</div>
+        </div>
+        <button type="button" class="ghost shopMapBtn" data-shop-map="${escHtml(loc.key)}">地圖位置</button>
+      </div>
+      ${shopRows(items)}
+    </div>`;
+  }
+  function searchResults(){
+    const q = state.query.trim();
+    if(!q) return '';
+    const rows = rankedLocations()
+      .map(loc => ({ loc, items: filteredItems(loc) }))
+      .filter(row => row.items.length);
+    if(!rows.length) return '<div class="empty">找不到符合目前條件的商店。</div>';
+    return `<div class="shopResultList">
+      ${rows.map(row => shopBlock(row.loc, row.items, 'shopResultBlock')).join('')}
+    </div>`;
   }
   function renderLoaded(){
-    const shops = orderedShops();
-    if(!shops.some(shop => String(shop.shopId) === state.activeShopId) && shops[0]) state.activeShopId = String(shops[0].shopId);
-    const blocks = shopBlocksHTML(shops);
     const reader = by('reader');
     if(!reader) return;
+    const isSearching = !!state.query.trim();
+    const loc = activeLocation();
+    const items = loc ? filteredItems(loc) : [];
     reader.innerHTML = `<section class="card shopPage">
       <div class="shopHeader">
         <div>
-          <h1>特殊商店販賣資訊</h1>
+          <h1>商店販賣資訊</h1>
+          <div class="muted">依地圖 NPC 商店整理，可從商店跳地圖，也可從地圖點商店。</div>
         </div>
-        <div class="shopCount">${shops.length} 間商店</div>
+        <div class="shopCount">${shopLocations().length} 個地圖商店</div>
       </div>
-      <div class="shopLayout">
-        ${shopNav(shops)}
-        <div class="shopMainPane">
-          <div class="shopTools">
-            <input id="shopSearch" value="${escHtml(state.query)}" placeholder="搜尋全部商店的物品、ID、金額">
-          </div>
-          <div class="shopBlocks">${blocks}</div>
+      <div class="shopTools">
+        <div class="shopSearchBox">
+          <input id="shopSearch" value="${escHtml(state.query)}" placeholder="搜尋商品 / 商店 / 地圖，例如：虎皮、京城、打鐵店長" autocomplete="off">
+          <button type="button" class="ghost shopSearchBtn" data-shop-search>搜尋</button>
+        </div>
+        <div class="shopSearchNote">備注：部分商品受名聲影響，最多享八折優惠</div>
+        ${renderItemSuggestions()}
+        <div class="shopModeTabs">
+          <button type="button" class="${state.mode === 'sell' ? 'active' : ''}" data-shop-mode="sell">販賣</button>
+          <button type="button" class="${state.mode === 'buy' ? 'active' : ''}" data-shop-mode="buy">回收</button>
         </div>
       </div>
+      <div class="shopPicker">
+        ${stageSelect(loc)}
+        ${npcSelect(loc)}
+        ${isSearching ? `<div class="shopSearchHint">符合搜尋的商店會依${state.mode === 'buy' ? '回收高價' : '販賣高價'}優先排列。</div>` : ''}
+      </div>
+      ${isSearching ? searchResults() : shopBlock(loc, items)}
     </section>`;
-    const input = by('shopSearch');
-    if(input) input.focus({preventScroll:true});
+  }
+  function runSearch(){
+    clearTimeout(state.inputTimer);
+    if(state.composing) return;
+    maybeSwitchModeForQuery();
+    renderLoaded();
+  }
+  function scheduleRender(){
+    clearTimeout(state.inputTimer);
+    state.inputTimer = setTimeout(() => {
+      if(!state.focusedSearch) runSearch();
+    }, 300);
   }
   async function renderShopPage(){
     window.v86LastView = 'shop';
     const reader = by('reader');
-    if(reader) reader.innerHTML = '<section class="card shopPage"><h1>特殊商店販賣資訊</h1><div class="muted">資料載入中...</div></section>';
+    if(reader) reader.innerHTML = '<section class="card shopPage"><h1>商店販賣資訊</h1><div class="muted">資料載入中...</div></section>';
     try{
       await loadShopData();
       renderLoaded();
     }catch(err){
-      if(reader) reader.innerHTML = '<section class="card shopPage"><h1>特殊商店販賣資訊</h1><div class="empty">商店資料載入失敗，請重新整理一次。</div></section>';
+      if(reader) reader.innerHTML = '<section class="card shopPage"><h1>商店販賣資訊</h1><div class="empty">商店資料載入失敗，請重新整理一次。</div></section>';
     }
     try{ if(typeof closeDrawer === 'function') closeDrawer(); }catch(e){}
     try{ window.scrollTo({top:0,behavior:'smooth'}); }catch(e){}
@@ -203,69 +356,151 @@
     window.v86LastView = 'shop';
     const itemId = String(id || '').trim();
     const reader = by('reader');
-    if(reader) reader.innerHTML = '<section class="card itemCompact"><button class="backBtn" type="button" data-shop-back>← 返回特殊商店販賣資訊</button><h1>資料載入中...</h1></section>';
+    if(reader) reader.innerHTML = '<section class="card itemCompact"><button class="backBtn" type="button" data-shop-back>← 返回商店</button><h1>資料載入中...</h1></section>';
     if(typeof window.ensureLookupDataLoaded === 'function') await window.ensureLookupDataLoaded();
     const it = getItemIndex()[itemId];
     const title = it ? nameOfSafe(it) : (fallbackName || ('ID ' + itemId));
-    const container = findContainerForItem(itemId, [title, fallbackName]);
-    const contents = containerContents(container);
     const kv = detailRows(it).map(([k,v]) => {
       const cls = String(v).length > 34 ? ' itemFullRow' : '';
       return `<div class="kv${cls}"><div class="k">${escHtml(k)}</div><div class="v">${escHtml(v)}</div></div>`;
     }).join('');
-    const contentRows = contents.map(row => {
-      return `<tr>
-        <td><button type="button" class="shopItemLink" data-shop-item="${escHtml(row.itemId)}" data-shop-name="${escHtml(row.name)}">${escHtml(row.name)}<small>ID ${escHtml(row.itemId)}</small></button></td>
-        <td>${escHtml(row.rate.toFixed(6))}%</td>
-      </tr>`;
-    }).join('');
-    const sourceLine = container ? `<div class="muted">來源資料：${escHtml(nameOfSafe(container))} / ID ${escHtml(container.ID || '')}</div>` : '';
     if(reader){
       reader.innerHTML = `<section class="card itemCompact shopItemDetail">
-        <button class="backBtn" type="button" data-shop-back>← 返回特殊商店販賣資訊</button>
+        <button class="backBtn" type="button" data-shop-back>← 返回商店</button>
         <h1>${escHtml(title)}</h1>
-        <div class="muted">商店物品 ID ${escHtml(itemId)}</div>
-        <h2>物品說明 ITEM</h2>
-        ${it ? `<div class="kvGrid">${kv}</div>` : '<div class="empty">ITEM 資料中找不到這個物品，只顯示商店資料。</div>'}
-        <h2>打開後內容 / 掉落資料</h2>
-        ${sourceLine}
-        ${contents.length ? `<div class="tableWrap"><table class="shopDropTable"><thead><tr><th>道具</th><th>機率</th></tr></thead><tbody>${contentRows}</tbody></table></div>` : '<div class="empty">目前找不到這個物品打開後的內容資料。</div>'}
+        <div class="muted">商店商品 ID ${escHtml(itemId)}</div>
+        ${it ? `<div class="kvGrid">${kv}</div>` : '<div class="empty">ITEM 資料不存在。</div>'}
       </section>`;
     }
     try{ history.pushState({app:'detail',view:'shopItem'}, '', '#shop-item-' + encodeURIComponent(itemId)); }catch(e){}
     try{ window.scrollTo({top:0,behavior:'smooth'}); }catch(e){}
   }
+  function locationByKey(key){
+    return shopLocations().find(loc => loc.key === key) || null;
+  }
+  async function jumpToMap(key){
+    const loc = locationByKey(key);
+    if(!loc) return;
+    if(typeof showPageLoading === 'function') showPageLoading('地圖查詢', '地圖載入中，請稍候...');
+    if(typeof window.ensureMapPageLoaded === 'function') await window.ensureMapPageLoaded();
+    if(typeof window.openShopMapLocation === 'function') await window.openShopMapLocation({
+      stageId: loc.stageId,
+      npcId: loc.npcId,
+      npcName: loc.npcName,
+      x: loc.rawX,
+      y: loc.rawY,
+      shopId: loc.shopId
+    });
+  }
+  function openShopLocation(shopId, stageId, npcId, x, y){
+    state.mode = 'sell';
+    state.query = '';
+    const loc = shopLocations().find(row =>
+      String(row.shopId) === String(shopId)
+      && Number(row.stageId) === Number(stageId)
+      && String(row.npcId) === String(npcId)
+      && String(row.rawX) === String(x)
+      && String(row.rawY) === String(y)
+    ) || shopLocations().find(row => String(row.shopId) === String(shopId));
+    if(loc){
+      state.stageId = loc.stageId;
+      state.activeKey = loc.key;
+    }
+    renderShopPage();
+  }
 
-  document.addEventListener('click', function(ev){
-    const shopItem = ev.target && ev.target.closest ? ev.target.closest('[data-shop-item]') : null;
-    if(shopItem){
-      ev.preventDefault();
-      ev.stopPropagation();
-      showShopItem(shopItem.dataset.shopItem, shopItem.dataset.shopName || '');
-      return;
+  document.addEventListener('compositionstart', ev => {
+    if(ev.target?.id === 'shopSearch') state.composing = true;
+  }, true);
+  document.addEventListener('compositionend', ev => {
+    if(ev.target?.id === 'shopSearch'){
+      state.composing = false;
+      state.query = ev.target.value || '';
     }
-    const back = ev.target && ev.target.closest ? ev.target.closest('[data-shop-back]') : null;
-    if(back){
-      ev.preventDefault();
-      ev.stopPropagation();
-      renderShopPage();
-      return;
+  }, true);
+  document.addEventListener('input', ev => {
+    if(ev.target?.id === 'shopSearch'){
+      state.query = ev.target.value || '';
     }
-    const tab = ev.target && ev.target.closest ? ev.target.closest('[data-shop-tab]') : null;
-    if(tab){
+  }, true);
+  document.addEventListener('focusin', ev => {
+    if(ev.target?.id === 'shopSearch') state.focusedSearch = true;
+  }, true);
+  document.addEventListener('focusout', ev => {
+    if(ev.target?.id === 'shopSearch'){
+      state.focusedSearch = false;
+      if(!state.composing){
+        scheduleRender();
+      }
+    }
+  }, true);
+  document.addEventListener('keydown', ev => {
+    if(ev.target?.id === 'shopSearch' && ev.key === 'Enter'){
       ev.preventDefault();
-      state.activeShopId = tab.dataset.shopTab || state.activeShopId;
-      state.query = '';
+      clearTimeout(state.inputTimer);
+      state.query = ev.target.value || '';
+      state.composing = false;
+      runSearch();
+    }
+  }, true);
+  document.addEventListener('change', ev => {
+    if(ev.target?.id === 'shopStageSelect'){
+      setStage(ev.target.value);
+      renderLoaded();
+    }
+    if(ev.target?.id === 'shopNpcSelect'){
+      state.activeKey = ev.target.value || state.activeKey;
+      const loc = activeLocation();
+      if(loc) state.stageId = loc.stageId;
       renderLoaded();
     }
   }, true);
-  document.addEventListener('input', function(ev){
-    if(ev.target && ev.target.id === 'shopSearch'){
-      state.query = ev.target.value || '';
-      updateShopBlocks();
+  document.addEventListener('click', ev => {
+    const mode = ev.target?.closest?.('[data-shop-mode]');
+    if(mode){
+      ev.preventDefault();
+      state.mode = mode.dataset.shopMode || 'sell';
+      renderLoaded();
+      return;
+    }
+    const searchBtn = ev.target?.closest?.('[data-shop-search]');
+    if(searchBtn){
+      ev.preventDefault();
+      const input = by('shopSearch');
+      if(input) state.query = input.value || '';
+      state.composing = false;
+      runSearch();
+      return;
+    }
+    const suggest = ev.target?.closest?.('[data-shop-suggest]');
+    if(suggest){
+      ev.preventDefault();
+      state.query = suggest.dataset.shopSuggest || '';
+      state.composing = false;
+      maybeSwitchModeForQuery();
+      renderLoaded();
+      return;
+    }
+    const mapBtn = ev.target?.closest?.('[data-shop-map]');
+    if(mapBtn){
+      ev.preventDefault();
+      jumpToMap(mapBtn.dataset.shopMap || '');
+      return;
+    }
+    const shopItem = ev.target?.closest?.('[data-shop-item]');
+    if(shopItem){
+      ev.preventDefault();
+      showShopItem(shopItem.dataset.shopItem, shopItem.dataset.shopName || '');
+      return;
+    }
+    const back = ev.target?.closest?.('[data-shop-back]');
+    if(back){
+      ev.preventDefault();
+      renderShopPage();
     }
   }, true);
 
   window.renderShopPage = renderShopPage;
   window.showShopItem = showShopItem;
+  window.openShopLocation = openShopLocation;
 })();

@@ -1627,16 +1627,117 @@ section.card:has(.supportPlan) > .notice{
   font-weight:1000;
 }
 .shopTools{
+  display:grid;
+  grid-template-columns:minmax(220px,1fr) auto;
+  gap:10px;
+  align-items:center;
   margin:0 0 12px;
 }
 .shopTools input{
   max-width:none;
+}
+.shopSearchBox{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:8px;
+  align-items:center;
+}
+.shopSearchBtn{
+  min-height:46px;
+  border-color:rgba(45,212,191,.38);
+  color:#ccfbf1;
+}
+.shopSearchNote{
+  grid-column:1;
+  color:#fde68a;
+  font-size:13px;
+  font-weight:900;
+  line-height:1.4;
+}
+.shopSuggestions{
+  grid-column:1 / -1;
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  align-items:center;
+  color:#bfdbfe;
+  font-size:13px;
+  font-weight:900;
+}
+.shopSuggestBtn{
+  border:1px solid rgba(45,212,191,.36);
+  background:linear-gradient(135deg,rgba(13,148,136,.2),rgba(96,165,250,.12));
+  color:#eaf2ff;
+  border-radius:999px;
+  padding:7px 11px;
+  font-weight:1000;
+}
+.shopSuggestBtn:hover{
+  border-color:var(--accent);
+  background:linear-gradient(135deg,rgba(13,148,136,.32),rgba(96,165,250,.2));
+}
+.shopModeTabs{
+  display:inline-flex;
+  gap:6px;
+  border:1px solid color-mix(in srgb,var(--accent2) 32%,var(--line));
+  border-radius:999px;
+  padding:4px;
+  background:rgba(8,18,37,.72);
+}
+.shopModeTabs button{
+  border:0;
+  border-radius:999px;
+  background:transparent;
+  color:#bfdbfe;
+  padding:8px 13px;
+  font-weight:1000;
+}
+.shopModeTabs button.active{
+  background:linear-gradient(135deg,#f59e0b,#38bdf8);
+  color:#06111f;
 }
 .shopLayout{
   display:grid;
   grid-template-columns:minmax(210px,260px) minmax(0,1fr);
   gap:14px;
   align-items:start;
+}
+.shopPicker{
+  display:grid;
+  grid-template-columns:minmax(180px,300px) minmax(260px,1fr);
+  gap:12px;
+  align-items:end;
+  margin:0 0 14px;
+}
+.shopSelectLabel{
+  display:grid;
+  gap:6px;
+  color:#67e8f9;
+  font-size:12px;
+  font-weight:900;
+}
+.shopSelectLabel select{
+  width:100%;
+  min-height:46px;
+  background:#10111b;
+  color:var(--text);
+  border:1px solid rgba(245,158,11,.45);
+  border-radius:12px;
+  padding:10px 12px;
+  font-size:16px;
+  font-weight:900;
+}
+.shopSearchHint{
+  grid-column:1 / -1;
+  border:1px solid rgba(245,158,11,.28);
+  border-radius:12px;
+  background:rgba(245,158,11,.11);
+  color:#fde68a;
+  padding:9px 11px;
+  font-weight:900;
+}
+.mapMonsterFooterActions{
+  justify-content:flex-end;
 }
 .shopSideNav{
   position:sticky;
@@ -1710,6 +1811,81 @@ section.card:has(.supportPlan) > .notice{
   color:#bfdbfe;
   font-weight:900;
   white-space:nowrap;
+}
+.shopBlockHeadActions{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+.shopMapBtn{
+  border-color:rgba(45,212,191,.38);
+  color:#ccfbf1;
+}
+.shopItemList{
+  display:grid;
+  gap:8px;
+  padding:12px;
+}
+.shopItemCard{
+  display:grid;
+  grid-template-columns:52px minmax(0,1fr) auto;
+  gap:11px;
+  align-items:center;
+  border:1px solid rgba(45,212,191,.24);
+  background:#0b1527;
+  color:#eaf2ff;
+  border-radius:14px;
+  padding:8px 10px;
+  text-align:left;
+}
+.shopItemCard:hover{
+  border-color:var(--accent);
+  background:#10223a;
+}
+.shopItemThumb{
+  width:44px;
+  height:44px;
+  border:1px solid rgba(96,165,250,.26);
+  border-radius:10px;
+  background:#07111f;
+  display:grid;
+  place-items:center;
+}
+.shopItemThumb img{
+  max-width:38px;
+  max-height:38px;
+  object-fit:contain;
+  image-rendering:auto;
+}
+.emptyThumb:after{
+  content:"";
+  width:18px;
+  height:18px;
+  border:1px solid rgba(148,163,184,.3);
+  border-radius:6px;
+}
+.shopItemText{
+  min-width:0;
+  display:block;
+}
+.shopItemText strong{
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.shopItemText small{
+  display:none;
+}
+.shopItemPrice{
+  color:#facc15;
+  font-weight:1000;
+  font-size:17px;
+  font-variant-numeric:tabular-nums;
+}
+.shopEmptySide{
+  padding:12px;
 }
 .shopTableWrap{
   border:0;
@@ -1787,7 +1963,19 @@ section.card:has(.supportPlan) > .notice{
   .shopTools input{
     max-width:none;
   }
+  .shopTools{
+    grid-template-columns:1fr;
+  }
+  .shopSearchNote{
+    grid-column:auto;
+  }
+  .shopModeTabs{
+    justify-self:start;
+  }
   .shopLayout{
+    grid-template-columns:1fr;
+  }
+  .shopPicker{
     grid-template-columns:1fr;
   }
   .shopSideNav{
@@ -1795,6 +1983,7 @@ section.card:has(.supportPlan) > .notice{
   }
   .shopBlockHead{
     align-items:flex-start;
+    display:grid;
   }
   .shopBlockHead h2{
     font-size:16px;
@@ -1835,6 +2024,22 @@ section.card:has(.supportPlan) > .notice{
   }
   .shopItemLink small{
     font-size:10px;
+  }
+  .shopItemCard{
+    grid-template-columns:42px minmax(0,1fr);
+  }
+  .shopItemThumb{
+    width:38px;
+    height:38px;
+  }
+  .shopItemThumb img{
+    max-width:34px;
+    max-height:34px;
+  }
+  .shopItemPrice{
+    grid-column:2;
+    justify-self:start;
+    font-size:15px;
   }
 }
 
@@ -3126,11 +3331,39 @@ body{
 .mapDot.withImage{width:46px;height:46px;border-radius:12px;background:#07111f}
 .mapDot.withImage img{display:block;max-width:100%;max-height:100%;object-fit:contain;image-rendering:auto}
 .mapDot.withImage img[src=""],.mapDot.withImage img:not([src]){display:none}
+.mapDot.shopNpcDot{border-color:#fbbf24;box-shadow:0 0 0 3px rgba(0,0,0,.45),0 0 0 6px rgba(251,191,36,.22)}
 .mapLoading{position:absolute;z-index:3;left:14px;top:14px;border:1px solid rgba(96,165,250,.42);background:rgba(3,7,18,.88);color:#eaf2ff;border-radius:999px;padding:8px 12px;font-weight:1000}
 .mapClearSearchBtn{min-height:42px;white-space:nowrap}
+.mapShopBackdrop{position:fixed;inset:0;z-index:120;background:rgba(2,6,23,.58);display:grid;place-items:center;padding:18px}
+.mapShopPanel{width:min(760px,96vw);max-height:min(760px,88vh);display:grid;grid-template-rows:auto auto minmax(0,1fr);border:1px solid rgba(245,158,11,.45);border-radius:18px;background:#0b1020;box-shadow:0 24px 70px rgba(0,0,0,.52);overflow:hidden}
+.mapShopHead{display:flex;justify-content:space-between;gap:12px;padding:16px 18px;border-bottom:1px solid rgba(148,163,184,.18)}
+.mapShopHead h2{margin:0 0 5px;font-size:22px}
+.mapShopMeta{color:#a8c7ee;font-weight:850}
+.mapShopActions{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:11px 18px;border-bottom:1px solid rgba(148,163,184,.14)}
+.mapShopModes{display:inline-flex;gap:6px;border:1px solid rgba(96,165,250,.28);border-radius:999px;padding:4px;background:#081225}
+.mapShopModes button{border:0;border-radius:999px;background:transparent;color:#bfdbfe;padding:8px 14px;font-weight:1000}
+.mapShopModes button.active{background:linear-gradient(135deg,#f59e0b,#38bdf8);color:#06111f}
+.mapShopOpenPage{border-color:rgba(45,212,191,.38);color:#ccfbf1}
+.mapShopItems{display:grid;gap:8px;padding:14px 18px;overflow:auto}
+.mapShopItem{display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:10px;align-items:center;border:1px solid rgba(45,212,191,.22);background:#0b1527;color:#eaf2ff;border-radius:14px;padding:8px 10px;text-align:left}
+.mapShopItem:hover{border-color:#2dd4bf;background:#10223a}
+.mapShopThumb{width:42px;height:42px;border:1px solid rgba(96,165,250,.26);border-radius:10px;background:#07111f;display:grid;place-items:center}
+.mapShopThumb img{max-width:36px;max-height:36px;object-fit:contain}
+.mapShopText{min-width:0;display:grid;gap:3px}
+.mapShopText strong{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mapShopText small{color:#a8c7ee;font-weight:800}
+.mapShopPrice{color:#facc15;font-size:17px;font-weight:1000;font-variant-numeric:tabular-nums}
+.mapMonsterPanel{border-color:rgba(45,212,191,.5)}
+.mapMonsterTitle{display:flex;align-items:center;gap:12px;min-width:0}
+.mapMonsterThumb{width:58px;height:58px;border:1px solid rgba(96,165,250,.32);border-radius:14px;background:#07111f;display:grid;place-items:center;overflow:hidden;flex:0 0 auto}
+.mapMonsterThumb img{max-width:54px;max-height:54px;object-fit:contain;image-rendering:auto}
+.mapMonsterTitle h2{margin:0 0 4px}
 @media(max-width:900px){
   .mapToolbar,.mapLayout{grid-template-columns:1fr}
   .mapLeftPane{grid-template-rows:none;max-height:none}
   .mapSide{max-height:42vh}
   .mapCanvasWrap{min-height:280px}
+  .mapShopActions{display:grid}
+  .mapShopItem{grid-template-columns:42px minmax(0,1fr)}
+  .mapShopPrice{grid-column:2;justify-self:start}
 }
