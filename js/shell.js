@@ -39,6 +39,7 @@
       <button class="navBtn major" data-view="collect">武冠收錄資料 <span>›</span></button>
       <div class="formBox" id="collectForm">
         <div class="subMenuNote">武冠收錄資料</div>
+        <button class="navBtn sub" data-collect-open="bonus">武冠鋒雲錄能力值 <span>›</span></button>
         <button class="navBtn sub" data-collect-open="weapon">武防出處 <span>›</span></button>
         <button class="navBtn sub" data-collect-open="artifact">法器出處 <span>›</span></button>
         <button class="navBtn sub" data-collect-open="recipe">配方出處 <span>›</span></button>

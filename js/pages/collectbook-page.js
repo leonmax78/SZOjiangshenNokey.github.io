@@ -1,8 +1,10 @@
 // V301: collect book source lookup page.
 (function(){
   const DATA_URL = 'data/collectbook_sources.json';
+  const BONUS_URL = 'data/collectbook_bonus.json';
   const GROUP_SIZE = 96;
   const labels = {
+    bonus: '武冠鋒雲錄能力值',
     weapon: '武防出處',
     artifact: '法器出處',
     recipe: '配方出處',
@@ -307,6 +309,41 @@
     const data = state.data || {};
     return Array.isArray(data[kind]) ? data[kind] : [];
   }
+  function getBonusRows(){
+    const bonus = state.data?.bonus || {};
+    return Array.isArray(bonus.rows) ? bonus.rows : [];
+  }
+  function collectScoreTotal(){
+    return ['weapon', 'artifact', 'recipe', 'beast'].reduce((sum, kind) => {
+      return sum + getRows(kind).reduce((part, row) => part + (Number(row.score) || 0), 0);
+    }, 0);
+  }
+  function formatNum(value){
+    const num = Number(value);
+    return Number.isFinite(num) ? num.toLocaleString('zh-TW') : String(value || '0');
+  }
+  function statGroupText(row, keys, labels){
+    const values = keys.map(key => Number(row[key]) || 0);
+    if(values.every(value => !value)) return '';
+    const first = values[0];
+    if(values.every(value => value === first)){
+      return `<li><span>${escHtml(labels.join('、'))}</span><strong>+${formatNum(first)}</strong></li>`;
+    }
+    return keys.map((key, index) => values[index] ? `<li><span>${escHtml(labels[index])}</span><strong>+${formatNum(values[index])}</strong></li>` : '').join('');
+  }
+  function bonusName(row){
+    const name = String(row?.Name || '').trim();
+    const match = name.match(/^(鋒雲錄)(\d+)(重天)$/);
+    if(!match) return name || '-';
+    return `${match[1]} ${match[2]} ${match[3]}`;
+  }
+  function bonusStats(row){
+    return [
+      statGroupText(row, ['Con', 'Str', 'Int', 'Dex'], ['體魄', '力量', '智慧', '靈敏']),
+      statGroupText(row, ['Def', 'MDef'], ['防禦', '術防']),
+      statGroupText(row, ['MaxHP', 'MaxMP'], ['最大生命', '最大精力'])
+    ].filter(Boolean).join('');
+  }
   function categories(kind){
     const rows = getRows(kind);
     if(kind === 'beast'){
@@ -379,8 +416,10 @@
         if(!res.ok) throw new Error('Collect book data load failed');
         return res.json();
       }),
+      fetch(BONUS_URL + '?v=' + version).then(res => res.ok ? res.json() : { rows: [] }).catch(() => ({ rows: [] })),
       typeof loadDataBundle === 'function' ? loadDataBundle('locations').catch(() => ({})) : Promise.resolve({})
-    ]).then(([data, locations]) => {
+    ]).then(([data, bonus, locations]) => {
+        data.bonus = bonus || { rows: [] };
         state.data = data;
         state.locations = locations && typeof locations === 'object' && !Array.isArray(locations) ? locations : {};
         return data;
@@ -392,6 +431,32 @@
     document.querySelectorAll('.formBox').forEach(box => box.classList.remove('active'));
     by('collectForm')?.classList.add('active');
     document.querySelectorAll('[data-collect-open]').forEach(btn => btn.classList.toggle('active', btn.dataset.collectOpen === kind));
+  }
+  function renderBonusPage(){
+    state.active = 'bonus';
+    window.SZO_COLLECT_ACTIVE = 'bonus';
+    syncNav('bonus');
+    const rows = getBonusRows();
+    const reader = by('reader');
+    if(!reader) return;
+    const scoreTotal = collectScoreTotal();
+    const latest = rows[rows.length - 1] || null;
+    reader.innerHTML = `<section class="card collectPage collectBonusPage">
+      <div class="collectBonusHero">
+        <div>
+          <h1>武冠鋒雲錄能力值</h1>
+          <p>當前版本武冠最高積分：<strong>${formatNum(scoreTotal)}</strong></p>
+        </div>
+        ${latest ? `<div class="collectBonusLatest"><span>最高階</span><strong>${escHtml(bonusName(latest))}</strong></div>` : ''}
+      </div>
+      <div class="collectBonusList">${rows.map(row => `<article class="collectBonusCard">
+        <div class="collectBonusHead">
+          <div class="collectBonusName">${escHtml(bonusName(row))}</div>
+          <div class="collectBonusScore">積分：${formatNum(row.Value)}</div>
+        </div>
+        <ul class="collectBonusStats">${bonusStats(row)}</ul>
+      </article>`).join('') || '<div class="empty">沒有能力值資料。</div>'}</div>
+    </section>`;
   }
   function controls(kind){
     const cats = kind === 'weapon' || kind === 'beast' ? categories(kind) : [];
@@ -443,6 +508,10 @@
     return `<div class="collectList">${body || '<div class="empty">沒有符合條件的資料。</div>'}</div>`;
   }
   function renderLoaded(kind){
+    if(kind === 'bonus'){
+      renderBonusPage();
+      return;
+    }
     state.active = labels[kind] ? kind : 'weapon';
     kind = state.active;
     window.SZO_COLLECT_ACTIVE = kind;
@@ -473,7 +542,7 @@
     syncNav('menu');
     const reader = by('reader');
     if(!reader) return;
-    const entries = ['weapon', 'artifact', 'recipe', 'beast'];
+    const entries = ['bonus', 'weapon', 'artifact', 'recipe', 'beast'];
     reader.innerHTML = `<section class="card collectPage collectMenuPage">
       <h1>武冠收錄資料</h1>
       <div class="collectList">${entries.map(kind => `<button type="button" class="resultItem" data-collect-open="${escHtml(kind)}"><div class="rName">${escHtml(labels[kind])}</div><div class="rSub">查看${escHtml(labels[kind])}的來源與掉落資料</div></button>`).join('')}</div>
@@ -491,7 +560,7 @@
     }
     kind = labels[kind] ? kind : 'weapon';
     window.SZO_COLLECT_ACTIVE = kind;
-    state.query[kind] = '';
+    if(state.query[kind] !== undefined) state.query[kind] = '';
     window.v86LastView = 'collect';
     const reader = by('reader');
     if(reader) reader.innerHTML = '<section class="card collectPage"><h1>武冠收錄資料</h1><div class="muted">資料載入中...</div></section>';

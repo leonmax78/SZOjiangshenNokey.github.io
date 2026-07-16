@@ -450,6 +450,125 @@ h1{font-size:24px;line-height:1.22;margin:0 0 8px}h2{font-size:19px;margin:0 0 1
   color:#dbeafe;
   cursor:pointer;
 }
+.collectBonusPage{
+  max-width:1180px;
+}
+.collectBonusHero{
+  display:flex;
+  align-items:stretch;
+  justify-content:space-between;
+  gap:14px;
+  margin-bottom:14px;
+  padding:16px;
+  border:1px solid rgba(45,212,191,.34);
+  border-radius:18px;
+  background:linear-gradient(135deg,rgba(45,212,191,.14),rgba(96,165,250,.10) 55%,rgba(251,191,36,.08));
+}
+.collectBonusHero h1{
+  margin:0 0 8px;
+}
+.collectBonusHero p{
+  margin:0;
+  color:#cfe6ff;
+  font-size:16px;
+  font-weight:900;
+}
+.collectBonusHero p strong{
+  display:inline-flex;
+  align-items:center;
+  margin-left:8px;
+  padding:5px 12px;
+  border:1px solid rgba(251,191,36,.45);
+  border-radius:999px;
+  background:rgba(251,191,36,.14);
+  color:#fde68a;
+  font-size:20px;
+  font-weight:1000;
+}
+.collectBonusLatest{
+  flex:0 0 auto;
+  min-width:170px;
+  display:grid;
+  align-content:center;
+  gap:4px;
+  padding:12px 14px;
+  border:1px solid rgba(96,165,250,.34);
+  border-radius:16px;
+  background:rgba(7,17,31,.62);
+}
+.collectBonusLatest span{
+  color:#7dd3fc;
+  font-size:12px;
+  font-weight:1000;
+}
+.collectBonusLatest strong{
+  color:#eaf2ff;
+  font-size:17px;
+}
+.collectBonusList{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+.collectBonusCard{
+  padding:14px;
+  border:1px solid rgba(96,165,250,.26);
+  border-radius:16px;
+  background:linear-gradient(180deg,rgba(11,21,39,.9),rgba(7,17,31,.94));
+}
+.collectBonusHead{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:12px;
+  padding-bottom:10px;
+  border-bottom:1px solid rgba(148,163,184,.14);
+}
+.collectBonusName{
+  color:#f3fbff;
+  font-size:20px;
+  font-weight:1000;
+  line-height:1.25;
+}
+.collectBonusScore{
+  flex:0 0 auto;
+  border:1px solid rgba(251,191,36,.42);
+  border-radius:999px;
+  background:rgba(251,191,36,.12);
+  color:#fde68a;
+  padding:6px 10px;
+  font-size:14px;
+  font-weight:1000;
+}
+.collectBonusStats{
+  display:grid;
+  gap:8px;
+  padding:0;
+  margin:0;
+  list-style:none;
+}
+.collectBonusStats li{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:10px 12px;
+  border:1px solid rgba(45,212,191,.18);
+  border-radius:12px;
+  background:rgba(15,23,42,.6);
+}
+.collectBonusStats span{
+  color:#dbeafe;
+  font-weight:900;
+  line-height:1.35;
+}
+.collectBonusStats strong{
+  color:#67e8f9;
+  font-size:18px;
+  font-weight:1000;
+  white-space:nowrap;
+}
 @media(max-width:979px){
   .collectDropDetailPage{
     padding:14px;
@@ -530,6 +649,23 @@ h1{font-size:24px;line-height:1.22;margin:0 0 8px}h2{font-size:19px;margin:0 0 1
   .collectDropDetailTable td:nth-child(3)::before{
     content:'機率：';
     color:#7dd3fc;
+  }
+}
+@media(max-width:760px){
+  .collectBonusHero{
+    flex-direction:column;
+    padding:14px;
+  }
+  .collectBonusList{
+    grid-template-columns:1fr;
+  }
+  .collectBonusHead{
+    align-items:flex-start;
+    flex-direction:column;
+    gap:8px;
+  }
+  .collectBonusName{
+    font-size:18px;
   }
 }
 .beastSkillChecks{
