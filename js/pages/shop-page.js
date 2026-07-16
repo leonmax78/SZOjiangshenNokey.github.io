@@ -16,6 +16,11 @@
     inputTimer: null,
     exactItemName: ''
   };
+  const SKILL_SHOP_ORDER = {
+    7: { '傳功長者': 1, '總護法': 2, '丹雲子': 3, '覺塵戒師': 4 },
+    6: { '傳功長者': 1, '總護法': 2, '丹霞子': 3, '靜虛戒師': 4 },
+    8: { '傳功長者': 1, '總護法': 2, '丹華子': 3, '苦定戒師': 4 }
+  };
 
   function by(id){ return document.getElementById(id); }
   function escHtml(value){
@@ -73,6 +78,21 @@
   function shopMap(){
     return new Map((state.data?.shops || []).map(shop => [String(shop.shopId), shop]));
   }
+  function skillShopOrder(loc){
+    return SKILL_SHOP_ORDER[Number(loc?.stageId)]?.[loc?.npcName] || 0;
+  }
+  function compareShopLocations(a, b){
+    const stageSort = a.stageId - b.stageId;
+    if(stageSort) return stageSort;
+    const aSkill = skillShopOrder(a);
+    const bSkill = skillShopOrder(b);
+    if(aSkill || bSkill){
+      if(!aSkill) return -1;
+      if(!bSkill) return 1;
+      return aSkill - bSkill;
+    }
+    return a.npcName.localeCompare(b.npcName, 'zh-Hant') || Number(a.shopId) - Number(b.shopId);
+  }
   function shopLocations(){
     const shops = shopMap();
     const rows = [];
@@ -95,7 +115,7 @@
         });
       }
     }
-    return rows.sort((a,b) => a.stageId - b.stageId || a.npcName.localeCompare(b.npcName, 'zh-Hant') || Number(a.shopId) - Number(b.shopId));
+    return rows.sort(compareShopLocations);
   }
   function stagesWithShops(){
     const seen = new Map();
