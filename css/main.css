@@ -3473,7 +3473,7 @@ body{
 .mapMarkerChoice{display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:start;border:1px solid rgba(148,163,184,.16);background:#0b1527;border-radius:12px;padding:8px 9px;color:#dbeafe;font-weight:800;line-height:1.35}
 .mapMarkerChoice input{width:18px;height:18px;margin-top:1px;accent-color:var(--accent)}
 .mapEmptyLine{padding:8px}
-.mapCanvasWrap{position:relative;min-height:520px;border:1px solid rgba(245,158,11,.35);border-radius:16px;background:#020817;overflow:auto;cursor:grab;touch-action:none;user-select:none}
+.mapCanvasWrap{position:relative;height:clamp(420px,70vh,760px);min-height:0;border:1px solid rgba(245,158,11,.35);border-radius:16px;background:#020817;overflow:auto;cursor:grab;touch-action:none;user-select:none;overscroll-behavior:contain}
 .mapCanvasWrap.dragging{cursor:grabbing}
 .mapZoomBar{position:sticky;top:0;z-index:4;display:flex;align-items:center;gap:10px;justify-content:flex-end;padding:10px 12px;background:linear-gradient(180deg,rgba(2,8,23,.92),rgba(2,8,23,.62));backdrop-filter:blur(8px)}
 .mapZoomBar label{display:flex;align-items:center;gap:8px;color:#a7f3d0;font-size:12px;font-weight:1000}
@@ -3520,7 +3520,7 @@ body{
   .mapToolbar,.mapLayout{grid-template-columns:1fr}
   .mapLeftPane{grid-template-rows:none;max-height:none}
   .mapSide{max-height:42vh}
-  .mapCanvasWrap{min-height:280px}
+  .mapCanvasWrap{height:clamp(320px,62vh,620px);min-height:0}
   .mapShopActions{display:grid}
   .mapShopItem{grid-template-columns:42px minmax(0,1fr)}
   .mapShopPrice{grid-column:2;justify-self:start}

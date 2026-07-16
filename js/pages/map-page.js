@@ -671,9 +671,7 @@
       wrap,
       pointerId: ev.pointerId,
       x: ev.clientX,
-      y: ev.clientY,
-      left: wrap.scrollLeft,
-      top: wrap.scrollTop
+      y: ev.clientY
     };
     wrap.classList.add('dragging');
     try{ wrap.setPointerCapture(ev.pointerId); }catch(e){}
@@ -683,8 +681,10 @@
     if(!mapDragState || mapDragState.pointerId !== ev.pointerId) return;
     const dx = ev.clientX - mapDragState.x;
     const dy = ev.clientY - mapDragState.y;
-    mapDragState.wrap.scrollLeft = mapDragState.left - dx;
-    mapDragState.wrap.scrollTop = mapDragState.top - dy;
+    mapDragState.wrap.scrollLeft -= dx;
+    mapDragState.wrap.scrollTop -= dy;
+    mapDragState.x = ev.clientX;
+    mapDragState.y = ev.clientY;
     ev.preventDefault();
   }
   function endMapDrag(ev){
