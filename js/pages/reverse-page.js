@@ -399,8 +399,9 @@
         + '</div>';
     }
     const loc=locSafe(name)||'??????';
-    const locHtml=mid && typeof window.hasReverseMapPoint==='function' && window.hasReverseMapPoint(mid)
-      ? '<button type="button" class="reverseDropLoc reverseMapLink" data-reverse-map-monster="'+escHtml(mid)+'" data-reverse-map-name="'+escHtml(name)+'">'+escHtml(loc)+'</button>'
+    const hasLoc=loc && loc!=='??????';
+    const locHtml=mid && hasLoc
+      ? '<button type="button" class="reverseDropLoc reverseMapLink" data-reverse-map-monster="'+escHtml(mid)+'" data-reverse-map-name="'+escHtml(name)+'">'+escHtml(loc)+'<span class="reverseMapHint">地圖</span></button>'
       : '<div class="reverseDropLoc">'+escHtml(loc)+'</div>';
     return '<div class="reverseDropCard reverseDropCardMonster">'
       + '<div class="reverseDropMain">'

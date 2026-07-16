@@ -3368,7 +3368,46 @@ body{
   .mapShopPrice{grid-column:2;justify-self:start}
 }
 
-.reverseMapLink{border:0;background:transparent;color:#93c5fd;text-align:left;padding:0;font:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
-.reverseMapLink:hover{color:#67e8f9}
+.reverseMapLink{display:inline-flex;align-items:center;gap:8px;max-width:100%;border:1px solid rgba(45,212,191,.42);border-radius:999px;background:rgba(20,184,166,.1);color:#bdf8ff;text-align:left;padding:5px 10px;font:inherit;font-weight:800;text-decoration:none;cursor:pointer}
+.reverseMapLink:hover{border-color:rgba(103,232,249,.82);background:rgba(14,165,233,.18);color:#ffffff}
+.reverseMapHint{flex:0 0 auto;border-radius:999px;background:linear-gradient(135deg,#f59e0b,#67e8f9);color:#06101f;padding:2px 7px;font-size:11px;font-weight:1000}
 .reverseDropMonsterName{border:0;background:transparent;color:var(--text);padding:0;text-align:left;font:inherit;font-weight:1000;cursor:pointer}
 .reverseDropMonsterName:hover{color:#67e8f9}
+
+.monsterCompact .monsterTopActions{
+  align-items:center;
+}
+.monsterCompact .monsterTopActions button{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  min-height:48px;
+  border-radius:999px;
+  padding:10px 16px;
+  font-weight:1000;
+  line-height:1.15;
+}
+.monsterCompact .monsterTopActions button small{
+  color:inherit;
+  opacity:.82;
+  font-size:12px;
+  font-weight:800;
+}
+.monsterCompact .monsterTopActions .mapJumpBtn{
+  border:1px solid rgba(45,212,191,.62);
+  background:rgba(20,184,166,.14);
+  color:#d7feff;
+  box-shadow:none;
+}
+.monsterCompact .monsterTopActions .primary{
+  border:1px solid rgba(245,158,11,.62);
+  background:rgba(245,158,11,.13);
+  color:#fff4c7;
+  box-shadow:none;
+}
+.monsterCompact .monsterTopActions .mapJumpBtn:hover,
+.monsterCompact .monsterTopActions .primary:hover{
+  filter:none;
+  transform:translateY(-1px);
+}
