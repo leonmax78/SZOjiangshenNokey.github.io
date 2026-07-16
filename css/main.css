@@ -1704,17 +1704,22 @@ section.card:has(.supportPlan) > .notice{
 }
 .shopPicker{
   display:grid;
-  grid-template-columns:minmax(180px,300px) minmax(260px,1fr);
+  grid-template-columns:minmax(180px,300px) minmax(260px,1fr) auto;
   gap:12px;
   align-items:end;
   margin:0 0 14px;
+  padding:12px;
+  border:1px solid rgba(45,212,191,.24);
+  border-radius:16px;
+  background:linear-gradient(135deg,rgba(8,18,37,.72),rgba(15,23,42,.44));
 }
 .shopSelectLabel{
   display:grid;
   gap:6px;
-  color:#67e8f9;
+  color:#7dd3fc;
   font-size:12px;
-  font-weight:900;
+  font-weight:1000;
+  letter-spacing:0;
 }
 .shopSelectLabel select{
   width:100%;
@@ -1726,6 +1731,12 @@ section.card:has(.supportPlan) > .notice{
   padding:10px 12px;
   font-size:16px;
   font-weight:900;
+}
+.shopPickerMode{
+  display:flex;
+  align-items:end;
+  justify-content:flex-end;
+  min-height:46px;
 }
 .shopSearchHint{
   grid-column:1 / -1;
@@ -1977,6 +1988,16 @@ section.card:has(.supportPlan) > .notice{
   }
   .shopPicker{
     grid-template-columns:1fr;
+    padding:10px;
+  }
+  .shopPickerMode{
+    justify-content:flex-start;
+  }
+  .shopPickerMode .shopModeTabs{
+    width:100%;
+  }
+  .shopPickerMode .shopModeTabs button{
+    flex:1 1 0;
   }
   .shopSideNav{
     position:static;
@@ -3316,7 +3337,8 @@ body{
 .mapMarkerChoice{display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:start;border:1px solid rgba(148,163,184,.16);background:#0b1527;border-radius:12px;padding:8px 9px;color:#dbeafe;font-weight:800;line-height:1.35}
 .mapMarkerChoice input{width:18px;height:18px;margin-top:1px;accent-color:var(--accent)}
 .mapEmptyLine{padding:8px}
-.mapCanvasWrap{position:relative;min-height:520px;border:1px solid rgba(245,158,11,.35);border-radius:16px;background:#020817;overflow:auto}
+.mapCanvasWrap{position:relative;min-height:520px;border:1px solid rgba(245,158,11,.35);border-radius:16px;background:#020817;overflow:auto;cursor:grab;touch-action:none;user-select:none}
+.mapCanvasWrap.dragging{cursor:grabbing}
 .mapZoomBar{position:sticky;top:0;z-index:4;display:flex;align-items:center;gap:10px;justify-content:flex-end;padding:10px 12px;background:linear-gradient(180deg,rgba(2,8,23,.92),rgba(2,8,23,.62));backdrop-filter:blur(8px)}
 .mapZoomBar label{display:flex;align-items:center;gap:8px;color:#a7f3d0;font-size:12px;font-weight:1000}
 .mapZoomBar input{width:180px;accent-color:#2dd4bf}

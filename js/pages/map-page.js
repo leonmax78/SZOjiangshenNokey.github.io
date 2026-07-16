@@ -656,9 +656,53 @@
     else setTimeout(prewarmMonsterData, 250);
   }
 
+  let mapDragState = null;
+  function dragTargetAllowed(target){
+    if(!target?.closest) return false;
+    if(target.closest('.mapZoomBar,.mapDot,button,input,select,label,a')) return false;
+    return !!target.closest('.mapCanvasWrap');
+  }
+  function startMapDrag(ev){
+    if(ev.button !== undefined && ev.button !== 0) return;
+    if(!dragTargetAllowed(ev.target)) return;
+    const wrap = ev.target.closest('.mapCanvasWrap');
+    if(!wrap) return;
+    mapDragState = {
+      wrap,
+      pointerId: ev.pointerId,
+      x: ev.clientX,
+      y: ev.clientY,
+      left: wrap.scrollLeft,
+      top: wrap.scrollTop
+    };
+    wrap.classList.add('dragging');
+    try{ wrap.setPointerCapture(ev.pointerId); }catch(e){}
+    ev.preventDefault();
+  }
+  function moveMapDrag(ev){
+    if(!mapDragState || mapDragState.pointerId !== ev.pointerId) return;
+    const dx = ev.clientX - mapDragState.x;
+    const dy = ev.clientY - mapDragState.y;
+    mapDragState.wrap.scrollLeft = mapDragState.left - dx;
+    mapDragState.wrap.scrollTop = mapDragState.top - dy;
+    ev.preventDefault();
+  }
+  function endMapDrag(ev){
+    if(!mapDragState || mapDragState.pointerId !== ev.pointerId) return;
+    const wrap = mapDragState.wrap;
+    wrap.classList.remove('dragging');
+    try{ wrap.releasePointerCapture(ev.pointerId); }catch(e){}
+    mapDragState = null;
+  }
+
   document.addEventListener('compositionstart', ev => {
     if(ev.target?.id === 'mapSearchInput') state.composing = true;
   });
+
+  document.addEventListener('pointerdown', startMapDrag, true);
+  document.addEventListener('pointermove', moveMapDrag, true);
+  document.addEventListener('pointerup', endMapDrag, true);
+  document.addEventListener('pointercancel', endMapDrag, true);
 
   document.addEventListener('compositionend', ev => {
     if(ev.target?.id === 'mapSearchInput'){

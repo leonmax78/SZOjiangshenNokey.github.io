@@ -253,7 +253,7 @@
     return `${loc.stageName} / ${loc.npcName}`;
   }
   function locationSub(loc){
-    return SHOW_SHOP_COORDS ? `Shop ${loc.shopId} / (${loc.x}, ${loc.y})` : `Shop ${loc.shopId}`;
+    return SHOW_SHOP_COORDS ? `(${loc.x}, ${loc.y})` : '';
   }
   function stageSelect(loc){
     const selected = loc?.stageId ?? state.stageId;
@@ -276,7 +276,7 @@
       <select id="shopNpcSelect">
         ${rows.map(row => {
           const count = filteredItems(row).length;
-          return `<option value="${escHtml(row.key)}" ${row.key === loc?.key ? 'selected' : ''}>${escHtml(row.npcName)} / ${escHtml(locationSub(row))}${q ? ` / ${count}筆` : ''}</option>`;
+          return `<option value="${escHtml(row.key)}" ${row.key === loc?.key ? 'selected' : ''}>${escHtml(row.npcName)}${q ? ` / ${count}筆` : ''}</option>`;
         }).join('')}
       </select>
     </label>`;
@@ -306,7 +306,7 @@
       <div class="shopBlockHead">
         <div>
           <h2>${escHtml(locationTitle(loc))}</h2>
-          <div class="muted">${escHtml(locationSub(loc))}</div>
+          ${locationSub(loc) ? `<div class="muted">${escHtml(locationSub(loc))}</div>` : ''}
         </div>
         <button type="button" class="ghost shopMapBtn" data-shop-map="${escHtml(loc.key)}">地圖位置</button>
       </div>
@@ -324,6 +324,12 @@
       ${rows.map(row => shopBlock(row.loc, row.items, 'shopResultBlock')).join('')}
     </div>`;
   }
+  function modeTabsHTML(){
+    return `<div class="shopModeTabs">
+      <button type="button" class="${state.mode === 'sell' ? 'active' : ''}" data-shop-mode="sell">販售</button>
+      <button type="button" class="${state.mode === 'buy' ? 'active' : ''}" data-shop-mode="buy">回收</button>
+    </div>`;
+  }
   function renderLoaded(){
     const reader = by('reader');
     if(!reader) return;
@@ -334,9 +340,7 @@
       <div class="shopHeader">
         <div>
           <h1>商店販賣資訊</h1>
-          <div class="muted">依地圖 NPC 商店整理，可從商店跳地圖，也可從地圖點商店。</div>
         </div>
-        <div class="shopCount">${shopLocations().length} 個地圖商店</div>
       </div>
       <div class="shopTools">
         <div class="shopSearchBox">
@@ -345,14 +349,11 @@
         </div>
         <div class="shopSearchNote">備注：部分商品受名聲影響，最多享八折優惠</div>
         ${renderItemSuggestions()}
-        <div class="shopModeTabs">
-          <button type="button" class="${state.mode === 'sell' ? 'active' : ''}" data-shop-mode="sell">販賣</button>
-          <button type="button" class="${state.mode === 'buy' ? 'active' : ''}" data-shop-mode="buy">回收</button>
-        </div>
       </div>
       <div class="shopPicker">
         ${stageSelect(loc)}
         ${npcSelect(loc)}
+        <div class="shopPickerMode">${modeTabsHTML()}</div>
         ${isSearching ? `<div class="shopSearchHint">符合搜尋的商店會依${state.mode === 'buy' ? '回收高價' : '販賣低價'}優先排列。</div>` : ''}
       </div>
       ${isSearching ? searchResults() : shopBlock(loc, items)}
