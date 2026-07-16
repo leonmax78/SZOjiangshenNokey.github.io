@@ -447,6 +447,15 @@
     }
     renderShopPage();
   }
+  function wheelSelect(select, deltaY){
+    if(!select || !select.options || !select.options.length) return false;
+    const step = deltaY > 0 ? 1 : -1;
+    const next = Math.max(0, Math.min(select.options.length - 1, select.selectedIndex + step));
+    if(next === select.selectedIndex) return false;
+    select.selectedIndex = next;
+    select.dispatchEvent(new Event('change', { bubbles: true }));
+    return true;
+  }
 
   document.addEventListener('compositionstart', ev => {
     if(ev.target?.id === 'shopSearch') state.composing = true;
@@ -496,6 +505,11 @@
       renderLoaded();
     }
   }, true);
+  document.addEventListener('wheel', ev => {
+    const select = ev.target?.closest?.('#shopStageSelect, #shopNpcSelect');
+    if(!select) return;
+    if(wheelSelect(select, ev.deltaY)) ev.preventDefault();
+  }, { capture: true, passive: false });
   document.addEventListener('click', ev => {
     const mode = ev.target?.closest?.('[data-shop-mode]');
     if(mode){
