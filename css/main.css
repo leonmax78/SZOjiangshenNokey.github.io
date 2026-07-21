@@ -336,6 +336,36 @@ h1{font-size:24px;line-height:1.22;margin:0 0 8px}h2{font-size:19px;margin:0 0 1
   line-height:1.35;
   margin:2px 4px 2px 0;
 }
+.collectMapTag{
+  cursor:pointer;
+  font-family:inherit;
+  text-decoration:none;
+  border-color:rgba(45,212,191,.45);
+  background:rgba(8,47,73,.72);
+  color:#d6fff6;
+}
+.collectMapTag:hover,.collectMapTag:focus-visible{
+  border-color:#2dd4bf;
+  box-shadow:0 0 0 2px rgba(45,212,191,.18);
+  color:#fff;
+}
+.collectTopBtn{
+  position:fixed;
+  right:calc(18px + env(safe-area-inset-right));
+  bottom:calc(18px + env(safe-area-inset-bottom));
+  z-index:35;
+  border:1px solid rgba(45,212,191,.5);
+  background:linear-gradient(135deg,rgba(15,118,110,.95),rgba(37,99,235,.92));
+  color:#fff;
+  border-radius:999px;
+  padding:10px 14px;
+  font-weight:1000;
+  box-shadow:0 12px 30px rgba(0,0,0,.32);
+}
+.collectTopBtn:hover,.collectTopBtn:focus-visible{
+  filter:brightness(1.08);
+  transform:translateY(-1px);
+}
 .collectDropList{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(170px,1fr));

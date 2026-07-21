@@ -3,6 +3,8 @@
   const DATA_URL = 'data/collectbook_sources.json';
   const BONUS_URL = 'data/collectbook_bonus.json';
   const GROUP_SIZE = 96;
+  const FILTER_STORAGE_KEY = 'szo.collectbook.filters.v1';
+  const SCROLL_STORAGE_KEY = 'szo.collectbook.scroll.v1';
   const labels = {
     bonus: '武冠鋒雲錄能力值',
     weapon: '武防出處',
@@ -23,7 +25,8 @@
       weapon: { task: false, shop: false },
       artifact: { task: false, shop: false },
       recipe: { task: false, shop: false }
-    }
+    },
+    scroll: {}
   };
 
   function by(id){ return document.getElementById(id); }
@@ -31,9 +34,99 @@
     if(typeof esc === 'function') return esc(value);
     return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   }
+  function readCollectFilterState(){
+    try{
+      const raw = localStorage.getItem(FILTER_STORAGE_KEY);
+      if(!raw) return;
+      const saved = JSON.parse(raw);
+      ['weapon','artifact','recipe','beast'].forEach(kind => {
+        if(saved.query && typeof saved.query[kind] === 'string') state.query[kind] = saved.query[kind];
+        if(saved.category && typeof saved.category[kind] === 'string') state.category[kind] = saved.category[kind];
+        if(saved.segment && typeof saved.segment[kind] === 'string') state.segment[kind] = saved.segment[kind];
+      });
+      ['weapon','artifact','recipe'].forEach(kind => {
+        if(saved.sourceFilter && saved.sourceFilter[kind]){
+          state.sourceFilter[kind] = {
+            task: !!saved.sourceFilter[kind].task,
+            shop: !!saved.sourceFilter[kind].shop
+          };
+        }
+      });
+    }catch(e){}
+  }
+  function writeCollectFilterState(){
+    try{
+      localStorage.setItem(FILTER_STORAGE_KEY, JSON.stringify({
+        query: state.query,
+        category: state.category,
+        segment: state.segment,
+        sourceFilter: state.sourceFilter
+      }));
+    }catch(e){}
+  }
+  function readCollectScrollState(){
+    try{
+      const saved = JSON.parse(localStorage.getItem(SCROLL_STORAGE_KEY) || '{}');
+      state.scroll = saved && typeof saved === 'object' ? saved : {};
+    }catch(e){ state.scroll = {}; }
+  }
+  function saveCollectScroll(kind){
+    const target = labels[kind] ? kind : state.active;
+    if(!target || target === 'menu' || target === 'bonus') return;
+    if(!document.querySelector('.collectPage')) return;
+    if(document.querySelector('.collectDropDetailPage,.collectMenuPage,.collectBonusPage')) return;
+    try{
+      state.scroll[target] = Math.max(0, window.scrollY || document.documentElement.scrollTop || 0);
+      localStorage.setItem(SCROLL_STORAGE_KEY, JSON.stringify(state.scroll));
+    }catch(e){}
+  }
+  function restoreCollectScroll(kind){
+    const top = Number(state.scroll[kind] || 0);
+    if(!Number.isFinite(top) || top <= 0) return;
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      try{ window.scrollTo({ top, behavior: 'auto' }); }catch(e){ window.scrollTo(0, top); }
+    }));
+  }
+  readCollectFilterState();
+  readCollectScrollState();
   function textList(values, emptyText){
     const list = (values || []).filter(Boolean);
     return list.length ? list.map(x => `<span class="collectTag">${escHtml(x)}</span>`).join('') : `<span class="muted">${escHtml(emptyText || '-')}</span>`;
+  }
+  function cleanMapLocationName(value){
+    let text = String(value || '').trim();
+    if(!text) return '';
+    text = text
+      .replace(/[「」]/g, '')
+      .replace(/[（(][^）)]*\d+[^）)]*[）)]/g, '')
+      .replace(/[（(]\s*\d.*$/g, '')
+      .replace(/^\s*\d+.*$/g, '')
+      .replace(/[）)]/g, '')
+      .replace(/\s+/g, '')
+      .trim();
+    if(!text || /^[\d,，、\s]+$/.test(text)) return '';
+    return text;
+  }
+  function mapLocationList(values){
+    const out = [];
+    const seen = new Set();
+    (values || []).forEach(value => {
+      splitLocationText(value).forEach(part => {
+        const name = cleanMapLocationName(part);
+        if(!name || seen.has(name)) return;
+        seen.add(name);
+        out.push(name);
+      });
+    });
+    return out;
+  }
+  function mapLocationTags(values, queryName, emptyText){
+    const list = mapLocationList(values);
+    return list.length ? list.map(name => `<button class="collectTag collectMapTag" type="button" data-collect-map-location="${escHtml(name)}" data-collect-map-query="${escHtml(queryName || '')}">${escHtml(name)}</button>`).join('') : `<span class="muted">${escHtml(emptyText || '-')}</span>`;
+  }
+  function shopLocationTags(values, emptyText){
+    const list = uniqueList(values || []);
+    return list.length ? list.map(name => `<button class="collectTag collectMapTag" type="button" data-collect-shop-location="${escHtml(name)}">${escHtml(name)}</button>`).join('') : `<span class="muted">${escHtml(emptyText || '-')}</span>`;
   }
   function splitLocationText(value){
     return String(value || '').split(/[、,，/／]+/).map(x => x.trim()).filter(Boolean);
@@ -115,7 +208,7 @@
     }).join('')}</div>`;
   }
   function dropLocationText(row){
-    if(row.kind === 'beast') return textList(beastMergedLocations(row), '沒有捕抓地點');
+    if(row.kind === 'beast') return mapLocationTags(beastMergedLocations(row), row.name, '沒有捕抓地點');
     const shopSet = new Set(row.shops || []);
     const drops = (row.excelSources || []).filter(x => !shopSet.has(x));
     const reverseCount = Array.isArray(row.reverseDrops) ? row.reverseDrops.length : 0;
@@ -256,14 +349,14 @@
       return `<div class="collectReverseCompactList">${reverse.map(drop => {
           const sourceDrops = (row.sourceDropsByName || {})[drop.monster] || [];
           const sourceItemId = (row.sourceItemIdsByName || {})[drop.monster] || '';
-          const loc = (drop.locations || []).filter(Boolean).join('、');
+          const locHtml = mapLocationTags(drop.locations || [], drop.monster, '沒有位置資料');
           const hasNested = sourceDrops.length && sourceItemId;
           return `<div class="collectReverseCompactRow">
             <div class="collectReverseCompactMain">
               <div class="collectReverseCompactName">${escHtml(drop.monster || '-')}</div>
               ${hasNested
                 ? `<button type="button" class="collectNestedReverseBtn" data-collect-nested-reverse="${escHtml(sourceItemId)}" data-collect-parent="${escHtml(row.itemId || '')}">掉落位置</button>`
-                : `<div class="collectReverseCompactLoc">${loc ? escHtml(loc) : '<span class="muted">沒有位置資料</span>'}</div>`}
+                : `<div class="collectReverseCompactLoc">${locHtml}</div>`}
             </div>
             <div class="collectReverseCompactRate">${escHtml(formatRate(drop.rate))}</div>
           </div>`;
@@ -473,6 +566,7 @@
       <input id="collectSearch" value="${escHtml(state.query[kind])}" placeholder="搜尋${escHtml(labels[kind])}名稱或 ID">
       ${kind === 'weapon' || kind === 'beast' ? `<select id="collectCategory">${catOptions}</select>` : ''}
       ${segs.length ? `<select id="collectSegment">${segmentOptions}</select>` : ''}
+      <button class="ghost collectClearBtn" type="button" data-collect-clear>清空篩選</button>
     </div>${sourceFilters}`;
   }
   function metaPair(label, valueHtml, extraClass){
@@ -500,7 +594,7 @@
         </div>
         <div class="collectGrid">
           ${metaPair('任務取得', taskText(row))}
-          ${metaPair('商店取得', textList(row.shops, '-'))}
+          ${metaPair('商店取得', shopLocationTags(row.shops, '-'))}
           ${metaPair('掉落位置', dropLocationText(row), 'wide')}
         </div>
       </article>`;
@@ -526,9 +620,11 @@
       </div>
       ${controls(kind)}
       <div id="collectResults">${list(kind, rows)}</div>
+      <button class="collectTopBtn" type="button" data-collect-top>↑ 回到頂部</button>
     </section>`;
     const input = by('collectSearch');
     if(input) input.focus({preventScroll:true});
+    restoreCollectScroll(kind);
   }
   function renderCollectResults(){
     const kind = state.active;
@@ -549,6 +645,7 @@
     </section>`;
   }
   async function renderCollectBookPage(kind){
+    saveCollectScroll(state.active);
     if(!labels[kind]){
       state.active = 'menu';
       window.SZO_COLLECT_ACTIVE = 'menu';
@@ -560,7 +657,6 @@
     }
     kind = labels[kind] ? kind : 'weapon';
     window.SZO_COLLECT_ACTIVE = kind;
-    if(state.query[kind] !== undefined) state.query[kind] = '';
     window.v86LastView = 'collect';
     const reader = by('reader');
     if(reader) reader.innerHTML = '<section class="card collectPage"><h1>武冠收錄資料</h1><div class="muted">資料載入中...</div></section>';
@@ -571,18 +667,78 @@
       if(reader) reader.innerHTML = '<section class="card collectPage"><h1>武冠收錄資料</h1><div class="empty">武冠收錄資料載入失敗，請重新整理一次。</div></section>';
     }
     try{ if(typeof closeDrawer === 'function') closeDrawer(); }catch(e){}
-    try{ window.scrollTo({top:0,behavior:'smooth'}); }catch(e){}
+    if(kind === 'bonus') try{ window.scrollTo({top:0,behavior:'smooth'}); }catch(e){}
   }
   function clearCollectBookSearch(kind){
-    if(kind && state.query[kind] !== undefined) state.query[kind] = '';
+    const target = labels[kind] ? kind : state.active;
+    if(target && state.query[target] !== undefined) state.query[target] = '';
+    if(target && state.category[target] !== undefined) state.category[target] = 'all';
+    if(target && state.segment[target] !== undefined) state.segment[target] = 'all';
+    if(state.sourceFilter[target]) state.sourceFilter[target] = { task: false, shop: false };
+    if(target) state.scroll[target] = 0;
+    writeCollectFilterState();
+    try{ localStorage.setItem(SCROLL_STORAGE_KEY, JSON.stringify(state.scroll)); }catch(e){}
   }
   document.addEventListener('click', function(ev){
+    const mapBtn = ev.target && ev.target.closest ? ev.target.closest('[data-collect-map-location]') : null;
+    if(mapBtn){
+      ev.preventDefault();
+      ev.stopPropagation();
+      const mapName = mapBtn.dataset.collectMapLocation || '';
+      const query = mapBtn.dataset.collectMapQuery || '';
+      saveCollectScroll(state.active);
+      (async () => {
+        if(typeof showPageLoading === 'function') showPageLoading('地圖查詢', '正在載入地圖位置，請稍候。');
+        if(typeof window.ensureMapPageLoaded === 'function') await window.ensureMapPageLoaded();
+        if(typeof window.openMapSearchLocation === 'function') await window.openMapSearchLocation(mapName, query);
+        try{ document.querySelectorAll('.navBtn[data-view]').forEach(btn => btn.classList.toggle('active', btn.dataset.view === 'map')); }catch(e){}
+        try{ document.querySelectorAll('.formBox').forEach(form => form.classList.remove('active')); }catch(e){}
+        try{ if(typeof closeDrawer === 'function') closeDrawer(); }catch(e){}
+        try{ window.scrollTo({top:0, behavior:'smooth'}); }catch(e){}
+      })();
+      return;
+    }
+    const shopMapBtn = ev.target && ev.target.closest ? ev.target.closest('[data-collect-shop-location]') : null;
+    if(shopMapBtn){
+      ev.preventDefault();
+      ev.stopPropagation();
+      const shopName = shopMapBtn.dataset.collectShopLocation || '';
+      saveCollectScroll(state.active);
+      (async () => {
+        if(typeof showPageLoading === 'function') showPageLoading('地圖查詢', '正在載入商店位置，請稍候。');
+        if(typeof window.ensureMapPageLoaded === 'function') await window.ensureMapPageLoaded();
+        if(typeof window.openShopMapByLabel === 'function') await window.openShopMapByLabel(shopName);
+        try{ document.querySelectorAll('.navBtn[data-view]').forEach(btn => btn.classList.toggle('active', btn.dataset.view === 'map')); }catch(e){}
+        try{ document.querySelectorAll('.formBox').forEach(form => form.classList.remove('active')); }catch(e){}
+        try{ if(typeof closeDrawer === 'function') closeDrawer(); }catch(e){}
+        try{ window.scrollTo({top:0, behavior:'smooth'}); }catch(e){}
+      })();
+      return;
+    }
     const reverseBtn = ev.target && ev.target.closest ? ev.target.closest('[data-collect-reverse]') : null;
     if(reverseBtn){
       ev.preventDefault();
       ev.stopPropagation();
       state.returnScroll = window.scrollY || document.documentElement.scrollTop || 0;
+      saveCollectScroll(state.active);
       renderCollectDropDetail(reverseBtn.dataset.collectReverse);
+      return;
+    }
+    const clearBtn = ev.target && ev.target.closest ? ev.target.closest('[data-collect-clear]') : null;
+    if(clearBtn){
+      ev.preventDefault();
+      ev.stopPropagation();
+      clearCollectBookSearch(state.active);
+      renderLoaded(state.active);
+      return;
+    }
+    const topBtn = ev.target && ev.target.closest ? ev.target.closest('[data-collect-top]') : null;
+    if(topBtn){
+      ev.preventDefault();
+      ev.stopPropagation();
+      state.scroll[state.active] = 0;
+      try{ localStorage.setItem(SCROLL_STORAGE_KEY, JSON.stringify(state.scroll)); }catch(e){}
+      try{ window.scrollTo({top:0, behavior:'smooth'}); }catch(e){}
       return;
     }
     const nestedReverseBtn = ev.target && ev.target.closest ? ev.target.closest('[data-collect-nested-reverse]') : null;
@@ -619,6 +775,7 @@
     if(ev.target && ev.target.id === 'collectSearch'){
       if(state.composing || ev.isComposing) return;
       state.query[state.active] = ev.target.value || '';
+      writeCollectFilterState();
       renderCollectResults();
     }
   }, true);
@@ -629,6 +786,7 @@
     if(ev.target && ev.target.id === 'collectSearch'){
       state.composing = false;
       state.query[state.active] = ev.target.value || '';
+      writeCollectFilterState();
       renderCollectResults();
     }
   }, true);
@@ -636,20 +794,24 @@
     if(ev.target && ev.target.id === 'collectCategory'){
       state.category[state.active] = ev.target.value || 'all';
       state.segment[state.active] = 'all';
+      writeCollectFilterState();
       renderLoaded(state.active);
     }
     if(ev.target && ev.target.id === 'collectSegment'){
       state.segment[state.active] = ev.target.value || 'all';
+      writeCollectFilterState();
       renderLoaded(state.active);
     }
     if(ev.target && ev.target.matches && ev.target.matches('[data-collect-source]')){
       const filter = state.sourceFilter[state.active];
       if(filter){
         filter[ev.target.dataset.collectSource] = !!ev.target.checked;
+        writeCollectFilterState();
         renderLoaded(state.active);
       }
     }
   }, true);
+  window.addEventListener('pagehide', () => saveCollectScroll(state.active));
   window.renderCollectBookPage = renderCollectBookPage;
   window.renderCollectDropDetail = renderCollectDropDetail;
   window.clearCollectBookSearch = clearCollectBookSearch;

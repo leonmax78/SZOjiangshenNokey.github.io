@@ -879,6 +879,79 @@
     await renderStageMapPage();
   };
 
+  window.openMapSearchLocation = async function(mapName, queryName){
+    await ensureMapDataLoaded();
+    const targetMap = String(mapName || '').trim();
+    const targetQuery = String(queryName || '').trim();
+    state.monsters.clear();
+    state.npcs.clear();
+    const norm = value => String(value || '').replace(/\s+/g, '').trim();
+    const needle = norm(targetMap);
+    const stages = mapData.stages || [];
+    const stage = stages.find(s => norm(s.stageName) === needle)
+      || stages.find(s => norm(s.stageName).includes(needle) || needle.includes(norm(s.stageName)))
+      || stages.find(s => `${String(s.stageId).padStart(3, '0')} ${s.stageName || ''}`.includes(targetMap));
+    if(stage) state.stageId = Number(stage.stageId);
+    state.query = targetQuery || targetMap;
+    const current = stage || currentStage();
+    if(current) autoCheckMatches(current);
+    await renderStageMapPage();
+  };
+
+  window.openShopMapByLabel = async function(label){
+    await ensureMapDataLoaded();
+    await ensureMapShopDataLoaded().catch(() => null);
+    const raw = String(label || '').trim();
+    const norm = value => String(value || '').replace(/\s+/g, '').replace(/舖/g, '鋪').trim();
+    const text = norm(raw);
+    const stageAliases = {
+      '勇士村': '山林地訓練營',
+      '劍俠村': '葬劍崖護法院',
+      '術者村': '紫霞山養心觀',
+      '道人村': '黑水潭地龍穴',
+      '僧侶村': '踏雲頂梵天寺'
+    };
+    const npcAliases = {
+      '打鐵鋪': '打鐵店長',
+      '打鐵舖': '打鐵店長',
+      '買賣人': '買賣人'
+    };
+    let wantedStage = '';
+    let wantedNpc = '';
+    Object.keys(stageAliases).forEach(alias => {
+      if(text.includes(norm(alias))) wantedStage = stageAliases[alias];
+    });
+    Object.values(stageAliases).forEach(name => {
+      if(text.includes(norm(name))) wantedStage = name;
+    });
+    (mapData.stages || []).forEach(stage => {
+      const stageName = norm(stage.stageName);
+      if(stageName && text.includes(stageName)) wantedStage = stage.stageName;
+    });
+    Object.keys(npcAliases).forEach(alias => {
+      if(text.includes(norm(alias))) wantedNpc = npcAliases[alias];
+    });
+    const suffix = text.replace(norm(wantedStage), '');
+    if(!wantedNpc && suffix) wantedNpc = raw.replace(wantedStage, '').trim();
+    const stage = (mapData.stages || []).find(s => wantedStage && norm(s.stageName) === norm(wantedStage))
+      || (mapData.stages || []).find(s => wantedStage && (norm(s.stageName).includes(norm(wantedStage)) || norm(wantedStage).includes(norm(s.stageName))))
+      || (mapData.stages || []).find(s => (s.npcs || []).some(n => n.shop && text.includes(norm(n.name || ''))));
+    state.monsters.clear();
+    state.npcs.clear();
+    if(stage){
+      state.stageId = Number(stage.stageId);
+      const npc = (stage.npcs || []).find(n => n.shop && wantedNpc && norm(n.name) === norm(wantedNpc))
+        || (stage.npcs || []).find(n => n.shop && wantedNpc && (norm(n.name).includes(norm(wantedNpc)) || norm(wantedNpc).includes(norm(n.name))))
+        || (stage.npcs || []).find(n => n.shop && text.includes(norm(n.name || '')))
+        || (stage.npcs || []).find(n => n.shop);
+      state.query = npc?.name || raw;
+      if(npc) state.npcs.add(npcKey(npc));
+    }else{
+      state.query = raw;
+    }
+    await renderStageMapPage();
+  };
+
   window.openShopMapLocation = async function(info){
     await ensureMapDataLoaded();
     const targetStageId = Number(info?.stageId);
