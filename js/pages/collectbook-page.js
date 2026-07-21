@@ -430,6 +430,13 @@
       return [];
     }
   }
+  function findSourceItemByName(itemList, name){
+    const key = String(name || '').trim();
+    if(!key) return null;
+    return itemList.find(it => getItemName(it) === key)
+      || itemList.find(it => getItemName(it) === key + '錦囊')
+      || null;
+  }
   async function enrichCollectSourceDrops(row){
     if(!row || row._sourceDropsReady) return row;
     const reverseRows = Array.isArray(row.reverseDrops) ? row.reverseDrops : [];
@@ -457,7 +464,7 @@
       const sourceDropsByName = {};
       const sourceItemIdsByName = {};
       needNames.forEach(name => {
-        const item = itemList.find(it => getItemName(it) === name);
+        const item = findSourceItemByName(itemList, name);
         const id = getItemId(item);
         const drops = id ? (reverseIndex[id] || []) : [];
         if(!drops.length) return;
@@ -525,6 +532,7 @@
       <h1>${escHtml(row.name || '-')}</h1>
       <p class="muted collectDropDetailMetaLine">掉落反查｜共 ${dropCount} 筆</p>
       <div class="collectDropDetailList">${collectDropDetailRows(row)}</div>
+      <button class="collectTopBtn" type="button" data-collect-top>↑ 回到頂部</button>
     </section>`;
     try{ window.scrollTo({top:0,behavior:'smooth'}); }catch(e){}
   }
