@@ -78,8 +78,13 @@
     <div id="siteInfoBody"></div>
   </section>
 </div>
-<button id="collectFloatingTopBtn" class="collectTopBtn globalTopBtn" type="button" data-global-top data-collect-top>↑ 回到頂部</button>
+<button id="collectFloatingTopBtn" class="collectTopBtn globalTopBtn" type="button" data-global-top data-collect-top hidden>↑ 回到頂部</button>
 `;
+
+  window.SZO_SET_GLOBAL_TOP_VISIBLE = function(visible){
+    const btn = document.getElementById('collectFloatingTopBtn');
+    if(btn) btn.hidden = !visible;
+  };
 
   document.addEventListener('click', function(ev){
     const hit = ev.target && ev.target.closest ? ev.target.closest('[data-global-top]') : null;

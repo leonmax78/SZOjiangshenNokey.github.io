@@ -357,6 +357,7 @@ function openJiangMenuOnly(){
 async function setView(view){
  if(view!=='home') document.body.classList.remove('isHomeView');
  currentView=view;
+ if(typeof window.SZO_SET_GLOBAL_TOP_VISIBLE === 'function') window.SZO_SET_GLOBAL_TOP_VISIBLE(view !== 'home');
  document.querySelectorAll('.navBtn[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===view));
  document.querySelectorAll('.formBox').forEach(f=>f.classList.remove('active'));
  if(view==='home'){renderHome(); closeDrawer();}
