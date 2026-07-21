@@ -6,6 +6,10 @@
   <button class="menuBtn" id="openMenuBtn">☰</button>
   <div class="brand"><div class="brandTitle" id="siteTitle">神州-四海同舟</div></div>
   <div class="maker" id="siteMaker" aria-hidden="true"></div>
+  <form class="topSearch" id="globalSearchForm" role="search">
+    <input id="globalSearchInput" placeholder="全站搜尋" autocomplete="off">
+    <button type="submit">搜尋</button>
+  </form>
   <button class="shellSettingsBtn" id="openUiSettingsBtn" type="button">網頁外觀</button>
   <div class="status" id="topStatus">準備中</div>
 </div></header>
@@ -216,6 +220,30 @@
     });
   }
   bindSiteInfoTools();
+
+  async function runGlobalSearch(){
+    const input = document.getElementById('globalSearchInput');
+    const q = String(input && input.value || '').trim();
+    if(!q) return;
+    window.SZO_PENDING_GLOBAL_SEARCH = q;
+    if(typeof window.setView === 'function') await window.setView('qa');
+    else setTimeout(runGlobalSearch, 250);
+  }
+  document.addEventListener('submit', async function(ev){
+    if(!ev.target || ev.target.id !== 'globalSearchForm') return;
+    ev.preventDefault();
+    await runGlobalSearch();
+  });
+  document.addEventListener('click', async function(ev){
+    if(!ev.target || !ev.target.closest || !ev.target.closest('#globalSearchForm button')) return;
+    ev.preventDefault();
+    await runGlobalSearch();
+  });
+  document.addEventListener('keydown', async function(ev){
+    if(!ev.target || ev.target.id !== 'globalSearchInput' || ev.key !== 'Enter' || ev.isComposing) return;
+    ev.preventDefault();
+    await runGlobalSearch();
+  });
 
   // V221：模組尚未載入完成時，先擋住功能選單點擊。
   // 避免使用者第一次太快點「副降神模擬」時，先跑到舊版頁面，後面初始化又跳回首頁。
