@@ -887,10 +887,14 @@
     state.npcs.clear();
     const norm = value => String(value || '').replace(/\s+/g, '').trim();
     const needle = norm(targetMap);
+    const queryNeedle = norm(targetQuery);
     const stages = mapData.stages || [];
+    const stageByQuery = queryNeedle ? stages.find(s => (s.monsters || []).some(m => norm(m.name || '').includes(queryNeedle) || queryNeedle.includes(norm(m.name || '')))
+      || (s.npcs || []).some(n => norm(n.name || '').includes(queryNeedle) || queryNeedle.includes(norm(n.name || '')))) : null;
     const stage = stages.find(s => norm(s.stageName) === needle)
       || stages.find(s => norm(s.stageName).includes(needle) || needle.includes(norm(s.stageName)))
-      || stages.find(s => `${String(s.stageId).padStart(3, '0')} ${s.stageName || ''}`.includes(targetMap));
+      || stages.find(s => `${String(s.stageId).padStart(3, '0')} ${s.stageName || ''}`.includes(targetMap))
+      || stageByQuery;
     if(stage) state.stageId = Number(stage.stageId);
     state.query = targetQuery || targetMap;
     const current = stage || currentStage();
@@ -905,6 +909,9 @@
     const norm = value => String(value || '').replace(/\s+/g, '').replace(/舖/g, '鋪').trim();
     const text = norm(raw);
     const stageAliases = {
+      '京城': '京城',
+      '祁州': '祁州城',
+      '玄州': '玄州城',
       '勇士村': '山林地訓練營',
       '劍俠村': '葬劍崖護法院',
       '術者村': '紫霞山養心觀',
@@ -914,6 +921,10 @@
     const npcAliases = {
       '打鐵鋪': '打鐵店長',
       '打鐵舖': '打鐵店長',
+      '煉丹術士': '江湖術士',
+      '煉丹術師': '江湖術士',
+      '劍派傳功長老': '傳功長者',
+      '傳功長老': '傳功長者',
       '買賣人': '買賣人'
     };
     let wantedStage = '';

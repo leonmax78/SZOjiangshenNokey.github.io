@@ -122,7 +122,13 @@
   }
   function mapLocationTags(values, queryName, emptyText){
     const list = mapLocationList(values);
-    return list.length ? list.map(name => `<button class="collectTag collectMapTag" type="button" data-collect-map-location="${escHtml(name)}" data-collect-map-query="${escHtml(queryName || '')}">${escHtml(name)}</button>`).join('') : `<span class="muted">${escHtml(emptyText || '-')}</span>`;
+    return list.length ? list.map(name => collectMapButton(name, name, queryName || '')).join('') : `<span class="muted">${escHtml(emptyText || '-')}</span>`;
+  }
+  function collectMapButton(label, mapName, queryName){
+    return `<button class="collectTag collectMapTag" type="button" data-collect-map-location="${escHtml(mapName || label)}" data-collect-map-query="${escHtml(queryName || '')}">${escHtml(label)}</button>`;
+  }
+  function collectNoteTag(text){
+    return `<span class="collectTag collectNoteTag">${escHtml(text)}</span>`;
   }
   function shopLocationTags(values, emptyText){
     const list = uniqueList(values || []);
@@ -147,6 +153,185 @@
     if(!row || row.kind !== 'beast') return row?.locations || [];
     const monsterLoc = state.locations && row.name ? state.locations[row.name] : '';
     return uniqueList([...(row.locations || []), monsterLoc]);
+  }
+  function plainBeastName(value){
+    return String(value || '').replace(/[\[\]【】]/g, '').trim();
+  }
+  function monsterLocationNames(name){
+    const target = plainBeastName(name);
+    if(!target || !state.locations) return [];
+    const direct = state.locations[target] || state.locations[name];
+    if(direct) return mapLocationList([direct]);
+    const norm = value => plainBeastName(value).replace(/[〈〉《》<>＜＞「」『』★☆○◎●⊕帝神極真超．.‧·\s]/g, '');
+    const needle = norm(target);
+    if(!needle) return [];
+    const found = [];
+    Object.keys(state.locations).forEach(key => {
+      const k = norm(key);
+      if(k && (k === needle || k.includes(needle) || needle.includes(k))) found.push(state.locations[key]);
+    });
+    return mapLocationList(found);
+  }
+  function locationButtonsForMonster(monsterName, options){
+    const labelMode = options?.labelMode || 'map';
+    const fixedMaps = options?.maps || [];
+    const maps = fixedMaps.length ? fixedMaps : monsterLocationNames(monsterName);
+    const seen = new Set();
+    return maps.map(mapName => {
+      const clean = cleanMapLocationName(mapName);
+      if(!clean || seen.has(clean)) return '';
+      seen.add(clean);
+      const label = labelMode === 'monster' ? `${clean}（${plainBeastName(monsterName)}）` : clean;
+      return collectMapButton(label, clean, plainBeastName(monsterName));
+    }).filter(Boolean);
+  }
+  function beastSpecialLocationTags(row){
+    const name = plainBeastName(row?.name);
+    const chips = [];
+    const addMonster = (monsterName, maps, labelMode) => chips.push(...locationButtonsForMonster(monsterName, { maps, labelMode }));
+    const addMapMonster = (label, mapName, monsterName) => chips.push(collectMapButton(label, mapName, monsterName));
+    const addNpc = (label, mapName, npcName) => chips.push(collectMapButton(label, mapName, npcName));
+    const addNote = text => chips.push(collectNoteTag(text));
+    if(name === '熊武者'){
+      chips.push(collectMapButton('桃花林西方（戌時-卯時）', '桃花林西方', '熊武者'));
+    }else if(name === '虎霸王'){
+      chips.push(collectMapButton('掩月松林（戌時-卯時）', '掩月松林', '虎霸王'));
+    }else if(name === '兔仙人'){
+      addMonster('飛毛兔', [], 'monster');
+      addMonster('搗藥兔', [], 'monster');
+      addNote('擊殺飛毛兔、搗藥兔機率變身');
+    }else if(name === '九尾狐'){
+      addMonster('百草狐郎中', [], 'monster');
+      addNote('戌時-卯時擊殺百草狐郎中機率現身');
+    }else if(name === '隱者狸仙'){
+      addMonster('小妖狸', [], 'monster');
+      addMonster('妖狸射手', [], 'monster');
+      addNote('擊殺小妖狸、妖狸射手機率變身');
+    }else if(name === '千年靈芝精' || name === '千年蔘精'){
+      chips.push(collectMapButton('不老峰', '不老峰', '千年樹精'));
+      chips.push(collectMapButton('掩月松林（擊殺千年樹精）', '掩月松林', '千年樹精'));
+      addNote('擊殺千年樹精機率現身');
+    }else if(name === '紫燄影凰'){
+      addNpc('高昌郡（外域鐵匠漢哥）', '高昌郡', '外域鐵匠漢哥');
+      addNote('四聖諦 200 顆兌換');
+      addNpc('京城（侯利蒙）', '京城', '侯利蒙');
+      addNote('聖恩彩票 3500 張兌換');
+      addMapMonster('終末之塔第5、6層（森羅冷指）', '終末之塔第5層', '森羅冷指');
+    }else if(name === '焚世炎帝'){
+      addNpc('波斯西市（波斯聖寶商）', '波斯西市', '波斯聖寶商');
+      addNote('大波斯聖徽 5000 個兌換');
+    }else if(name === '浩天將神'){
+      addNpc('波斯西市（波斯祕寶商）', '波斯西市', '波斯祕寶商');
+      addNote('波斯聖徽 5000 個兌換');
+      addMapMonster('終末之塔第126層守關者【翻江裂地鮫】', '終末之塔第126層', '翻江裂地鮫');
+      addMapMonster('虛空渦心（虛淵鬥靈）', '虛空渦心', '虛淵鬥靈');
+    }else if(name === '霜血霸蜥'){
+      addNpc('靜默之丘（拜金仙女）', '靜默之丘', '拜金仙女');
+      addNote('雄獅勳章 4000 個兌換');
+      addMapMonster('赫勒神殿遺址（護棺刃鱷）', '赫勒神殿遺址', '護棺刃鱷');
+      addMapMonster('終末之塔第26層守關者【虛空神凜冰麒】', '終末之塔第26層', '虛空神凜冰麒');
+      addMapMonster('終末之塔第146層守關者【宇外兇鬥士】', '終末之塔第146層', '宇外兇鬥士');
+    }
+    return chips;
+  }
+  function sevenTreasureMapName(raw){
+    if(raw.includes('帝')) return '帝七寶仙境　壹';
+    if(raw.includes('神')) return '神七寶仙境　壹';
+    if(raw.includes('超')) return '超七寶仙境　壹';
+    if(raw.includes('真')) return '真七寶仙境　壹';
+    if(raw.includes('極')) return '極七寶仙境　壹';
+    return '七寶仙境　壹';
+  }
+  function splitMonsterNames(value){
+    return String(value || '').split(/[、,，/／]+/).map(x => x.trim()).filter(Boolean);
+  }
+  function rawBeastLocationTags(row){
+    const out = [];
+    const seen = new Set();
+    let bracketContextMap = '';
+    const push = html => {
+      if(!html || seen.has(html)) return;
+      seen.add(html);
+      out.push(html);
+    };
+    beastSpecialLocationTags(row).forEach(push);
+    if(out.length) return out.join('');
+    const rawRowName = String(row?.name || '').trim();
+    const rowMonsterButtons = /^[\[【]/.test(rawRowName) ? locationButtonsForMonster(plainBeastName(rawRowName)) : [];
+    if(rowMonsterButtons.length){
+      rowMonsterButtons.forEach(push);
+      return out.join('');
+    }
+    (row?.locations || []).forEach(rawValue => {
+      const raw = String(rawValue || '').trim();
+      if(!raw) return;
+      if(raw.includes('水晶礦坑') && raw.includes('侏人神兵鐵匠')){
+        push(collectMapButton('水晶礦坑（侏人神兵鐵匠）', '水晶礦坑', '侏人神兵鐵匠'));
+        push(collectNoteTag('【水晶鑽、紅水晶鑽、青水晶鑽、灰水晶鑽】各125顆兌換'));
+        return;
+      }
+      const exchangeMatch = raw.match(/找\s*([^【】\s]+)\s*[【\[]([^】\]]+)[】\]].*換取/);
+      if(exchangeMatch){
+        const mapName = cleanMapLocationName(exchangeMatch[1]);
+        const npcName = exchangeMatch[2].trim();
+        if(mapName && npcName) push(collectMapButton(`${mapName}（${npcName}）`, mapName, npcName));
+        push(collectNoteTag(raw.replace(/\s+/g, ' ').trim()));
+        return;
+      }
+      const mapMonsterMatch = raw.match(/[【\[]([^】\]]+)[】\]].*(?:小怪|怪物|Boss|王)[【\[]([^】\]]+)[】\]]/);
+      if(mapMonsterMatch){
+        const mapName = cleanMapLocationName(mapMonsterMatch[1]);
+        const monsterName = mapMonsterMatch[2].trim();
+        if(mapName && monsterName) push(collectMapButton(`${mapName}（${monsterName}）`, mapName, monsterName));
+        return;
+      }
+      const towerMatch = raw.match(/終末之塔第\s*([0-9]+)\s*層守關者\s*[【\[]([^】\]]+)[】\]]/);
+      if(towerMatch){
+        const monsterName = towerMatch[2].trim();
+        const label = `終末之塔第${towerMatch[1]}層守關者【${monsterName}】`;
+        push(collectMapButton(label, `終末之塔第${towerMatch[1]}層`, monsterName));
+        return;
+      }
+      const sevenMatches = [...raw.matchAll(/[【\[]([^】\]]+)[】\]]/g)].map(m => m[1].trim()).filter(Boolean);
+      if(raw.includes('七寶仙境') && sevenMatches.length){
+        bracketContextMap = sevenTreasureMapName(raw);
+        const monsterNames = raw.includes('任一') ? splitMonsterNames(sevenMatches[sevenMatches.length - 1]) : sevenMatches;
+        monsterNames.filter(monsterName => !monsterName.includes('七寶仙境')).forEach(monsterName => {
+          push(collectMapButton(`${bracketContextMap.replace('　壹', '')}（${monsterName}）`, bracketContextMap, monsterName));
+        });
+        return;
+      }
+      if(raw.includes('無限鬥界') && sevenMatches.length){
+        const mapName = raw.includes('修羅級') ? '修羅級無限鬥界' : '無限鬥界';
+        sevenMatches.forEach(monsterName => push(collectMapButton(`${mapName}（${monsterName}）`, mapName, monsterName)));
+        return;
+      }
+      if(/錦囊|抽取|彩票|勳章|仙印|天印|換取|兌換/.test(raw)){
+        push(collectNoteTag(raw));
+        return;
+      }
+      if(sevenMatches.length){
+        sevenMatches.forEach(monsterName => {
+          if(/錦囊|彩票|勳章|仙印|天印/.test(monsterName)){
+            push(collectNoteTag(raw));
+            return;
+          }
+          if(bracketContextMap){
+            splitMonsterNames(monsterName).forEach(name => push(collectMapButton(`${bracketContextMap.replace('　壹', '')}（${name}）`, bracketContextMap, name)));
+            return;
+          }
+          const buttons = locationButtonsForMonster(monsterName);
+          if(buttons.length) buttons.forEach(push);
+          else push(collectNoteTag(raw));
+        });
+        return;
+      }
+      const buttons = mapLocationTags([raw], plainBeastName(row?.name), '');
+      if(buttons && !buttons.includes('muted')) push(buttons);
+    });
+    const monsterLoc = state.locations && row?.name ? state.locations[row.name] : '';
+    if(monsterLoc) mapLocationList([monsterLoc]).forEach(mapName => push(collectMapButton(mapName, mapName, plainBeastName(row.name))));
+    return out.length ? out.join('') : `<span class="muted">沒有捕抓地點</span>`;
   }
   function normDropName(value){
     return String(value || '')
@@ -208,7 +393,7 @@
     }).join('')}</div>`;
   }
   function dropLocationText(row){
-    if(row.kind === 'beast') return mapLocationTags(beastMergedLocations(row), row.name, '沒有捕抓地點');
+    if(row.kind === 'beast') return rawBeastLocationTags(row);
     const shopSet = new Set(row.shops || []);
     const drops = (row.excelSources || []).filter(x => !shopSet.has(x));
     const reverseCount = Array.isArray(row.reverseDrops) ? row.reverseDrops.length : 0;
