@@ -358,7 +358,7 @@ h1{font-size:24px;line-height:1.22;margin:0 0 8px}h2{font-size:19px;margin:0 0 1
   position:fixed;
   right:calc(18px + env(safe-area-inset-right));
   bottom:calc(18px + env(safe-area-inset-bottom));
-  z-index:35;
+  z-index:1200;
   border:1px solid rgba(45,212,191,.5);
   background:linear-gradient(135deg,rgba(15,118,110,.95),rgba(37,99,235,.92));
   color:#fff;

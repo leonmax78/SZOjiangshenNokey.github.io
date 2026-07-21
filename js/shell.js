@@ -78,7 +78,16 @@
     <div id="siteInfoBody"></div>
   </section>
 </div>
+<button id="collectFloatingTopBtn" class="collectTopBtn globalTopBtn" type="button" data-global-top data-collect-top>↑ 回到頂部</button>
 `;
+
+  document.addEventListener('click', function(ev){
+    const hit = ev.target && ev.target.closest ? ev.target.closest('[data-global-top]') : null;
+    if(!hit) return;
+    ev.preventDefault();
+    ev.stopPropagation();
+    try{ window.scrollTo({ top: 0, behavior: 'smooth' }); }catch(e){ window.scrollTo(0, 0); }
+  }, true);
 
   // V213：快速選單保險事件。
   // 這裡在 shell 生成 DOM 後立刻綁定一次，避免後續模組載入失敗或 init 時機改變時，左上角 ☰ 沒反應。

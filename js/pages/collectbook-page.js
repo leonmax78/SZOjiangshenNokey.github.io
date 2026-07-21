@@ -30,6 +30,23 @@
   };
 
   function by(id){ return document.getElementById(id); }
+  function ensureCollectTopButton(){
+    let btn = document.getElementById('collectFloatingTopBtn');
+    if(!btn){
+      btn = document.createElement('button');
+      btn.id = 'collectFloatingTopBtn';
+      btn.className = 'collectTopBtn';
+      btn.type = 'button';
+      btn.dataset.collectTop = '1';
+      btn.textContent = '↑ 回到頂部';
+      document.body.appendChild(btn);
+    }
+    btn.hidden = false;
+    return btn;
+  }
+  function hideCollectTopButton(){
+    // Global back-to-top is shared by all pages, so collect no longer hides it.
+  }
   function escHtml(value){
     if(typeof esc === 'function') return esc(value);
     return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -265,6 +282,15 @@
     (row?.locations || []).forEach(rawValue => {
       const raw = String(rawValue || '').trim();
       if(!raw) return;
+      const sevenParenMatches = [...raw.matchAll(/((?:帝|神|超|真|極)?七寶仙境)[　\s]*(?:壹)?[（(]([^）)]+)[）)]/g)];
+      if(sevenParenMatches.length){
+        sevenParenMatches.forEach(match => {
+          const mapName = sevenTreasureMapName(match[1]);
+          const monsterName = match[2].trim();
+          if(mapName && monsterName) push(collectMapButton(`${mapName.replace('　壹', '')}（${monsterName}）`, mapName, monsterName));
+        });
+        return;
+      }
       if(raw.includes('水晶礦坑') && raw.includes('侏人神兵鐵匠')){
         push(collectMapButton('水晶礦坑（侏人神兵鐵匠）', '水晶礦坑', '侏人神兵鐵匠'));
         push(collectNoteTag('【水晶鑽、紅水晶鑽、青水晶鑽、灰水晶鑽】各125顆兌換'));
@@ -532,7 +558,6 @@
       <h1>${escHtml(row.name || '-')}</h1>
       <p class="muted collectDropDetailMetaLine">掉落反查｜共 ${dropCount} 筆</p>
       <div class="collectDropDetailList">${collectDropDetailRows(row)}</div>
-      <button class="collectTopBtn" type="button" data-collect-top>↑ 回到頂部</button>
     </section>`;
     try{ window.scrollTo({top:0,behavior:'smooth'}); }catch(e){}
   }
@@ -565,6 +590,7 @@
     const row = findCollectRow(itemId);
     const reader = by('reader');
     if(!reader) return;
+    ensureCollectTopButton();
     if(!row){
       reader.innerHTML = '<section class="card collectPage"><button class="backBtn" type="button" data-collect-back>返回武冠系統</button><div class="empty">找不到掉落資料</div></section>';
       return;
@@ -722,6 +748,7 @@
     state.active = 'bonus';
     window.SZO_COLLECT_ACTIVE = 'bonus';
     syncNav('bonus');
+    ensureCollectTopButton();
     const rows = getBonusRows();
     const reader = by('reader');
     if(!reader) return;
@@ -802,6 +829,7 @@
     state.active = labels[kind] ? kind : 'weapon';
     kind = state.active;
     window.SZO_COLLECT_ACTIVE = kind;
+    ensureCollectTopButton();
     syncNav(kind);
     const rows = filteredRows(kind);
     const reader = by('reader');
@@ -813,7 +841,6 @@
       </div>
       ${controls(kind)}
       <div id="collectResults">${list(kind, rows)}</div>
-      <button class="collectTopBtn" type="button" data-collect-top>↑ 回到頂部</button>
     </section>`;
     const input = by('collectSearch');
     if(input) input.focus({preventScroll:true});
@@ -828,6 +855,7 @@
     if(results) results.innerHTML = list(kind, rows);
   }
   function renderCollectMenu(){
+    hideCollectTopButton();
     syncNav('menu');
     const reader = by('reader');
     if(!reader) return;
@@ -873,10 +901,13 @@
     try{ localStorage.setItem(SCROLL_STORAGE_KEY, JSON.stringify(state.scroll)); }catch(e){}
   }
   document.addEventListener('click', function(ev){
+    const navBtn = ev.target && ev.target.closest ? ev.target.closest('[data-view]') : null;
+    if(navBtn && navBtn.dataset.view !== 'collect') hideCollectTopButton();
     const mapBtn = ev.target && ev.target.closest ? ev.target.closest('[data-collect-map-location]') : null;
     if(mapBtn){
       ev.preventDefault();
       ev.stopPropagation();
+      hideCollectTopButton();
       const mapName = mapBtn.dataset.collectMapLocation || '';
       const query = mapBtn.dataset.collectMapQuery || '';
       saveCollectScroll(state.active);
@@ -895,6 +926,7 @@
     if(shopMapBtn){
       ev.preventDefault();
       ev.stopPropagation();
+      hideCollectTopButton();
       const shopName = shopMapBtn.dataset.collectShopLocation || '';
       saveCollectScroll(state.active);
       (async () => {
