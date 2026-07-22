@@ -136,7 +136,7 @@
       <p class="muted">一次搜尋道具、怪物、商店、地圖與掉落資料。</p>
       <form id="qaForm" class="qaForm">
         <input id="qaInput" value="${html(state.query)}" placeholder="例如：大山犬、短劍、天鐵、老虎皮">
-        <button type="submit" class="primary">搜尋</button>
+        <button type="button" class="primary" data-qa-search onclick="window.SZO_QA_RUN && window.SZO_QA_RUN()">搜尋</button>
         <button type="button" class="ghost" id="qaClear">清空</button>
       </form>
       ${quickExamples()}
@@ -350,6 +350,9 @@
       if(target) target.innerHTML = '<div class="empty">資料讀取失敗，請重新整理後再試一次。</div>';
     }
   }
+  window.SZO_QA_RUN = function(){
+    runQuestion(by('qaInput')?.value || '');
+  };
 
   document.addEventListener('submit', ev => {
     if(ev.target?.id !== 'qaForm') return;
@@ -362,9 +365,10 @@
     runQuestion(ev.target.value || '');
   });
   document.addEventListener('click', async ev => {
-    const submitButton = ev.target.closest?.('#qaForm button[type="submit"]');
+    const submitButton = ev.target.closest?.('[data-qa-search]');
     if(submitButton){
       ev.preventDefault();
+      ev.stopPropagation();
       runQuestion(by('qaInput')?.value || '');
       return;
     }
