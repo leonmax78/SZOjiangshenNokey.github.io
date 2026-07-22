@@ -554,6 +554,21 @@
     return (window.SZO_ASSET_MANIFEST && window.SZO_ASSET_MANIFEST.base) || 'assets/test-media';
   }
 
+  function assetVersion(){
+    return String(
+      (window.SZO_ASSET_MANIFEST && window.SZO_ASSET_MANIFEST.version) ||
+      document.body?.dataset?.version ||
+      'dev'
+    );
+  }
+
+  function withAssetVersion(url){
+    const src = String(url || '');
+    if(!src) return '';
+    const sep = src.includes('?') ? '&' : '?';
+    return `${src}${sep}v=${encodeURIComponent(assetVersion())}`;
+  }
+
   function pad4(v){
     return String(v || '').padStart(4, '0');
   }
@@ -562,8 +577,8 @@
     const pic = marker.pic;
     if(pic === undefined || pic === null || pic === '') return '';
     const base = assetBase();
-    if(marker.kind === 'monster') return `${base}/monster-portraits/m${pic}.png`;
-    return `${base}/npc-portraits/n${pic}.png`;
+    if(marker.kind === 'monster') return withAssetVersion(`${base}/monster-portraits/m${pic}.png`);
+    return withAssetVersion(`${base}/npc-portraits/n${pic}.png`);
   }
 
   function renderLoaded(){
@@ -623,7 +638,7 @@
           <div class="mapLoading" id="mapImageLoading">地圖載入中</div>
           <div class="mapZoomSurface" style="width:${Math.round((Number(stage.width)||1)*zoomValue())}px;height:${Math.round((Number(stage.height)||1)*zoomValue())}px;">
             <div class="mapImageStage" style="transform:scale(${zoomValue()});width:${Number(stage.width)||1}px;height:${Number(stage.height)||1}px;">
-              <img id="mapImage" src="${htmlEscape(stage.image)}" alt="${htmlEscape(stage.stageName)}" decoding="async" fetchpriority="high">
+              <img id="mapImage" src="${htmlEscape(withAssetVersion(stage.image))}" alt="${htmlEscape(stage.stageName)}" decoding="async" fetchpriority="high">
               <div class="mapOverlay">${markerDots(stage)}</div>
             </div>
           </div>

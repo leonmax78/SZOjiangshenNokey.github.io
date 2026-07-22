@@ -362,6 +362,12 @@
     runQuestion(ev.target.value || '');
   });
   document.addEventListener('click', async ev => {
+    const submitButton = ev.target.closest?.('#qaForm button[type="submit"]');
+    if(submitButton){
+      ev.preventDefault();
+      runQuestion(by('qaInput')?.value || '');
+      return;
+    }
     const ex = ev.target.closest?.('[data-qa-example]');
     if(ex){ const q = ex.dataset.qaExample || ''; const input = by('qaInput'); if(input) input.value = q; runQuestion(q); return; }
     if(ev.target?.id === 'qaClear'){ state.query = ''; state.exactItem = ''; renderQaPage(); return; }
