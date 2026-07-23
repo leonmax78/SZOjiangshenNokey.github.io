@@ -3,9 +3,9 @@
     "sourceCollectWorkbook": "武冠鋒雲錄收納清單配合遊戲頁碼版本2025_8_28更新.xlsx",
     "sourceShopWorkbook": "神州武冠商店裝備、法器、配方購買地點一覽表(含全配方資料)2025_1_21.xlsx",
     "sourceCollectBook": "raw\\latest_setting\\COLLECTBOOKITEM.INI",
-    "sourceItemIni": "C:\\Users\\leonm\\Documents\\Codex\\2026-06-04\\c-users-leonm-desktop-leonmax78-github\\work\\leonmax78-github-0611\\raw\\ITEM.INI",
-    "sourceMonsterIni": "C:\\Users\\leonm\\Documents\\Codex\\2026-06-04\\c-users-leonm-desktop-leonmax78-github\\work\\leonmax78-github-0611\\raw\\MONSTER_C_MERGED.INI",
-    "itemRecords": 12417,
+    "sourceItemIni": "C:\\Users\\leonm\\Desktop\\leonmax78-test\\raw\\ITEM.INI",
+    "sourceMonsterIni": "C:\\Users\\leonm\\Desktop\\leonmax78-test\\raw\\MONSTER_C_MERGED.INI",
+    "itemRecords": 12461,
     "monsterRecords": 6123,
     "weaponCategoryOrder": [
       "劍",
