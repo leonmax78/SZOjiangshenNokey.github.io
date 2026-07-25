@@ -8,6 +8,15 @@
       "rate": 15.02295,
       "weight": 0,
       "note": "官方 MONSTER_C.INI 未列出，依玩家實測手動補入。"
+    },
+    {
+      "itemId": "29861",
+      "itemName": "武魂碎片：金好漢",
+      "monsterId": "9440",
+      "monsterName": "八歧大蛇",
+      "rate": 30.0051,
+      "weight": 0,
+      "note": "官方 MONSTER_C.INI 未列出，依玩家實測手動補入。"
     }
   ]
 }

@@ -371,6 +371,83 @@ def apply_manual_drops(drop_reverse: dict) -> dict:
     return drop_reverse
 
 
+def manual_drop_weight(existing_drop: str, item_id: str, rate: float, explicit_weight: int) -> int:
+    if explicit_weight > 0:
+        return explicit_weight
+    if rate <= 0 or rate >= 100:
+        return 0
+    other_total = 0
+    for drop in parse_drop(existing_drop):
+        if str(drop.get("item_id")) == item_id:
+            continue
+        other_total += int(drop.get("weight") or 0)
+    if other_total <= 0:
+        return 0
+    return max(1, int(round((rate * other_total) / (100 - rate))))
+
+
+def apply_manual_drops_to_monsters(monsters: list[dict]) -> list[dict]:
+    rows_by_id = {row_id(monster): monster for monster in monsters}
+    drops_by_monster: dict[str, list[dict]] = {}
+    for drop in load_manual_drops():
+        monster_id = str(drop.get("monsterId") or "").strip()
+        item_id = str(drop.get("itemId") or "").strip()
+        if monster_id and item_id:
+            drops_by_monster.setdefault(monster_id, []).append(drop)
+    for monster_id, manual_drops in drops_by_monster.items():
+        monster = rows_by_id.get(monster_id)
+        if not monster:
+            continue
+        current = drop_value(monster)
+        parts = [x.strip() for x in current.split(",") if x.strip()]
+        if len(parts) < 2:
+            parts = ["1", "0"]
+        prefix = parts[:2]
+        manual_item_ids = {str(drop.get("itemId") or "").strip() for drop in manual_drops}
+        pairs: list[tuple[str, int]] = []
+        replaced_items: set[str] = set()
+        for i in range(2, len(parts) - 1, 2):
+            iid = parts[i].strip()
+            try:
+                weight = int(float(parts[i + 1]))
+            except ValueError:
+                continue
+            if iid in manual_item_ids:
+                replaced_items.add(iid)
+                continue
+            if iid and iid != "0" and weight > 0:
+                pairs.append((iid, weight))
+        other_total = sum(weight for _, weight in pairs)
+        target_rates = {
+            str(drop.get("itemId") or "").strip(): float(drop.get("rate") or 0)
+            for drop in manual_drops
+            if float(drop.get("rate") or 0) > 0
+        }
+        rate_total = sum(target_rates.values())
+        for drop in manual_drops:
+            item_id = str(drop.get("itemId") or "").strip()
+            explicit_weight = int(float(drop.get("weight") or 0))
+            if explicit_weight > 0:
+                weight = explicit_weight
+            elif other_total > 0 and 0 < rate_total < 100:
+                weight = max(1, int(round((target_rates.get(item_id, 0) * other_total) / (100 - rate_total))))
+            else:
+                weight = manual_drop_weight(current, item_id, target_rates.get(item_id, 0), explicit_weight)
+            if weight > 0:
+                pairs.append((item_id, weight))
+        added_count = len([drop for drop in manual_drops if str(drop.get("itemId") or "").strip() not in replaced_items])
+        if added_count:
+            try:
+                prefix[1] = str(int(float(prefix[1])) + added_count)
+            except ValueError:
+                prefix[1] = str(len(pairs))
+        flattened = prefix[:]
+        for iid, weight in pairs:
+            flattened.extend([iid, str(weight)])
+        monster["DropItem"] = ",".join(flattened)
+    return monsters
+
+
 def write_json(path: Path, value) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(value, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
@@ -454,6 +531,7 @@ def main() -> None:
 
     items = [record_to_plain(x) for x in parse_ini_records(read_text(item_path)) if is_real_named_row(x)]
     monsters = [record_to_plain(x) for x in merged_monsters]
+    monsters = apply_manual_drops_to_monsters(monsters)
     magic = [record_to_plain(x) for x in parse_ini_records(read_text(magic_path))]
     compound = [record_to_plain(x) for x in parse_ini_records(read_text(compound_path))]
     status = [record_to_plain(x) for x in parse_ini_records(read_text(status_path))]
