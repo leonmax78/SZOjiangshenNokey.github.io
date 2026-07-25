@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DESKTOP = Path.home() / "Desktop"
 DEFAULT_SETTING = DESKTOP / "0525" / "SETTING"
 RAW_DIR = ROOT / "raw"
+MANUAL_DROPS = ROOT / "config" / "manual_drops.json"
 
 UNCATEGORIZED = "\u672a\u5206\u985e"
 BEAST_SKILLS = ["\u8ff7\u60d1\u8853", "\u596a\u5fc3\u8853", "\u7e1b\u9748\u8853"]
@@ -240,6 +241,40 @@ def build_drop_reverse(monsters: list[dict[str, str]], loc_by_name: dict[str, li
     return reverse
 
 
+def load_manual_drops() -> list[dict]:
+    if not MANUAL_DROPS.exists():
+        return []
+    try:
+        payload = json.loads(MANUAL_DROPS.read_text(encoding="utf-8"))
+    except Exception:
+        return []
+    drops = payload.get("drops") if isinstance(payload, dict) else payload
+    return drops if isinstance(drops, list) else []
+
+
+def apply_manual_drops(drop_reverse: dict[str, list[dict]], monster_by_id: dict[str, dict], loc_by_name: dict[str, list[str]]):
+    for drop in load_manual_drops():
+        item_id = clean(drop.get("itemId"))
+        monster_id = clean(drop.get("monsterId"))
+        monster_name = clean(drop.get("monsterName"))
+        if not item_id or not monster_id or not monster_name:
+            continue
+        monster = monster_by_id.get(monster_id, {})
+        row = {
+            "monsterId": monster_id,
+            "monster": monster_name,
+            "level": clean(monster.get("Level")),
+            "rate": round(float(drop.get("rate") or 0), 6),
+            "locations": loc_by_name.get(monster_name, []),
+            "manual": True,
+        }
+        rows = [x for x in drop_reverse.get(item_id, []) if clean(x.get("monsterId")) != monster_id]
+        rows.append(row)
+        rows.sort(key=lambda x: (-float(x.get("rate") or 0), clean(x.get("monster")), clean(x.get("monsterId"))))
+        drop_reverse[item_id] = rows
+    return drop_reverse
+
+
 def load_shop_maps(path: Path):
     wb = load_workbook(path, read_only=True, data_only=True)
     ws = wb.worksheets[0]
@@ -393,7 +428,7 @@ def build(args) -> dict:
         collectbook_ini, item_by_id, monster_by_id
     )
     loc_by_name = load_locations(Path(args.locations_csv))
-    drop_reverse = build_drop_reverse(monsters, loc_by_name)
+    drop_reverse = apply_manual_drops(build_drop_reverse(monsters, loc_by_name), monster_by_id, loc_by_name)
     shop_maps = load_shop_maps(shop_workbook)
 
     wb = load_workbook(collect_workbook, read_only=True, data_only=True)

@@ -71600,9 +71600,20 @@
       "excelSources": [
         "八歧大蛇"
       ],
-      "reverseDrops": [],
-      "reverseDropCount": 0,
-      "searchText": "奇稻田櫛棍 23020 棍 8   八歧大蛇 "
+      "reverseDrops": [
+        {
+          "monsterId": "9440",
+          "monster": "八歧大蛇",
+          "level": "190",
+          "rate": 30.0051,
+          "locations": [
+            "天照不二峰"
+          ],
+          "manual": true
+        }
+      ],
+      "reverseDropCount": 1,
+      "searchText": "奇稻田櫛棍 23020 棍 8   八歧大蛇 八歧大蛇"
     },
     {
       "name": "仁王碎鋼棍",

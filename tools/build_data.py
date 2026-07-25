@@ -13,6 +13,7 @@ RAW = ROOT / "raw"
 DATA = ROOT / "data"
 REPORTS = ROOT / "reports"
 CONFIG = ROOT / "config" / "build_config.json"
+MANUAL_DROPS = ROOT / "config" / "manual_drops.json"
 
 
 def read_text(path: Path) -> str:
@@ -339,6 +340,37 @@ def build_drop_reverse(monsters: list[dict]) -> dict:
     return reverse
 
 
+def load_manual_drops() -> list[dict]:
+    if not MANUAL_DROPS.exists():
+        return []
+    try:
+        payload = json.loads(read_text(MANUAL_DROPS))
+    except Exception:
+        return []
+    drops = payload.get("drops") if isinstance(payload, dict) else payload
+    return drops if isinstance(drops, list) else []
+
+
+def apply_manual_drops(drop_reverse: dict) -> dict:
+    for drop in load_manual_drops():
+        item_id = str(drop.get("itemId") or "").strip()
+        monster_id = str(drop.get("monsterId") or "").strip()
+        monster_name = str(drop.get("monsterName") or "").strip()
+        if not item_id or not monster_id or not monster_name:
+            continue
+        row = {
+            "monsterId": int(monster_id) if monster_id.isdigit() else monster_id,
+            "monsterName": monster_name,
+            "rate": float(drop.get("rate") or 0),
+            "weight": int(float(drop.get("weight") or 0)),
+            "manual": True,
+        }
+        rows = [x for x in drop_reverse.get(item_id, []) if str(x.get("monsterId")) != monster_id]
+        rows.append(row)
+        drop_reverse[item_id] = sorted(rows, key=lambda x: float(x.get("rate") or 0), reverse=True)
+    return drop_reverse
+
+
 def write_json(path: Path, value) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(value, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
@@ -357,6 +389,27 @@ def write_data_bundle_js(path: Path, key: str, value) -> None:
         "window.SZO_DATA_BUNDLES=window.SZO_DATA_BUNDLES||{};"
         f"window.SZO_DATA_BUNDLES[{json.dumps(key)}]={body};\n",
         encoding="utf-8",
+    )
+
+
+def write_drop_reverse_shards(drop_reverse: dict) -> None:
+    shard_dir = DATA / "drop_reverse_shards"
+    shard_dir.mkdir(parents=True, exist_ok=True)
+    for old in shard_dir.glob("*.json"):
+        old.unlink()
+    shards: dict[str, dict] = {}
+    for item_id, rows in drop_reverse.items():
+        prefix = str(item_id)[:3] or "misc"
+        shards.setdefault(prefix, {})[str(item_id)] = rows
+    for prefix, rows in shards.items():
+        write_json(shard_dir / f"{prefix}.json", rows)
+    write_json(
+        shard_dir / "manifest.json",
+        {
+            "prefixLength": 3,
+            "count": len(shards),
+            "shards": sorted(shards.keys()),
+        },
     )
 
 
@@ -405,7 +458,7 @@ def main() -> None:
     compound = [record_to_plain(x) for x in parse_ini_records(read_text(compound_path))]
     status = [record_to_plain(x) for x in parse_ini_records(read_text(status_path))]
     locations = parse_locations(location_path)
-    drop_reverse = build_drop_reverse(monsters)
+    drop_reverse = apply_manual_drops(build_drop_reverse(monsters))
 
     search_index = {
         "items": [
@@ -458,6 +511,7 @@ def main() -> None:
     write_json(DATA / "status.json", status)
     write_json(DATA / "locations.json", locations)
     write_json(DATA / "drop_reverse.json", drop_reverse)
+    write_drop_reverse_shards(drop_reverse)
     write_json(DATA / "search_index.json", search_index)
     write_json(DATA / "build_meta.json", build_meta)
     write_data_bundle_js(DATA / "items.bundle.js", "items", items)
