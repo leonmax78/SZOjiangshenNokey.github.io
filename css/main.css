@@ -3673,3 +3673,136 @@ body{
   }
   .topSearch input{min-width:0}
 }
+
+/* V472 mobile global search placement. */
+@media(max-width:979px){
+  body{
+    padding-top:134px!important;
+  }
+  .topbar{
+    height:134px!important;
+    min-height:134px!important;
+    padding:calc(9px + env(safe-area-inset-top)) 12px 12px!important;
+    overflow:visible!important;
+  }
+  .topline{
+    display:grid!important;
+    grid-template-columns:52px minmax(0,1fr) minmax(108px,132px)!important;
+    grid-template-areas:
+      "menu brand settings"
+      "search search search"!important;
+    grid-template-rows:52px 48px!important;
+    align-items:center!important;
+    gap:10px 10px!important;
+    height:auto!important;
+    min-height:0!important;
+  }
+  .menuBtn{
+    grid-area:menu!important;
+    width:52px!important;
+    min-width:52px!important;
+    height:52px!important;
+  }
+  .brand{
+    grid-area:brand!important;
+  }
+  .brandTitle{
+    height:52px!important;
+    max-height:52px!important;
+  }
+  .shellSettingsBtn{
+    grid-area:settings!important;
+    width:100%!important;
+    max-width:none!important;
+    height:52px!important;
+    line-height:52px!important;
+  }
+  .topSearch{
+    grid-area:search!important;
+    grid-column:auto!important;
+    order:initial!important;
+    width:100%!important;
+    min-width:0!important;
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) 74px!important;
+    gap:8px!important;
+    align-items:center!important;
+  }
+  .topSearch input{
+    width:100%!important;
+    min-width:0!important;
+    min-height:48px!important;
+    height:48px!important;
+    padding:9px 16px!important;
+    font-size:16px!important;
+    background:rgba(8,18,37,.82)!important;
+  }
+  .topSearch button{
+    width:74px!important;
+    min-width:74px!important;
+    min-height:48px!important;
+    height:48px!important;
+    padding:0!important;
+    font-size:16px!important;
+  }
+  .homeBlank{
+    min-height:calc(100dvh - 134px)!important;
+    height:calc(100dvh - 134px)!important;
+  }
+  .drawer{
+    top:134px!important;
+    height:calc(100dvh - 134px)!important;
+  }
+}
+
+@media(max-width:390px){
+  body{
+    padding-top:126px!important;
+  }
+  .topbar{
+    height:126px!important;
+    min-height:126px!important;
+    padding-left:10px!important;
+    padding-right:10px!important;
+  }
+  .topline{
+    grid-template-columns:48px minmax(0,1fr) 112px!important;
+    grid-template-rows:48px 46px!important;
+    gap:8px!important;
+  }
+  .menuBtn,
+  .brandTitle,
+  .shellSettingsBtn{
+    height:48px!important;
+  }
+  .menuBtn{
+    width:48px!important;
+    min-width:48px!important;
+  }
+  .shellSettingsBtn{
+    line-height:48px!important;
+    font-size:14px!important;
+  }
+  .topSearch{
+    grid-template-columns:minmax(0,1fr) 68px!important;
+    gap:7px!important;
+  }
+  .topSearch input,
+  .topSearch button{
+    min-height:46px!important;
+    height:46px!important;
+  }
+  .topSearch button{
+    width:68px!important;
+    min-width:68px!important;
+    font-size:15px!important;
+  }
+  .homeBlank{
+    min-height:calc(100dvh - 126px)!important;
+    height:calc(100dvh - 126px)!important;
+  }
+  .drawer{
+    top:126px!important;
+    height:calc(100dvh - 126px)!important;
+  }
+}
