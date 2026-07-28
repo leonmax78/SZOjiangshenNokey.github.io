@@ -3806,3 +3806,151 @@ body{
     height:calc(100dvh - 126px)!important;
   }
 }
+
+/* V473 mobile global search final position. */
+@media(max-width:979px){
+  body{
+    padding-top:136px!important;
+  }
+  .topbar{
+    height:136px!important;
+    min-height:136px!important;
+    padding:calc(9px + env(safe-area-inset-top)) 12px 12px!important;
+    overflow:visible!important;
+  }
+  .topline{
+    position:relative!important;
+    display:grid!important;
+    grid-template-columns:52px minmax(0,1fr) minmax(112px,132px)!important;
+    grid-template-areas:"menu brand settings"!important;
+    grid-template-rows:52px!important;
+    height:112px!important;
+    min-height:112px!important;
+    align-items:start!important;
+    gap:10px!important;
+    overflow:visible!important;
+  }
+  .menuBtn{
+    grid-area:menu!important;
+    width:52px!important;
+    min-width:52px!important;
+    height:52px!important;
+  }
+  .brand{
+    grid-area:brand!important;
+    min-width:0!important;
+    align-self:center!important;
+  }
+  .brandTitle{
+    height:52px!important;
+    max-height:52px!important;
+    max-width:100%!important;
+  }
+  .shellSettingsBtn{
+    grid-area:settings!important;
+    width:100%!important;
+    max-width:none!important;
+    height:52px!important;
+    line-height:52px!important;
+    align-self:start!important;
+  }
+  .topSearch{
+    position:absolute!important;
+    left:0!important;
+    right:0!important;
+    bottom:0!important;
+    top:auto!important;
+    grid-area:auto!important;
+    grid-column:auto!important;
+    order:initial!important;
+    z-index:5!important;
+    display:flex!important;
+    align-items:center!important;
+    gap:8px!important;
+    width:auto!important;
+    min-width:0!important;
+    max-width:none!important;
+  }
+  .topSearch input{
+    display:block!important;
+    flex:1 1 auto!important;
+    width:auto!important;
+    min-width:0!important;
+    height:48px!important;
+    min-height:48px!important;
+    padding:9px 16px!important;
+    font-size:16px!important;
+    background:rgba(8,18,37,.88)!important;
+  }
+  .topSearch button{
+    flex:0 0 76px!important;
+    width:76px!important;
+    min-width:76px!important;
+    height:48px!important;
+    min-height:48px!important;
+    padding:0!important;
+    font-size:16px!important;
+  }
+  .homeBlank{
+    min-height:calc(100dvh - 136px)!important;
+    height:calc(100dvh - 136px)!important;
+  }
+  .drawer{
+    top:136px!important;
+    height:calc(100dvh - 136px)!important;
+  }
+}
+
+@media(max-width:390px){
+  body{
+    padding-top:128px!important;
+  }
+  .topbar{
+    height:128px!important;
+    min-height:128px!important;
+    padding-left:10px!important;
+    padding-right:10px!important;
+  }
+  .topline{
+    grid-template-columns:48px minmax(0,1fr) 112px!important;
+    grid-template-rows:48px!important;
+    height:106px!important;
+    min-height:106px!important;
+    gap:8px!important;
+  }
+  .menuBtn,
+  .brandTitle,
+  .shellSettingsBtn{
+    height:48px!important;
+  }
+  .menuBtn{
+    width:48px!important;
+    min-width:48px!important;
+  }
+  .shellSettingsBtn{
+    line-height:48px!important;
+    font-size:14px!important;
+  }
+  .topSearch{
+    gap:7px!important;
+  }
+  .topSearch input,
+  .topSearch button{
+    height:46px!important;
+    min-height:46px!important;
+  }
+  .topSearch button{
+    flex-basis:68px!important;
+    width:68px!important;
+    min-width:68px!important;
+    font-size:15px!important;
+  }
+  .homeBlank{
+    min-height:calc(100dvh - 128px)!important;
+    height:calc(100dvh - 128px)!important;
+  }
+  .drawer{
+    top:128px!important;
+    height:calc(100dvh - 128px)!important;
+  }
+}
