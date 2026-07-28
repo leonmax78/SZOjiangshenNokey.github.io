@@ -219,7 +219,7 @@
             ${portrait ? `<span class="mapMonsterThumb"><img src="${htmlEscape(portrait)}" alt="" loading="lazy" decoding="async"></span>` : ''}
             <span>
               <h2>${htmlEscape(name || '怪物')}</h2>
-              <div class="mapShopMeta">Lv.${htmlEscape(level || '')} / ${htmlEscape(marker.stageName || '')}</div>
+              <div class="mapShopMeta">Lv.${htmlEscape(level || '')} / ${htmlEscape(marker.stageName || '')}${htmlEscape(markerAreaSuffix(marker))}</div>
             </span>
           </div>
           <button type="button" class="ghost mapMiniBtn" data-map-monster-close>關閉</button>
@@ -306,8 +306,17 @@
     document.querySelectorAll('.mapShopBackdrop').forEach(el => el.remove());
   }
 
+  function markerAreaLabel(marker){
+    return String(marker?.areaName || marker?.areaLabel || '').trim();
+  }
+
+  function markerAreaSuffix(marker){
+    const label = markerAreaLabel(marker);
+    return label ? ` / ${label}` : '';
+  }
+
   function markerText(marker){
-    return `${marker.name || ''} ${marker.id || ''} ${marker.level || ''} ${marker.x || marker.coordX || ''} ${marker.y || marker.coordY || ''}`.toLowerCase();
+    return `${marker.name || ''} ${marker.id || ''} ${marker.level || ''} ${markerAreaLabel(marker)} ${marker.x || marker.coordX || ''} ${marker.y || marker.coordY || ''}`.toLowerCase();
   }
 
   function stageMatches(stage, q){
@@ -326,8 +335,8 @@
     return (mapData?.stages || []).filter(stage => stageMatches(stage, q));
   }
 
-  function mapSuggestionKey(kind, id, stageId, name){
-    return `${kind}:${id || ''}:${stageId || ''}:${name || ''}`;
+  function mapSuggestionKey(kind, id, stageId, name, area){
+    return `${kind}:${id || ''}:${stageId || ''}:${name || ''}:${area || ''}`;
   }
 
   function mapSearchSuggestions(limit = 10){
@@ -336,7 +345,7 @@
     const rows = [];
     const seen = new Set();
     const push = row => {
-      const key = mapSuggestionKey(row.kind, row.id, row.stageId, row.name);
+      const key = mapSuggestionKey(row.kind, row.id, row.stageId, row.name, row.area || '');
       if(seen.has(key) || rows.length >= limit) return;
       seen.add(key);
       rows.push(row);
@@ -360,8 +369,9 @@
             id: group.id,
             stageId: stage.stageId,
             name: group.name,
-            label: group.name,
-            note: `${stage.stageName} / Lv.${group.level || ''} / 共 ${group.points?.length || 0} 點`
+            area: group.areaKey || group.areaName || group.areaLabel || '',
+            label: `${group.name}${markerAreaSuffix(group)}`,
+            note: `${stage.stageName}${markerAreaSuffix(group)} / Lv.${group.level || ''} / ${group.points?.length || 0} \u9ede`
           });
         }
       });
@@ -386,7 +396,7 @@
     const suggestions = mapSearchSuggestions();
     if(!state.query.trim() || !suggestions.length) return '';
     return `<div class="mapSuggestions" aria-label="搜尋候選">
-      ${suggestions.map(s => `<button type="button" class="mapSuggestBtn" data-map-suggest="${htmlEscape(s.kind)}" data-id="${htmlEscape(s.id)}" data-stage="${htmlEscape(s.stageId)}" data-name="${htmlEscape(s.name)}">
+      ${suggestions.map(s => `<button type="button" class="mapSuggestBtn" data-map-suggest="${htmlEscape(s.kind)}" data-id="${htmlEscape(s.id)}" data-stage="${htmlEscape(s.stageId)}" data-name="${htmlEscape(s.name)}" data-area="${htmlEscape(s.area || '')}">
         <span>${htmlEscape(s.label)}</span>
         <small>${htmlEscape(s.note)}</small>
       </button>`).join('')}
@@ -411,7 +421,10 @@
     state.monsters.clear();
     state.npcs.clear();
     const stage = (mapData?.stages || []).find(s => Number(s.stageId) === stageId);
-    if(kind === 'monster' && id) state.monsters.add(String(id));
+    if(kind === 'monster' && id){
+      const area = btn.dataset.area || '';
+      state.monsters.add(`${String(id)}:${String(area)}`);
+    }
     if(kind === 'npc' && stage){
       (stage.npcs || []).forEach(n => {
         if(String(n.id || '') === String(id) || String(n.name || '') === name) state.npcs.add(npcKey(n));
@@ -433,7 +446,8 @@
   }
 
   function monsterGroupKey(marker){
-    return String(marker.id || '');
+    const area = marker.areaKey || marker.areaName || marker.areaLabel || '';
+    return `${String(marker.id || '')}:${String(area)}`;
   }
 
   function npcKey(marker){
@@ -461,7 +475,7 @@
     const lv = marker.level ? ` Lv.${marker.level}` : '';
     const role = marker.kind === 'npc' ? roleLabel(marker.role) : '';
     const roleText = role ? ` / ${role}` : '';
-    return `${marker.name || '未命名'}${lv}${roleText}`;
+    return `${marker.name || '\u672a\u547d\u540d'}${lv}${markerAreaSuffix(marker)}${roleText}`;
   }
 
   function coordLabel(marker){
@@ -488,8 +502,10 @@
 
   function monsterGroupLabel(group){
     const lv = group.level ? ` Lv.${group.level}` : '';
+    const area = markerAreaLabel(group);
+    const areaText = area ? ` / ${area}` : '';
     const count = Array.isArray(group.points) ? group.points.length : 0;
-    return `${group.name || '未命名'}${lv} / 共 ${count} 點`;
+    return `${group.name || '\u672a\u547d\u540d'}${lv}${areaText} / \u5171 ${count} \u9ede`;
   }
 
   function markerList(stage, kind){
@@ -512,6 +528,16 @@
     return monsterRows.concat(npcRows);
   }
 
+  function areaLabels(stage){
+    return (stage.areas || []).map(area => {
+      const left = Math.max(0, Math.min(100, Number(area.x || 0) / (Number(stage.width) || 1) * 100));
+      const top = Math.max(0, Math.min(100, Number(area.y || 0) / (Number(stage.height) || 1) * 100));
+      const label = area.label || area.name || '';
+      if(!label) return '';
+      return `<span class="mapAreaLabel" style="left:${left}%;top:${top}%;">${htmlEscape(label)}</span>`;
+    }).join('');
+  }
+
   function markerDots(stage){
     const w = Number(stage.width) || 1;
     const h = Number(stage.height) || 1;
@@ -523,7 +549,7 @@
       const fallback = marker.kind === 'npc' ? 'N' : 'M';
       const inner = src ? `<img src="${htmlEscape(src)}" alt="" onerror="this.hidden=true;this.nextElementSibling.hidden=false;this.parentElement.classList.remove('withImage')"><span hidden>${fallback}</span>` : `<span>${fallback}</span>`;
       const shopAttrs = marker.kind === 'npc' && marker.shop ? ` data-map-shop="${htmlEscape(marker.shop)}" data-map-shop-stage="${htmlEscape(stage.stageId)}" data-map-shop-stage-name="${htmlEscape(stage.stageName || '')}" data-map-shop-npc="${htmlEscape(marker.id || '')}" data-map-shop-name="${htmlEscape(marker.name || '')}" data-map-shop-x="${htmlEscape(marker.x ?? '')}" data-map-shop-y="${htmlEscape(marker.y ?? '')}" data-map-shop-coord-x="${htmlEscape(marker.coordX ?? marker.x ?? '')}" data-map-shop-coord-y="${htmlEscape(marker.coordY ?? marker.y ?? '')}"` : '';
-      const monsterAttrs = marker.kind === 'monster' ? ` data-map-monster-dot="1" data-map-monster="${htmlEscape(marker.id || '')}" data-map-monster-stage="${htmlEscape(stage.stageId)}" data-map-monster-stage-name="${htmlEscape(stage.stageName || '')}" data-map-monster-name="${htmlEscape(marker.name || '')}" data-map-monster-level="${htmlEscape(marker.level || '')}" data-map-monster-pic="${htmlEscape(marker.pic || '')}"` : '';
+      const monsterAttrs = marker.kind === 'monster' ? ` data-map-monster-dot="1" data-map-monster="${htmlEscape(marker.id || '')}" data-map-monster-stage="${htmlEscape(stage.stageId)}" data-map-monster-stage-name="${htmlEscape(stage.stageName || '')}" data-map-monster-name="${htmlEscape(marker.name || '')}" data-map-monster-level="${htmlEscape(marker.level || '')}" data-map-monster-pic="${htmlEscape(marker.pic || '')}" data-map-monster-area="${htmlEscape(markerAreaLabel(marker))}"` : '';
       return `<button type="button" class="mapDot ${cls}${src ? ' withImage' : ''}${marker.shop ? ' shopNpcDot' : ''}" style="left:${left}%;top:${top}%;" title="${htmlEscape(markerLabel(marker))}"${shopAttrs}${monsterAttrs}>
         ${inner}
       </button>`;
@@ -533,7 +559,7 @@
   function zoomValue(){
     const n = Number(state.zoom);
     if(!Number.isFinite(n)) return 1;
-    return Math.max(0.5, Math.min(2.25, n));
+    return Math.max(0.5, Math.min(5, n));
   }
 
   function applyZoomToDom(stage){
@@ -631,7 +657,7 @@
         <div class="mapCanvasWrap">
           <div class="mapZoomBar">
             <label>縮放
-              <input id="mapZoomInput" type="range" min="0.5" max="2.25" step="0.05" value="${zoomValue()}">
+              <input id="mapZoomInput" type="range" min="0.5" max="5" step="0.05" value="${zoomValue()}">
             </label>
             <span>${Math.round(zoomValue() * 100)}%</span>
           </div>
@@ -639,6 +665,7 @@
           <div class="mapZoomSurface" style="width:${Math.round((Number(stage.width)||1)*zoomValue())}px;height:${Math.round((Number(stage.height)||1)*zoomValue())}px;">
             <div class="mapImageStage" style="transform:scale(${zoomValue()});width:${Number(stage.width)||1}px;height:${Number(stage.height)||1}px;">
               <img id="mapImage" src="${htmlEscape(withAssetVersion(stage.image))}" alt="${htmlEscape(stage.stageName)}" decoding="async" fetchpriority="high">
+              <div class="mapAreaOverlay">${areaLabels(stage)}</div>
               <div class="mapOverlay">${markerDots(stage)}</div>
             </div>
           </div>
@@ -779,7 +806,8 @@
           level: monsterDot.dataset.mapMonsterLevel || '',
           pic: monsterDot.dataset.mapMonsterPic || '',
           stageId: Number(monsterDot.dataset.mapMonsterStage) || state.stageId,
-          stageName: monsterDot.dataset.mapMonsterStageName || ''
+          stageName: monsterDot.dataset.mapMonsterStageName || '',
+          areaName: monsterDot.dataset.mapMonsterArea || ''
         });
         return;
       }
