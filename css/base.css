@@ -349,10 +349,10 @@ h1{font-size:24px;line-height:1.22;margin:0 0 8px}h2{font-size:19px;margin:0 0 1
 .mapOverlay{position:absolute;inset:0;pointer-events:none;width:100%;height:100%}
 .mapAreaOverlay{position:absolute;inset:0;pointer-events:none;width:100%;height:100%;z-index:2}
 .mapAreaLabel{position:absolute;transform:translate(-50%,-50%);display:inline-grid;place-items:center;min-width:34px;height:24px;padding:0 8px;border-radius:999px;border:1px solid rgba(34,211,238,.75);background:rgba(6,17,31,.82);box-shadow:0 0 0 3px rgba(0,0,0,.28),0 8px 20px rgba(0,0,0,.35);color:#e0f2fe;font-size:13px;font-weight:1000;white-space:nowrap;text-shadow:0 1px 2px rgba(0,0,0,.65)}
-.mapDot{position:absolute;transform:translate(-50%,-85%);width:28px;height:28px;border-radius:999px;border:2px solid #fff;display:grid;place-items:center;font-size:11px;font-weight:1000;color:#06111f;box-shadow:0 0 0 3px rgba(0,0,0,.4);pointer-events:auto;overflow:hidden}
+.mapDot{position:absolute;transform:translate(-50%,-85%);width:22px;height:22px;border-radius:999px;border:2px solid #fff;display:grid;place-items:center;font-size:10px;font-weight:1000;color:#06111f;box-shadow:0 0 0 2px rgba(0,0,0,.4);pointer-events:auto;overflow:hidden}
 .mapDot.monster{background:#facc15}
 .mapDot.npc{background:#fb7185}
-.mapDot.withImage{width:46px;height:46px;border-radius:12px;background:#07111f}
+.mapDot.withImage{width:34px;height:34px;border-radius:9px;background:#07111f}
 .mapDot.withImage img{display:block;max-width:100%;max-height:100%;object-fit:contain;image-rendering:auto}
 .mapDot.withImage img[src=""],.mapDot.withImage img:not([src]){display:none}
 .mapLoading{position:absolute;z-index:3;left:14px;top:14px;border:1px solid rgba(96,165,250,.42);background:rgba(3,7,18,.88);color:#eaf2ff;border-radius:999px;padding:8px 12px;font-weight:1000}
