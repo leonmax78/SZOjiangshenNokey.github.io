@@ -339,7 +339,7 @@ h1{font-size:24px;line-height:1.22;margin:0 0 8px}h2{font-size:19px;margin:0 0 1
 .mapMarkerChoice input{width:18px;height:18px;margin-top:1px;accent-color:var(--accent)}
 .mapEmptyLine{padding:8px}
 .mapCanvasWrap{position:relative;min-height:520px;border:1px solid rgba(245,158,11,.35);border-radius:16px;background:#020817;overflow:auto}
-.mapZoomBar{position:sticky;top:0;z-index:4;display:flex;align-items:center;gap:10px;justify-content:flex-end;padding:10px 12px;background:linear-gradient(180deg,rgba(2,8,23,.92),rgba(2,8,23,.62));backdrop-filter:blur(8px)}
+.mapZoomBar{position:sticky;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;gap:10px;justify-content:flex-end;width:100%;min-width:100%;box-sizing:border-box;padding:10px 12px;background:linear-gradient(180deg,rgba(2,8,23,.92),rgba(2,8,23,.62));backdrop-filter:blur(8px)}
 .mapZoomBar label{display:flex;align-items:center;gap:8px;color:#a7f3d0;font-size:12px;font-weight:1000}
 .mapZoomBar input{width:180px;accent-color:#2dd4bf}
 .mapZoomBar span{min-width:48px;text-align:right;color:#eaf2ff;font-weight:1000}
