@@ -446,7 +446,7 @@
   }
 
   function monsterGroupKey(marker){
-    const area = marker.areaKey || marker.areaName || marker.areaLabel || '';
+    const area = marker.areaKey || marker.areaName || marker.areaLabel || (marker.floor ? `tower-floor-${marker.floor}` : '') || marker.groupSignature || '';
     return `${String(marker.id || '')}:${String(area)}`;
   }
 
@@ -495,9 +495,20 @@
       groups.get(key).points.push(marker);
     });
     return [...groups.values()].sort((a, b) => {
+      const fa = floorSortValue(a), fb = floorSortValue(b);
+      if(fa !== fb) return fa - fb;
       const la = Number(a.level) || 0, lb = Number(b.level) || 0;
       return la - lb || String(a.name || '').localeCompare(String(b.name || ''), 'zh-Hant') || Number(a.id) - Number(b.id);
     });
+  }
+
+  function floorSortValue(marker){
+    const direct = Number(marker?.floor);
+    if(Number.isFinite(direct) && direct > 0) return direct;
+    const text = `${marker?.areaName || ''} ${marker?.areaLabel || ''} ${marker?.areaKey || ''}`;
+    const m = text.match(/(?:第|tower-)(\d+)(?:層)?/);
+    const n = m ? Number(m[1]) : NaN;
+    return Number.isFinite(n) && n > 0 ? n : 99999;
   }
 
   function monsterGroupLabel(group){
@@ -917,7 +928,9 @@
     state.query = foundName || target;
     if(stage){
       state.stageId = Number(stage.stageId);
-      state.monsters.add(target);
+      monsterGroups(stage).forEach(group => {
+        if(String(group.id || '') === target) state.monsters.add(monsterGroupKey(group));
+      });
     }
     await renderStageMapPage();
   };
