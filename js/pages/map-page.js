@@ -504,7 +504,7 @@
 
   function floorSortValue(marker){
     const direct = Number(marker?.floor);
-    if(Number.isFinite(direct) && direct > 0) return direct;
+    if(Number.isFinite(direct) && direct >= 0) return direct;
     const text = `${marker?.areaName || ''} ${marker?.areaLabel || ''} ${marker?.areaKey || ''}`;
     const m = text.match(/(?:第|tower-)(\d+)(?:層)?/);
     const n = m ? Number(m[1]) : NaN;
