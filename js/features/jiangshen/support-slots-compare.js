@@ -162,11 +162,246 @@
     </tbody></table></div>${cols.map(c=>`<h3>${E(c.label)} 成立連結</h3>${comboTextBlock(c.res)}`).join('')}`;
   }
 
+  const REC_STAR_KEY = 'szo_jiang_recommend_stars_v1';
+  const REC_SLOTS = ['主降神', '副降1', '副降2', '副降3', '副降4'];
+  const REC_RATE = [1, 0.1, 0.1, 0.1, 0.1];
+  const REC_METRICS = [
+    {kind:'physicalStr', title:'物理職業（力）', desc:'依 力量 * 2 + 靈敏 / 2 + 防禦 * 0.25 排序', keys:['力量','靈敏','防禦']},
+    {kind:'physicalDex', title:'物理職業（敏）', desc:'依 靈敏 * 2 + 力量 / 2 + 防禦 * 0.25 排序', keys:['靈敏','力量','防禦']},
+    {kind:'spell', title:'術法職業', desc:'依 智慧 + 術攻 + 防禦 * 0.25 + 術防 * 0.25 排序', keys:['智慧','術攻','防禦','術防']},
+    {kind:'defense', title:'防禦向', desc:'依 防禦 + 術防 排序', keys:['防禦','術防']}
+  ];
+
+  function recommendStars(){
+    const saved = readJson(REC_STAR_KEY, null);
+    const fallback = [20,20,20,20,20];
+    return Array.from({length:REC_SLOTS.length},(_,i)=>Math.max(1,Math.min(20,Math.floor(Number(saved?.[i] ?? fallback[i])))));
+  }
+  function saveRecommendStars(stars){ writeJson(REC_STAR_KEY, stars); }
+  function readRecommendStars(){
+    return Array.from({length:REC_SLOTS.length},(_,i)=>Math.max(1,Math.min(20,Math.floor(Number($('recStar'+i)?.value || 1)))));
+  }
+  function recommendStarOptions(sel=20){
+    return Array.from({length:20},(_,idx)=>{
+      const i = idx + 1;
+      return `<option value="${i}" ${i===sel?'selected':''}>${i} 星</option>`;
+    }).join('');
+  }
+  const REC_DEF_WEIGHT = 0.25;
+  function metricScore(total, kind){
+    if(kind === 'physicalStr') return Number(total['力量'] || 0) * 2 + Number(total['靈敏'] || 0) / 2 + Number(total['防禦'] || 0) * REC_DEF_WEIGHT;
+    if(kind === 'physicalDex') return Number(total['靈敏'] || 0) * 2 + Number(total['力量'] || 0) / 2 + Number(total['防禦'] || 0) * REC_DEF_WEIGHT;
+    if(kind === 'spell') return Number(total['智慧'] || 0) + Number(total['術攻'] || 0) + Number(total['防禦'] || 0) * REC_DEF_WEIGHT + Number(total['術防'] || 0) * REC_DEF_WEIGHT;
+    if(kind === 'defense') return Number(total['防禦'] || 0) + Number(total['術防'] || 0);
+    return 0;
+  }
+  function recommendTotal(picks){
+    let total = Object.fromEntries(stats().map(s=>[s,0]));
+    picks.forEach((p,i)=>{
+      total = add(total, scale(getAbility(p.n, p.s), REC_RATE[i] || 0.1));
+    });
+    const combos = typeof activeCombos === 'function' ? activeCombos(picks.map(p=>p.n)) : [];
+    if(typeof comboBonus === 'function') total = add(total, scale(comboBonus(combos), 1));
+    return {total, combos};
+  }
+  function emptyTotal(){
+    return Object.fromEntries(stats().map(s=>[s,0]));
+  }
+  function abilityPart(name, star, rate){
+    return scale(getAbility(name, star), rate);
+  }
+  function comboClusterNames(seedName, allNames){
+    const valid = new Set(allNames);
+    const cluster = new Set([seedName]);
+    const combos = D().comboMembers || {};
+    for(let round=0; round<4; round++){
+      let changed = false;
+      for(const members of Object.values(combos)){
+        const group = (members || []).filter(n => valid.has(n));
+        if(!group.some(n => cluster.has(n))) continue;
+        for(const n of group){
+          if(!cluster.has(n)){ cluster.add(n); changed = true; }
+        }
+      }
+      if(!changed) break;
+    }
+    cluster.delete(seedName);
+    return Array.from(cluster);
+  }
+  function candidateListForMain(mainName, kind, star, allNames){
+    const ranked = allNames.map(n=>{
+      const a = abilityPart(n, star, 0.1);
+      return {n, a, score:metricScore(a, kind)};
+    }).sort((a,b)=>b.score-a.score);
+    const keep = new Map();
+    ranked.slice(0, 28).forEach(c => keep.set(c.n, c));
+    comboClusterNames(mainName, allNames).forEach(n => {
+      if(!keep.has(n)){
+        const a = abilityPart(n, star, 0.1);
+        keep.set(n, {n, a, score:metricScore(a, kind)});
+      }
+    });
+    return Array.from(keep.values()).sort((a,b)=>b.score-a.score).slice(0, 72);
+  }
+  function buildState(mainName, supportNames, stars){
+    const picks = [{n:mainName, s:stars[0]}].concat(supportNames.map((n,i)=>({n, s:stars[i+1]})));
+    const res = recommendTotal(picks);
+    return {picks, total:res.total, combos:res.combos, score:0, quickScore:0};
+  }
+  function supportPermutations(names, stars){
+    if(names.length !== 4) return [names];
+    const sameStars = new Set((stars || []).slice(1)).size === 1;
+    if(sameStars) return [names];
+    const out = [];
+    const used = Array(names.length).fill(false);
+    const cur = [];
+    function walk(){
+      if(cur.length === names.length){ out.push(cur.slice()); return; }
+      for(let i=0;i<names.length;i++){
+        if(used[i]) continue;
+        used[i] = true; cur.push(names[i]);
+        walk();
+        cur.pop(); used[i] = false;
+      }
+    }
+    walk();
+    return out;
+  }
+  function comboSeedStatesForMain(mainName, kind, stars, allNames){
+    const cluster = comboClusterNames(mainName, allNames);
+    if(cluster.length < 2) return [];
+    const ranked = cluster.map(n=>{
+      const a = abilityPart(n, stars[1], 0.1);
+      const comboTouch = Object.values(D().comboMembers || {}).filter(m => (m || []).includes(n)).length;
+      return {n, score:metricScore(a, kind) + comboTouch * 500};
+    }).sort((a,b)=>b.score-a.score).slice(0, 12).map(x=>x.n);
+    const pool = ranked.length >= 4 ? ranked : Array.from(new Set(ranked.concat(allNames.filter(n => n !== mainName)))).slice(0, 12);
+    const seeds = [];
+    function choose(start, picked){
+      if(seeds.length >= 120) return;
+      if(picked.length === 4){
+        for(const order of supportPermutations(picked, stars)){
+          const state = buildState(mainName, order, stars);
+          state.score = metricScore(state.total, kind);
+          state.quickScore = state.score;
+          seeds.push(state);
+          if(seeds.length >= 120) break;
+        }
+        return;
+      }
+      for(let i=start; i<pool.length; i++) choose(i+1, picked.concat(pool[i]));
+    }
+    choose(0, []);
+    return seeds;
+  }
+  function topRecommendPlans(kind, stars){
+    const allNames = names().filter(n => n && D().baseStats && D().baseStats[n]);
+    const beamLimit = 48;
+    const bestByMain = [];
+    for(const mainName of allNames){
+      const mainAbility = abilityPart(mainName, stars[0], REC_RATE[0]);
+      let states = [{picks:[{n:mainName, s:stars[0]}], total:mainAbility, quickScore:metricScore(mainAbility, kind)}];
+      for(let slot=1; slot<REC_SLOTS.length; slot++){
+        const slotCandidates = candidateListForMain(mainName, kind, stars[slot], allNames);
+        const next = [];
+        for(const state of states){
+          const used = new Set(state.picks.map(p=>p.n));
+          for(const cand of slotCandidates){
+            const n = cand.n;
+            if(used.has(n)) continue;
+            const picks = state.picks.concat({n, s:stars[slot]});
+            const total = add(state.total || emptyTotal(), cand.a);
+            next.push({picks, total, quickScore:metricScore(total, kind)});
+          }
+        }
+        next.sort((a,b)=>b.quickScore-a.quickScore);
+        states = next.slice(0, beamLimit);
+      }
+      const finalStates = states.concat(comboSeedStatesForMain(mainName, kind, stars, allNames));
+      const best = finalStates.map(state=>{
+        const res = recommendTotal(state.picks);
+        return {...state, total:res.total, combos:res.combos, score:metricScore(res.total, kind)};
+      }).sort((a,b)=>b.score-a.score)[0];
+      if(best) bestByMain.push(best);
+    }
+    return bestByMain.sort((a,b)=>b.score-a.score).slice(0,3);
+  }
+  function statLine(total, keys){
+    return keys.map(k=>`${E(k)} ${fmt(total[k] || 0)}`).join('　');
+  }
+  function recommendCompareTable(plans){
+    if(!plans || !plans.length) return '';
+    const planTitle = (plan, idx) => {
+      const picks = plan.picks || [];
+      const main = picks[0]?.n || '';
+      const supports = picks.slice(1).map(p => p.n).filter(Boolean);
+      return `${idx + 1}. ${main}${supports.length ? `(${supports.join('、')})` : ''}`;
+    };
+    const scoreVals = plans.map(p=>Number(p.score || 0));
+    const scoreMax = Math.max(...scoreVals);
+    const scoreRow = `<tr><td>推薦分數</td>${scoreVals.map(v=>`<td class="${v===scoreMax?'supportBest':''}">${fmt(v)}</td>`).join('')}</tr>`;
+    const statRows = stats().map(st=>{
+      const vals = plans.map(p=>Number(p.total?.[st] || 0));
+      const max = Math.max(...vals);
+      return `<tr><td>${E(st)}</td>${vals.map(v=>`<td class="${max>0 && v===max?'supportBest':''}">${fmt(v)}</td>`).join('')}</tr>`;
+    }).join('');
+    return `<h3>候補數值比較</h3><div class="tableWrap"><table class="compareTable"><thead><tr><th>能力</th>${plans.map((p,i)=>`<th>${E(planTitle(p,i))}</th>`).join('')}</tr></thead><tbody>${scoreRow}${statRows}</tbody></table></div>`;
+  }
+  function recommendCard(metric, plan, idx){
+    return `<article class="kv supportChoiceCard" style="margin-top:12px">
+      <h3>${idx + 1}. ${E(metric.title)}候補方案</h3>
+      <div class="muted">${E(metric.desc)}：${fmt(plan.score)}</div>
+      <div class="notice" style="margin-top:10px">${statLine(plan.total, metric.keys)}</div>
+      <div class="kvGrid" style="margin-top:10px">
+        ${plan.picks.map((p,i)=>`<div class="kv"><div class="k">${E(REC_SLOTS[i])}</div><div class="v"><b>${E(p.n)}</b><br><span class="muted">${p.s} 星${i===0?' / 100%':' / 10%'}</span></div></div>`).join('')}
+      </div>
+      ${plan.combos && plan.combos.length ? `<div class="muted" style="margin-top:10px">連結：${plan.combos.map(E).join('、')}</div>` : ''}
+    </article>`;
+  }
+  function renderRecommendResults(){
+    const stars = readRecommendStars();
+    saveRecommendStars(stars);
+    const box = $('jiangRecommendResults');
+    if(!box) return;
+    const kind = $('recMetric')?.value || 'physicalStr';
+    const metric = REC_METRICS.find(m => m.kind === kind) || REC_METRICS[0];
+    box.innerHTML = '<div class="notice">正在計算推薦組合...</div>';
+    setTimeout(()=>{
+      const plans = topRecommendPlans(metric.kind, stars);
+      const html = `<section class="card supportChoiceCard" style="box-shadow:none;margin-top:18px;border-color:rgba(54,211,207,.55)">
+        <h2>${E(metric.title)}</h2>
+        <div class="muted">${E(metric.desc)}，列出前 3 個候補。</div>
+        ${recommendCompareTable(plans)}
+        ${plans.map((p,i)=>recommendCard(metric,p,i)).join('')}
+      </section>`;
+      box.innerHTML = html || '<div class="empty">沒有可用的降神資料。</div>';
+    }, 20);
+  }
+  function renderRecommend(){
+    const reader = $('reader'); if(!reader) return;
+    const stars = recommendStars();
+    reader.innerHTML = `<section class="card">
+      <h1>副降神組合推薦方案</h1>
+      <div class="notice">手動設定主降神與 4 個副降神的星等後，系統會推薦物理、術法、防禦三種方向各 1 ~ 3 個候補組合。副降神能力依 10% 納入，若組合成立也會納入連結加成。</div>
+      <div class="kvGrid">
+        ${REC_SLOTS.map((label,i)=>`<div class="kv"><div class="k">${E(label)}星等</div><div class="v"><select id="recStar${i}">${recommendStarOptions(stars[i])}</select></div></div>`).join('')}
+        <div class="kv"><div class="k">推薦方向</div><div class="v"><select id="recMetric">${REC_METRICS.map(m=>`<option value="${E(m.kind)}">${E(m.title)}</option>`).join('')}</select></div></div>
+      </div>
+      <div class="supportSaveBar" style="margin-top:14px">
+        <button id="runJiangRecommend" type="button">產生推薦方案</button>
+      </div>
+      <div id="jiangRecommendResults"><div class="empty">請先設定星等與推薦方向，再按「產生推薦方案」。</div></div>
+    </section>`;
+    $('runJiangRecommend').onclick = renderRecommendResults;
+  }
+
   window.renderSupportSlotsPage = function(){ renderSupport(); closeMenu(); scrollTop(); };
   window.renderSupportComparePage = function(){ renderSupportCompare(); closeMenu(); scrollTop(); };
+  window.renderJiangRecommendPage = function(){ renderRecommend(); closeMenu(); scrollTop(); };
   const oldSetJiang = window.setJiang;
   window.setJiang = function(kind){
     if(kind === 'support'){ window.renderSupportSlotsPage(); return; }
+    if(kind === 'recommend'){ window.renderJiangRecommendPage(); return; }
     if(kind === 'supportCompare'){ window.renderSupportComparePage(); return; }
     if(typeof oldSetJiang === 'function') return oldSetJiang(kind);
   };

@@ -235,6 +235,7 @@ function renderJiangHome(){
  document.body.classList.remove('isHomeView');
  renderChoiceMenu('降神、經驗、修練計算',[
   {title:'副降神模擬',desc:'試算副降神能力與需求',attr:'data-jiang="support"'},
+  {title:'副降神組合推薦方案',desc:'依星等推薦物理、術法、防禦組合',attr:'data-jiang="recommend"'},
   {title:'主降神比較',desc:'比較主降神能力差異',attr:'data-jiang="compare"'},
   {title:'20星等',desc:'星等資料與累積需求',attr:'data-jiang="stars"'},
   {title:'星等 / 靈氣',desc:'星等與靈氣相關試算',attr:'data-jiang="starAura"'},
@@ -284,6 +285,7 @@ function itemSubLoadingLabel(kind){
 function jiangLoadingLabel(kind){
  const labels={
   support:'副降神模擬',
+  recommend:'副降神組合推薦方案',
   supportCompare:'副降神存檔比較',
   compare:'主降神比較',
   stars:'20星等',
@@ -333,6 +335,7 @@ function itemSubLoadingLabel(kind){
 function jiangLoadingLabel(kind){
  const labels={
   support:'副降神模擬',
+  recommend:'副降神組合推薦方案',
   supportCompare:'副降神存檔比較',
   compare:'主降神比較',
   stars:'20星等',
@@ -395,6 +398,10 @@ function setJiang(kind){
  showPageLoading(loadingLabel);
  (async()=>{
   if(!(await ensureJiangshenToolLoaded()))return;
+  if(kind==='recommend' && typeof window.renderJiangRecommendPage==='function'){
+   window.renderJiangRecommendPage();
+   return;
+  }
   if(!jiangshenSetDelegating && window.setJiang && window.setJiang !== setJiang){
    jiangshenSetDelegating=true;
    try{return window.setJiang(kind);}
