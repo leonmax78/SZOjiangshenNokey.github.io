@@ -6118,7 +6118,20 @@
 18120,怒相．辰紫荊,,1,0,new_drop_kept,new monster row already has DropItem
 18121,真．俠隱樓寶箱,,1,0,new_drop_kept,new monster row already has DropItem
 18122,六宇新手錦囊,,0,0,no_old_drop,old monster row missing or has no valid DropItem
-18123,麻辣爆刃錦囊,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18123,麻辣爆刃錦囊,,1,0,new_drop_kept,new monster row already has DropItem
 18124,麻辣神杖錦囊,,0,0,no_old_drop,old monster row missing or has no valid DropItem
 18125,麻辣衝擊錦囊,,0,0,no_old_drop,old monster row missing or has no valid DropItem
-18126,侯氏兵甲福袋2026,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18126,侯氏兵甲福袋2026,,1,0,new_drop_kept,new monster row already has DropItem
+18127,燕南天封魂晶,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18128,鐵心蘭封魂晶,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18129,江小魚．壹封魂晶,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18130,絕代江小魚錦囊,,1,0,new_drop_kept,new monster row already has DropItem
+18131,絕代花無缺錦囊,,1,0,new_drop_kept,new monster row already has DropItem
+18132,？？？,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18133,？？？,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18134,？？？,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18135,？？？,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18136,？？？,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18137,綠林強盜,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18138,尋寶無賴,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18139,蒙面盜賊,,0,0,no_old_drop,old monster row missing or has no valid DropItem
