@@ -26,23 +26,28 @@
   }
 
   function getSoulList(){
+    function visible(list){
+      return (Array.isArray(list)?list:[]).filter(function(s){
+        return !(window.isVisibleSoulV0730 && !window.isVisibleSoulV0730(s));
+      });
+    }
     try{
       if (window.SZO_SOUL_MODULE && typeof window.SZO_SOUL_MODULE.getSoulListV106 === 'function') {
-        const a = window.SZO_SOUL_MODULE.getSoulListV106();
+        const a = visible(window.SZO_SOUL_MODULE.getSoulListV106());
         if (Array.isArray(a) && a.length) return a;
       }
     }catch(e){}
     try{
       if (typeof window.getSoulListV106 === 'function') {
-        const a = window.getSoulListV106();
+        const a = visible(window.getSoulListV106());
         if (Array.isArray(a) && a.length) return a;
       }
     }catch(e){}
     try{
-      if (Array.isArray(window.changeBodyIniSouls) && window.changeBodyIniSouls.length) return window.changeBodyIniSouls;
+      if (Array.isArray(window.changeBodyIniSouls) && window.changeBodyIniSouls.length) return visible(window.changeBodyIniSouls);
     }catch(e){}
     try{
-      if (Array.isArray(window.SOUL_DATA) && window.SOUL_DATA.length) return window.SOUL_DATA;
+      if (Array.isArray(window.SOUL_DATA) && window.SOUL_DATA.length) return visible(window.SOUL_DATA);
     }catch(e){}
     return [];
   }

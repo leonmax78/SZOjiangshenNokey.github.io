@@ -22,6 +22,11 @@ function parseChangeBodyIniBlocks(text){
 }
 
 function soulNum(v){const n=Number(v);return Number.isFinite(n)?n:0}
+const HIDDEN_SOUL_IDS_V0730=new Set([64,65,67,68,69,70,71]);
+function isVisibleSoulV0730(soul){
+ const id=soulNum(soul&&soul.ID);
+ return !HIDDEN_SOUL_IDS_V0730.has(id);
+}
 
 function buildSoulDataFromChangeBodyIni(text){
  return parseChangeBodyIniBlocks(text).map(r=>({
@@ -35,18 +40,19 @@ function buildSoulDataFromChangeBodyIni(text){
   Extra_Def:soulNum(r.Extra_Def),
   Magic_Def:soulNum(r.Magic_Def),
   _source:'CHANGEBODYITEM.INI'
- })).filter(x=>x.Name);
+ })).filter(x=>x.Name&&isVisibleSoulV0730(x));
 }
 
 function getSoulListV106(){
- if(Array.isArray(changeBodyIniSouls)&&changeBodyIniSouls.length)return changeBodyIniSouls;
- if(typeof SOUL_DATA!=='undefined'&&Array.isArray(SOUL_DATA))return SOUL_DATA;
+ if(Array.isArray(changeBodyIniSouls)&&changeBodyIniSouls.length)return changeBodyIniSouls.filter(isVisibleSoulV0730);
+ if(typeof SOUL_DATA!=='undefined'&&Array.isArray(SOUL_DATA))return SOUL_DATA.filter(isVisibleSoulV0730);
  return [];
 }
 
 window.SZO_SOUL_MODULE = {
   parseChangeBodyIniBlocks: (typeof parseChangeBodyIniBlocks==='function'?parseChangeBodyIniBlocks:null),
   soulNum: (typeof soulNum==='function'?soulNum:null),
+  isVisibleSoulV0730: (typeof isVisibleSoulV0730==='function'?isVisibleSoulV0730:null),
   buildSoulDataFromChangeBodyIni: (typeof buildSoulDataFromChangeBodyIni==='function'?buildSoulDataFromChangeBodyIni:null),
   getSoulListV106: (typeof getSoulListV106==='function'?getSoulListV106:null)
 };
@@ -56,6 +62,7 @@ window.SZO_SOUL_MODULE = {
 try{
   if(typeof parseChangeBodyIniBlocks==='function')window.parseChangeBodyIniBlocks=parseChangeBodyIniBlocks;
   if(typeof soulNum==='function')window.soulNum=soulNum;
+  if(typeof isVisibleSoulV0730==='function')window.isVisibleSoulV0730=isVisibleSoulV0730;
   if(typeof buildSoulDataFromChangeBodyIni==='function')window.buildSoulDataFromChangeBodyIni=buildSoulDataFromChangeBodyIni;
   if(typeof getSoulListV106==='function')window.getSoulListV106=getSoulListV106;
 }catch(e){console.warn('V207 soul active export failed',e);}

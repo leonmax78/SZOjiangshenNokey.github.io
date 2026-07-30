@@ -1,10 +1,13 @@
 // Formal soul data page module in V219; large data moved to js/data/soul-data.js
 (function(){
-  const SOUL_DATA = window.SZO_SOUL_DATA || window.SOUL_DATA || [];
+  const SOUL_DATA = (window.SZO_SOUL_DATA || window.SOUL_DATA || []).filter(function(s){
+    return !(window.isVisibleSoulV0730 && !window.isVisibleSoulV0730(s));
+  });
   const FIELD_MAP=[
     ['Base_Str','力量'],['Base_Int','智慧'],['Base_Dex','靈敏'],['Base_Con','體魄'],['Extra_Def','物理防禦'],['Magic_Def','術法防禦']
   ];
-  const MAX_SOUL_COUNT=SOUL_DATA.length||1;
+  function maxSoulCountV0730(){try{return Math.max(1,(getSoulListV106()||[]).length||SOUL_DATA.length||1);}catch(e){return SOUL_DATA.length||1;}}
+  const MAX_SOUL_COUNT=maxSoulCountV0730();
   function E(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
   function N(v,d){v=Number(v);return Number.isFinite(v)?v:(d||0)}
   function F(n){return Math.floor(Number(n)||0).toLocaleString('zh-TW');}
