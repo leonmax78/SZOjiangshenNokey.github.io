@@ -22,7 +22,7 @@ function parseChangeBodyIniBlocks(text){
 }
 
 function soulNum(v){const n=Number(v);return Number.isFinite(n)?n:0}
-const HIDDEN_SOUL_IDS_V0730=new Set([64,65,67,68,69,70,71]);
+const HIDDEN_SOUL_IDS_V0730=new Set([64,65,67,68,70,71]);
 function isVisibleSoulV0730(soul){
  const id=soulNum(soul&&soul.ID);
  return !HIDDEN_SOUL_IDS_V0730.has(id);
