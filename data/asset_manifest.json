@@ -1,5 +1,5 @@
 {
-  "version": "assets-0730-v480-no-unknown-souls",
+  "version": "assets-0806-v488-soul-69",
   "base": "assets/test-media",
   "itemIcons": [
     "0000",
@@ -6279,12 +6279,13 @@
     "61",
     "62",
     "63",
-    "66"
+    "66",
+    "69"
   ],
   "counts": {
     "itemIcons": 4306,
     "monsterPics": 1904,
-    "soulPortraits": 64,
+    "soulPortraits": 65,
     "itemMissing": 0,
     "monsterMissing": 1,
     "soulMissing": 0
