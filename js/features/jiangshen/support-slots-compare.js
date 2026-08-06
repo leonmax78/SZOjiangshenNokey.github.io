@@ -92,8 +92,10 @@
         <button id="calcSupportOnce" type="button">直接試算</button>
         <label style="margin:0">存檔到<select id="supportSaveSlot">${SLOT_LETTERS.map((x,i)=>`<option value="${i}">${x}</option>`).join('')}</select></label>
         <button id="saveSupportSlot" type="button">存檔</button>
+        <button id="loadSupportSlot" type="button">讀取</button>
         <button id="openSupportCompare" type="button">開啟存檔比較</button>
       </div>
+      <div id="supportLoadNotice" class="muted"></div>
       <h3>目前存檔</h3><div id="supportSlotList" class="kvGrid"></div>
     </section>`;
     fillPlan('P',getCurrent());
@@ -111,12 +113,31 @@
       refreshSlotList();
       alert('已存入存檔 ' + SLOT_LETTERS[idx] + '：' + slotSummary(plan));
     };
+    $('loadSupportSlot').onclick = () => loadSupportSlot(Number($('supportSaveSlot').value || 0));
     $('openSupportCompare').onclick = renderSupportCompare;
+  }
+  function loadSupportSlot(idx){
+    const slots = getSlots();
+    const plan = normalizeSet(slots[idx]);
+    if(!plan.some(p=>p.n)){
+      emptyMsg('存檔 ' + SLOT_LETTERS[idx] + ' 目前是空白。');
+      return;
+    }
+    const slotSelect = $('supportSaveSlot');
+    if(slotSelect) slotSelect.value = String(idx);
+    fillPlan('P', plan);
+    refreshNameOptions('P');
+    setCurrent(plan);
+    const notice = $('supportLoadNotice');
+    if(notice) notice.textContent = '已讀取存檔 ' + SLOT_LETTERS[idx] + '：' + slotSummary(plan);
   }
   function refreshSlotList(){
     const el = $('supportSlotList'); if(!el) return;
     const slots = getSlots();
-    el.innerHTML = SLOT_LETTERS.map((x,i)=>`<div class="kv"><div class="k">存檔 ${x}</div><div class="v">${E(slotSummary(slots[i]))}</div></div>`).join('');
+    el.innerHTML = SLOT_LETTERS.map((x,i)=>`<div class="kv"><div class="k">存檔 ${x}</div><div class="v"><span>${E(slotSummary(slots[i]))}</span><button class="smallBtn" type="button" data-support-load="${i}" style="margin-left:12px">讀取</button></div></div>`).join('');
+    el.querySelectorAll('[data-support-load]').forEach(btn=>{
+      btn.addEventListener('click',()=>loadSupportSlot(Number(btn.dataset.supportLoad || 0)));
+    });
   }
   function calcSupportOnce(){
     saveCurrent();
@@ -175,14 +196,22 @@
   function recommendStars(){
     const saved = readJson(REC_STAR_KEY, null);
     const fallback = [20,20,20,20,20];
-    return Array.from({length:REC_SLOTS.length},(_,i)=>Math.max(1,Math.min(20,Math.floor(Number(saved?.[i] ?? fallback[i])))));
+    return Array.from({length:REC_SLOTS.length},(_,i)=>{
+      if(i > 0 && (saved?.[i] === null || saved?.[i] === '')) return null;
+      return Math.max(1,Math.min(20,Math.floor(Number(saved?.[i] ?? fallback[i]))));
+    });
   }
   function saveRecommendStars(stars){ writeJson(REC_STAR_KEY, stars); }
   function readRecommendStars(){
-    return Array.from({length:REC_SLOTS.length},(_,i)=>Math.max(1,Math.min(20,Math.floor(Number($('recStar'+i)?.value || 1)))));
+    return Array.from({length:REC_SLOTS.length},(_,i)=>{
+      const raw = $('recStar'+i)?.value;
+      if(i > 0 && raw === '') return null;
+      return Math.max(1,Math.min(20,Math.floor(Number(raw || 1))));
+    });
   }
-  function recommendStarOptions(sel=20){
-    return Array.from({length:20},(_,idx)=>{
+  function recommendStarOptions(sel=20, allowBlank=false){
+    const blank = allowBlank ? `<option value="" ${sel === null ? 'selected' : ''}>空白</option>` : '';
+    return blank + Array.from({length:20},(_,idx)=>{
       const i = idx + 1;
       return `<option value="${i}" ${i===sel?'selected':''}>${i} 星</option>`;
     }).join('');
@@ -243,14 +272,18 @@
     });
     return Array.from(keep.values()).sort((a,b)=>b.score-a.score).slice(0, 72);
   }
-  function buildState(mainName, supportNames, stars){
-    const picks = [{n:mainName, s:stars[0]}].concat(supportNames.map((n,i)=>({n, s:stars[i+1]})));
+  function activeRecommendSupportSlots(stars){
+    return [1,2,3,4].filter(i => Number(stars[i] || 0) > 0);
+  }
+  function buildState(mainName, supportNames, stars, supportSlots){
+    const activeSlots = supportSlots || activeRecommendSupportSlots(stars);
+    const picks = [{n:mainName, s:stars[0]}].concat(supportNames.map((n,i)=>({n, s:stars[activeSlots[i]] || 1})));
     const res = recommendTotal(picks);
     return {picks, total:res.total, combos:res.combos, score:0, quickScore:0};
   }
-  function supportPermutations(names, stars){
-    if(names.length !== 4) return [names];
-    const sameStars = new Set((stars || []).slice(1)).size === 1;
+  function supportPermutations(names, supportStars){
+    if(names.length < 2) return [names];
+    const sameStars = new Set((supportStars || [])).size === 1;
     if(sameStars) return [names];
     const out = [];
     const used = Array(names.length).fill(false);
@@ -267,21 +300,24 @@
     walk();
     return out;
   }
-  function comboSeedStatesForMain(mainName, kind, stars, allNames){
+  function comboSeedStatesForMain(mainName, kind, stars, allNames, supportSlots){
+    const supportCount = (supportSlots || []).length;
+    if(supportCount <= 0) return [];
     const cluster = comboClusterNames(mainName, allNames);
-    if(cluster.length < 2) return [];
+    if(cluster.length < supportCount) return [];
     const ranked = cluster.map(n=>{
-      const a = abilityPart(n, stars[1], 0.1);
+      const a = abilityPart(n, stars[supportSlots[0]] || 1, 0.1);
       const comboTouch = Object.values(D().comboMembers || {}).filter(m => (m || []).includes(n)).length;
       return {n, score:metricScore(a, kind) + comboTouch * 500};
     }).sort((a,b)=>b.score-a.score).slice(0, 12).map(x=>x.n);
-    const pool = ranked.length >= 4 ? ranked : Array.from(new Set(ranked.concat(allNames.filter(n => n !== mainName)))).slice(0, 12);
+    const pool = ranked.length >= supportCount ? ranked : Array.from(new Set(ranked.concat(allNames.filter(n => n !== mainName)))).slice(0, 12);
+    const supportStars = supportSlots.map(i => stars[i] || 1);
     const seeds = [];
     function choose(start, picked){
       if(seeds.length >= 120) return;
-      if(picked.length === 4){
-        for(const order of supportPermutations(picked, stars)){
-          const state = buildState(mainName, order, stars);
+      if(picked.length === supportCount){
+        for(const order of supportPermutations(picked, supportStars)){
+          const state = buildState(mainName, order, stars, supportSlots);
           state.score = metricScore(state.total, kind);
           state.quickScore = state.score;
           seeds.push(state);
@@ -296,12 +332,13 @@
   }
   function topRecommendPlans(kind, stars){
     const allNames = names().filter(n => n && D().baseStats && D().baseStats[n]);
+    const supportSlots = activeRecommendSupportSlots(stars);
     const beamLimit = 48;
     const bestByMain = [];
     for(const mainName of allNames){
       const mainAbility = abilityPart(mainName, stars[0], REC_RATE[0]);
       let states = [{picks:[{n:mainName, s:stars[0]}], total:mainAbility, quickScore:metricScore(mainAbility, kind)}];
-      for(let slot=1; slot<REC_SLOTS.length; slot++){
+      for(const slot of supportSlots){
         const slotCandidates = candidateListForMain(mainName, kind, stars[slot], allNames);
         const next = [];
         for(const state of states){
@@ -317,7 +354,7 @@
         next.sort((a,b)=>b.quickScore-a.quickScore);
         states = next.slice(0, beamLimit);
       }
-      const finalStates = states.concat(comboSeedStatesForMain(mainName, kind, stars, allNames));
+      const finalStates = states.concat(comboSeedStatesForMain(mainName, kind, stars, allNames, supportSlots));
       const best = finalStates.map(state=>{
         const res = recommendTotal(state.picks);
         return {...state, total:res.total, combos:res.combos, score:metricScore(res.total, kind)};
@@ -384,7 +421,7 @@
       <h1>副降神組合推薦方案</h1>
       <div class="notice">手動設定主降神與 4 個副降神的星等後，系統會推薦物理、術法、防禦三種方向各 1 ~ 3 個候補組合。副降神能力依 10% 納入，若組合成立也會納入連結加成。</div>
       <div class="kvGrid">
-        ${REC_SLOTS.map((label,i)=>`<div class="kv"><div class="k">${E(label)}星等</div><div class="v"><select id="recStar${i}">${recommendStarOptions(stars[i])}</select></div></div>`).join('')}
+        ${REC_SLOTS.map((label,i)=>`<div class="kv"><div class="k">${E(label)}星等</div><div class="v"><select id="recStar${i}">${recommendStarOptions(stars[i], i > 0)}</select></div></div>`).join('')}
         <div class="kv"><div class="k">推薦方向</div><div class="v"><select id="recMetric">${REC_METRICS.map(m=>`<option value="${E(m.kind)}">${E(m.title)}</option>`).join('')}</select></div></div>
       </div>
       <div class="supportSaveBar" style="margin-top:14px">
