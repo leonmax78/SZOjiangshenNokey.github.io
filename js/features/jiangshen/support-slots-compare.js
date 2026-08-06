@@ -120,7 +120,9 @@
     const slots = getSlots();
     const plan = normalizeSet(slots[idx]);
     if(!plan.some(p=>p.n)){
-      emptyMsg('存檔 ' + SLOT_LETTERS[idx] + ' 目前是空白。');
+      const notice = $('supportLoadNotice');
+      if(notice) notice.textContent = '存檔 ' + SLOT_LETTERS[idx] + ' 目前是空白。';
+      else alert('存檔 ' + SLOT_LETTERS[idx] + ' 目前是空白。');
       return;
     }
     const slotSelect = $('supportSaveSlot');
@@ -134,7 +136,10 @@
   function refreshSlotList(){
     const el = $('supportSlotList'); if(!el) return;
     const slots = getSlots();
-    el.innerHTML = SLOT_LETTERS.map((x,i)=>`<div class="kv"><div class="k">存檔 ${x}</div><div class="v"><span>${E(slotSummary(slots[i]))}</span><button class="smallBtn" type="button" data-support-load="${i}" style="margin-left:12px">讀取</button></div></div>`).join('');
+    el.innerHTML = SLOT_LETTERS.map((x,i)=>{
+      const isEmpty = !normalizeSet(slots[i]).some(p=>p.n);
+      return `<div class="kv"><div class="k">存檔 ${x}</div><div class="v"><span>${E(slotSummary(slots[i]))}</span><button class="smallBtn" type="button" data-support-load="${i}" style="margin-left:12px" ${isEmpty?'disabled':''}>讀取</button></div></div>`;
+    }).join('');
     el.querySelectorAll('[data-support-load]').forEach(btn=>{
       btn.addEventListener('click',()=>loadSupportSlot(Number(btn.dataset.supportLoad || 0)));
     });
