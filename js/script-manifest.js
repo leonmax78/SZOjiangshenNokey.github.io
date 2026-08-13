@@ -105,13 +105,13 @@ window.SZO_SCRIPT_GROUPS = {
   ],
   "features_jiangshen": [
     "js/features/jiangshen/basic-compare-stars.js",
-    "js/features/jiangshen/support-slots-compare.js",
-    "js/features/jiangshen/main-compare-five.js"
+    "js/features/jiangshen/support-slots-compare.js"
   ],
   "enhancements": [],
   "enhancements_jiangshen": [
     "js/features/jiangshen/jiangshen-nav-final-guard.js",
-    "js/features/jiangshen/excel-tables-fix.js"
+    "js/features/jiangshen/excel-tables-fix.js",
+    "js/features/jiangshen/main-compare-five.js"
   ],
   "not_loaded_legacy": [
     "js/legacy/not-loaded/app-esmodule-unused.js",
