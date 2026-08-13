@@ -161,6 +161,12 @@
     const cleaned = cleanMapLocationName(String(value || '').replace(/^\s*\d{1,3}\s+/, ''));
     return cleaned.replace(/\s+/g, '').toLowerCase();
   }
+  function normalizeBeastMapFilterValue(value){
+    const raw = String(value || '').trim();
+    if(!raw || raw === 'all') return '';
+    if(/^\d+$/.test(raw)) return String(Number(raw));
+    return normalizeMapFilterName(raw);
+  }
   function stageIndexLabel(mapName){
     const key = normalizeMapFilterName(mapName);
     if(!key) return '';
@@ -802,7 +808,7 @@
   function filteredRows(kind){
     const q = String(state.query[kind] || '').trim().toLowerCase();
     const source = state.sourceFilter[kind] || {};
-    const beastMap = kind === 'beast' ? normalizeMapFilterName(state.beastMap === 'all' ? '' : state.beastMap) : '';
+    const beastMap = kind === 'beast' ? normalizeBeastMapFilterValue(state.beastMap) : '';
     return segmentedRows(kind).filter(row => {
       if(source.task && !row.taskFlag) return false;
       if(source.shop && !(row.shopFlag || (row.shops || []).length)) return false;
@@ -960,7 +966,8 @@
   function updateCollectBeastMap(value){
     state.active = 'beast';
     window.SZO_COLLECT_ACTIVE = 'beast';
-    state.beastMap = String(value || 'all');
+    const raw = String(value || '').trim();
+    state.beastMap = raw || 'all';
     writeCollectFilterState();
     renderLoaded('beast');
   }
