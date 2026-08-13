@@ -105,7 +105,8 @@ window.SZO_SCRIPT_GROUPS = {
   ],
   "features_jiangshen": [
     "js/features/jiangshen/basic-compare-stars.js",
-    "js/features/jiangshen/support-slots-compare.js"
+    "js/features/jiangshen/support-slots-compare.js",
+    "js/features/jiangshen/main-compare-five.js"
   ],
   "enhancements": [],
   "enhancements_jiangshen": [
