@@ -170,6 +170,19 @@
     if(!stage) return mapName;
     return `${String(stage.stageId).padStart(3, '0')} ${stage.stageName}`;
   }
+  function stageIndexEntry(mapName){
+    const key = normalizeMapFilterName(mapName);
+    if(!key) return null;
+    return (state.mapIndex || []).find(item => normalizeMapFilterName(item.stageName) === key)
+      || (state.mapIndex || []).find(item => {
+        const other = normalizeMapFilterName(item.stageName);
+        return other && (other.includes(key) || key.includes(other));
+      }) || null;
+  }
+  function isBeastCatchMap(mapName){
+    const stage = stageIndexEntry(mapName);
+    return !!(stage && stage.stageId >= 9 && stage.stageId <= 218);
+  }
   function collectNoteTag(text){
     return `<span class="collectTag collectNoteTag">${escHtml(text)}</span>`;
   }
@@ -203,16 +216,15 @@
     const push = value => {
       const name = cleanMapLocationName(value);
       const key = normalizeMapFilterName(name);
-      if(!key || seen.has(key)) return;
+      if(!key || seen.has(key) || !isBeastCatchMap(name)) return;
       seen.add(key);
       out.push(name);
     };
-    beastMergedLocations(row).forEach(value => mapLocationList([value]).forEach(push));
-    const html = rawBeastLocationTags(row);
-    String(html || '').replace(/data-collect-map-location="([^"]*)"/g, (_, value) => {
-      push(decodeAttr(value));
-      return '';
+    const values = beastMergedLocations(row).filter(value => {
+      const text = String(value || '');
+      return !/[兌換換取抽取守關者副本]/.test(text);
     });
+    values.forEach(value => mapLocationList([value]).forEach(push));
     return out;
   }
   function plainBeastName(value){
