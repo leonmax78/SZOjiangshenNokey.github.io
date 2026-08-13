@@ -1,20 +1,34 @@
-// V501: five-slot main jiangshen comparison.
+// V503: five-slot main jiangshen comparison.
 (function(){
   const $ = id => document.getElementById(id);
-  const esc = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
-  const data = () => {
+  const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, ch => ({
+    '&':'&amp;',
+    '<':'&lt;',
+    '>':'&gt;',
+    '"':'&quot;',
+    "'":'&#39;'
+  }[ch]));
+  const getData = () => {
     try{ if(typeof DATA !== 'undefined') return DATA; }catch(e){}
     return window.DATA || {};
   };
-  const statNames = () => (data().stats && data().stats.length ? data().stats : ['血量','精力','體魄','力量','智慧','靈敏','術攻','防禦','術防']);
-  const heroNames = () => (data().displayNames && data().displayNames.length ? data().displayNames : Object.keys(data().baseStats || {}));
+  const statNames = () => {
+    const data = getData();
+    return data.stats && data.stats.length ? data.stats : ['血量','精力','體魄','力量','智慧','靈敏','術攻','防禦','術防'];
+  };
+  const heroNames = () => {
+    const data = getData();
+    return data.displayNames && data.displayNames.length ? data.displayNames : Object.keys(data.baseStats || {});
+  };
   const labels = ['A','B','C','D','E'];
-  const fmt = value => {
+  const formatNumber = value => {
     const n = Math.ceil(Number(value || 0));
     try{ return n.toLocaleString('zh-Hant'); }catch(e){ return String(n); }
   };
-  const heroOptions = () => '<option value="">請選擇</option>' + heroNames().map(name => `<option value="${esc(name)}">${esc(name)}</option>`).join('');
-  const starOptions = selected => Array.from({length:20}, (_, i) => i + 1).map(star => `<option value="${star}" ${star === selected ? 'selected' : ''}>${star} 星</option>`).join('');
+  const heroOptions = () => '<option value="">請選擇</option>' + heroNames().map(name => `<option value="${escapeHtml(name)}">${escapeHtml(name)}</option>`).join('');
+  const starOptions = selected => Array.from({length:20}, (_, i) => i + 1)
+    .map(star => `<option value="${star}" ${star === selected ? 'selected' : ''}>${star} 星</option>`)
+    .join('');
   const getAbility = (name, star) => {
     if(typeof ability === 'function') return ability(name, star) || {};
     return {};
@@ -39,7 +53,7 @@
       <div class="k">降神 ${label}</div>
       <div class="v">
         <select id="js${label}">${heroOptions()}</select>
-        <label>星</label>
+        <label>星等</label>
         <select id="js${label}S">${starOptions(20)}</select>
       </div>
     </div>`;
@@ -54,6 +68,7 @@
       <div class="quick"><button id="calcCompare" type="button">計算比較<small>最多比較五位主降神的能力差異</small></button></div>
     </section>`;
   }
+  window.renderMainCompareFive = renderCompare;
   function selectedPicks(){
     return labels.map(label => {
       const name = $(`js${label}`)?.value || '';
@@ -64,23 +79,23 @@
   window.calcCompare = function(){
     const picks = selectedPicks();
     if(picks.length < 2){
-      if(typeof empty === 'function') empty('請至少選擇兩位降神');
-      else alert('請至少選擇兩位降神');
+      if(typeof empty === 'function') empty('請選擇至少兩位降神');
+      else alert('請選擇至少兩位降神');
       return;
     }
     const stats = statNames();
     const reader = $('reader');
     if(!reader) return;
-    const header = picks.map(pick => `<th>${esc(pick.label)}. ${esc(pick.name)}<br><small>${pick.star} 星</small></th>`).join('');
+    const header = picks.map(pick => `<th>${escapeHtml(pick.label)}. ${escapeHtml(pick.name)}<br><small>${pick.star} 星</small></th>`).join('');
     const rows = stats.map(stat => {
       const values = picks.map(pick => Number(pick.ability[stat] || 0));
       const max = Math.max(...values);
-      return `<tr><td>${esc(stat)}</td>${picks.map((pick, index) => `<td class="${values[index] === max && max > 0 ? 'supportBest' : ''}">${fmt(values[index])}</td>`).join('')}</tr>`;
+      return `<tr><td>${escapeHtml(stat)}</td>${picks.map((pick, index) => `<td class="${values[index] === max && max > 0 ? 'supportBest' : ''}">${formatNumber(values[index])}</td>`).join('')}</tr>`;
     }).join('');
     reader.innerHTML = `<section class="card">${backButton()}
       <h1>主降神比較</h1>
       <div class="compareNameRow">
-        ${picks.map(pick => `<div class="compareNameCard"><span>降神 ${esc(pick.label)}</span><b>${esc(pick.name)}</b><small>${pick.star} 星</small></div>`).join('')}
+        ${picks.map(pick => `<div class="compareNameCard"><span>降神 ${escapeHtml(pick.label)}</span><b>${escapeHtml(pick.name)}</b><small>${pick.star} 星</small></div>`).join('')}
       </div>
       <div class="tableWrap"><table class="compareTable">
         <thead><tr><th>能力</th>${header}</tr></thead>

@@ -1139,6 +1139,10 @@ function fillJiangFields(kind){
  }
 
  if(kind==='compare'){
+  if(typeof window.renderMainCompareFive === 'function'){
+   window.renderMainCompareFive();
+   return;
+  }
   byId('reader').innerHTML=`<section class="card"><h1>降神、經驗、修練試算</h1><h2>主降神比較</h2><div class="kvGrid">
   <div class="kv"><div class="k">降神 A</div><div class="v"><select id="jsA">${opts}</select><label>星</label><select id="jsAS">${stars20}</select></div></div>
   <div class="kv"><div class="k">降神 B</div><div class="v"><select id="jsB">${opts}</select><label>星</label><select id="jsBS">${stars20}</select></div></div>
