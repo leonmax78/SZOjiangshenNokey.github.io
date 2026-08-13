@@ -3,6 +3,7 @@
   const DATA_URL = 'data/collectbook_sources.json';
   const BONUS_URL = 'data/collectbook_bonus.json';
   const MAP_INDEX_URL = 'data/stage_map_index.json';
+  const BEAST_CATCH_MAP_URL = 'data/beast_catch_map_index.json';
   const GROUP_SIZE = 96;
   const FILTER_STORAGE_KEY = 'szo.collectbook.filters.v1';
   const SCROLL_STORAGE_KEY = 'szo.collectbook.scroll.v1';
@@ -17,6 +18,7 @@
     data: null,
     locations: {},
     mapIndex: [],
+    beastCatchMap: null,
     loading: null,
     active: 'weapon',
     composing: false,
@@ -183,6 +185,11 @@
     const stage = stageIndexEntry(mapName);
     return !!(stage && stage.stageId >= 9 && stage.stageId <= 218);
   }
+  function beastCatchStages(row){
+    const name = plainBeastName(row?.name);
+    if(!name || !state.beastCatchMap?.byBeast) return [];
+    return state.beastCatchMap.byBeast[name] || [];
+  }
   function collectNoteTag(text){
     return `<span class="collectTag collectNoteTag">${escHtml(text)}</span>`;
   }
@@ -213,19 +220,30 @@
   function beastFilterLocationNames(row){
     const out = [];
     const seen = new Set();
-    const push = value => {
-      const name = cleanMapLocationName(value);
-      const key = normalizeMapFilterName(name);
-      if(!key || seen.has(key) || !isBeastCatchMap(name)) return;
+    const push = stage => {
+      const stageId = Number(stage?.stageId);
+      const name = cleanMapLocationName(stage?.stageName);
+      const key = Number.isFinite(stageId) ? String(stageId) : normalizeMapFilterName(name);
+      if(!key || seen.has(key)) return;
+      if(Number.isFinite(stageId) && (stageId < 9 || stageId > 218)) return;
+      if(!Number.isFinite(stageId) && !isBeastCatchMap(name)) return;
       seen.add(key);
-      out.push(name);
+      out.push({ stageId: Number.isFinite(stageId) ? stageId : null, stageName: name });
     };
-    const values = beastMergedLocations(row).filter(value => {
-      const text = String(value || '');
-      return !/[兌換換取抽取守關者副本]/.test(text);
-    });
-    values.forEach(value => mapLocationList([value]).forEach(push));
+    beastCatchStages(row).forEach(push);
     return out;
+  }
+  function beastCatchLocationTags(row){
+    const stages = beastCatchStages(row);
+    if(!stages.length) return '';
+    const seen = new Set();
+    return stages.map(stage => {
+      const label = `${String(stage.stageId).padStart(3, '0')} ${stage.stageName}`;
+      const key = normalizeMapFilterName(stage.stageName);
+      if(!key || seen.has(key)) return '';
+      seen.add(key);
+      return collectMapButton(label, stage.stageName, plainBeastName(row?.name));
+    }).filter(Boolean).join('');
   }
   function plainBeastName(value){
     return String(value || '').replace(/[\[\]【】]/g, '').trim();
@@ -475,7 +493,7 @@
     }).join('')}</div>`;
   }
   function dropLocationText(row){
-    if(row.kind === 'beast') return rawBeastLocationTags(row);
+    if(row.kind === 'beast') return beastCatchLocationTags(row) || rawBeastLocationTags(row);
     const shopSet = new Set(row.shops || []);
     const drops = (row.excelSources || []).filter(x => !shopSet.has(x));
     const reverseCount = Array.isArray(row.reverseDrops) ? row.reverseDrops.length : 0;
@@ -732,13 +750,17 @@
   function beastMapOptions(){
     const seen = new Map();
     getRows('beast').forEach(row => {
-      beastFilterLocationNames(row).forEach(name => {
-        const key = normalizeMapFilterName(name);
-        if(key && !seen.has(key)) seen.set(key, name);
+      beastFilterLocationNames(row).forEach(stage => {
+        const key = Number.isFinite(stage.stageId) ? String(stage.stageId) : normalizeMapFilterName(stage.stageName);
+        if(key && !seen.has(key)) seen.set(key, stage);
       });
     });
     return [...seen.entries()]
-      .map(([value, name]) => ({ value, name, label: stageIndexLabel(name) }))
+      .map(([value, stage]) => ({
+        value,
+        name: stage.stageName,
+        label: Number.isFinite(stage.stageId) ? `${String(stage.stageId).padStart(3, '0')} ${stage.stageName}` : stageIndexLabel(stage.stageName)
+      }))
       .sort((a,b) => a.label.localeCompare(b.label, 'zh-Hant'));
   }
   function baseRowsForSegment(kind){
@@ -785,11 +807,11 @@
       if(source.task && !row.taskFlag) return false;
       if(source.shop && !(row.shopFlag || (row.shops || []).length)) return false;
       if(beastMap){
-        const maps = beastFilterLocationNames(row).map(normalizeMapFilterName);
-        if(!maps.some(map => map === beastMap || map.includes(beastMap) || beastMap.includes(map))) return false;
+        const maps = beastFilterLocationNames(row).map(stage => Number.isFinite(stage.stageId) ? String(stage.stageId) : normalizeMapFilterName(stage.stageName));
+        if(!maps.includes(beastMap)) return false;
       }
       if(!q) return true;
-      return [row.name, row.itemId, row.searchText, ...(kind === 'beast' ? beastMergedLocations(row).concat(beastFilterLocationNames(row)) : [])].filter(Boolean).join(' ').toLowerCase().includes(q);
+      return [row.name, row.itemId, row.searchText, ...(kind === 'beast' ? beastMergedLocations(row).concat(beastFilterLocationNames(row).map(stage => stage.stageName)) : [])].filter(Boolean).join(' ').toLowerCase().includes(q);
     });
   }
   async function loadData(){
@@ -803,11 +825,13 @@
       }),
       fetch(BONUS_URL + '?v=' + version).then(res => res.ok ? res.json() : { rows: [] }).catch(() => ({ rows: [] })),
       fetch(MAP_INDEX_URL + '?v=' + version).then(res => res.ok ? res.json() : { stages: [] }).catch(() => ({ stages: [] })),
+      fetch(BEAST_CATCH_MAP_URL + '?v=' + version).then(res => res.ok ? res.json() : { byBeast: {} }).catch(() => ({ byBeast: {} })),
       typeof loadDataBundle === 'function' ? loadDataBundle('locations').catch(() => ({})) : Promise.resolve({})
-    ]).then(([data, bonus, mapIndex, locations]) => {
+    ]).then(([data, bonus, mapIndex, beastCatchMap, locations]) => {
         data.bonus = bonus || { rows: [] };
         state.data = data;
         state.mapIndex = Array.isArray(mapIndex?.stages) ? mapIndex.stages : [];
+        state.beastCatchMap = beastCatchMap && typeof beastCatchMap === 'object' ? beastCatchMap : { byBeast: {} };
         state.locations = locations && typeof locations === 'object' && !Array.isArray(locations) ? locations : {};
         return data;
       });
