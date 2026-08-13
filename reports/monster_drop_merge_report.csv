@@ -6117,7 +6117,7 @@
 18119,武魂顯現．孫伯謀,,0,0,no_old_drop,old monster row missing or has no valid DropItem
 18120,怒相．辰紫荊,,1,0,new_drop_kept,new monster row already has DropItem
 18121,真．俠隱樓寶箱,,1,0,new_drop_kept,new monster row already has DropItem
-18122,六宇新手錦囊,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18122,六宇新手錦囊,,1,0,new_drop_kept,new monster row already has DropItem
 18123,麻辣爆刃錦囊,,1,0,new_drop_kept,new monster row already has DropItem
 18124,麻辣神杖錦囊,,1,0,new_drop_kept,new monster row already has DropItem
 18125,麻辣衝擊錦囊,,1,0,new_drop_kept,new monster row already has DropItem
@@ -6139,3 +6139,35 @@
 18141,絕代英雄秘笈寶箱,,0,0,no_old_drop,old monster row missing or has no valid DropItem
 18142,絕代英雄降神魂匣,,0,0,no_old_drop,old monster row missing or has no valid DropItem
 18143,龍川英雄武魂寶箱,,1,0,new_drop_kept,new monster row already has DropItem
+18144,索魂狼,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18145,緝命虎,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18146,虛界風,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18147,干戈鷹,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18148,巨獸王,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18149,鐵超人,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18150,無影刃狐,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18151,無蹤羽族,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18152,對馬戰鬼,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18153,虛空信眾,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18154,斷金虛魔,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18155,分水虛邪,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18156,皆不似虛,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18157,漆黑龍虛,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18158,天骸斬魅,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18159,鬼鳥咒靈,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18160,貪狼血槍,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18161,七殺戰衛,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18162,破軍狂鋒,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18163,六天魔乘象,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18164,虛實往渡鳥,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18165,冥舞白歿姬,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18166,秘境屠戮者,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18167,鬼典末法相,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18168,無戒殺生猛,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18169,虛法入滅輪,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18170,星宇三界尊,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18171,殷殤之紫‧九尾,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18172,大秘境寶箱,,1,0,new_drop_kept,new monster row already has DropItem
+18173,真‧大秘境寶箱,,1,0,new_drop_kept,new monster row already has DropItem
+18174,超‧大秘境寶箱,,1,0,new_drop_kept,new monster row already has DropItem
+18175,極‧大秘境寶箱,,1,0,new_drop_kept,new monster row already has DropItem

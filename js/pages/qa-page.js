@@ -231,24 +231,29 @@
   async function answerShop(query, forcedMode){
     const raw = String(query || '');
     const term = searchTerm(raw);
-    const mode = forcedMode || (/[回收賣]/.test(raw) ? 'buy' : 'sell');
     const locs = await shopLocations();
-    const itemRows = [];
-    for(const loc of locs){
-      for(const item of loc.shop?.items || []){
-        const priceValue = mode === 'buy' ? item.buyPrice : item.sellPrice;
-        if(priceValue === undefined || priceValue === null || priceValue === '') continue;
-        const q = norm(state.exactItem || term || raw);
-        if(!q) continue;
-        if(state.exactItem){
-          if(String(item.name || '').trim() !== state.exactItem) continue;
-        }else{
-          const hay = norm([item.name, loc.stageName, loc.npcName].join(' '));
-          if(!hay.includes(q)) continue;
+    const q = norm(state.exactItem || term || raw);
+
+    function collectRows(mode){
+      const rows = [];
+      if(!q) return rows;
+      for(const loc of locs){
+        for(const item of loc.shop?.items || []){
+          const priceValue = mode === 'buy' ? item.buyPrice : item.sellPrice;
+          if(priceValue === undefined || priceValue === null || priceValue === '') continue;
+          if(state.exactItem){
+            if(String(item.name || '').trim() !== state.exactItem) continue;
+          }else{
+            const hay = norm([item.name, loc.stageName, loc.npcName].join(' '));
+            if(!hay.includes(q)) continue;
+          }
+          rows.push({ loc, item, priceValue:Number(priceValue) });
         }
-        itemRows.push({ loc, item, priceValue:Number(priceValue) });
       }
+      rows.sort((a,b) => mode === 'buy' ? b.priceValue - a.priceValue : a.priceValue - b.priceValue);
+      return rows;
     }
+
     const suggestions = [];
     if(!state.exactItem && raw.trim()){
       const seen = new Set();
@@ -263,12 +268,10 @@
         if(suggestions.length >= 10) break;
       }
     }
-    itemRows.sort((a,b) => mode === 'buy' ? b.priceValue - a.priceValue : a.priceValue - b.priceValue);
-    return `<div class="qaAnswer">
-      <h2>${mode === 'buy' ? '回收' : '販售'}查詢</h2>
-      ${suggestions.length ? `<div class="qaSuggestions"><span>你是不是想找：</span>${suggestions.map(name => chip(name, `data-qa-shop-item="${html(name)}"`)).join('')}</div>` : ''}
-      <div class="qaModeHint">${mode === 'buy' ? '回收依高價優先。' : '販售依低價優先。'}</div>
-      ${itemRows.length ? `<div class="qaList">${itemRows.slice(0, 16).map(row => {
+
+    function rowsHtml(rows){
+      if(!rows.length) return '<div class="empty">找不到符合的商店資料。</div>';
+      return `<div class="qaList">${rows.slice(0, 16).map(row => {
         const img = itemIcon(row.item);
         return `<div class="qaRow qaShopRow">
           <strong>${html(row.loc.stageName)} / ${html(row.loc.npcName)}</strong>
@@ -276,7 +279,33 @@
           <b>${html(money(row.priceValue))}</b>
           <div class="qaRowActions">${mapChip(row.loc.stageName, row.loc.npcName)}</div>
         </div>`;
-      }).join('')}</div>` : '<div class="empty">找不到符合的商店資料。</div>'}
+      }).join('')}</div>`;
+    }
+
+    function section(mode, rows){
+      return `<div class="qaShopSection">
+        <h3>${mode === 'buy' ? '回收資訊' : '販售資訊'}</h3>
+        <div class="qaModeHint">${mode === 'buy' ? '回收依高價優先。' : '販售依低價優先。'}</div>
+        ${rowsHtml(rows)}
+      </div>`;
+    }
+
+    if(forcedMode){
+      const rows = collectRows(forcedMode);
+      return `<div class="qaAnswer">
+        <h2>${forcedMode === 'buy' ? '回收資訊' : '販售資訊'}</h2>
+        ${suggestions.length ? `<div class="qaSuggestions"><span>你是不是想找：</span>${suggestions.map(name => chip(name, `data-qa-shop-item="${html(name)}"`)).join('')}</div>` : ''}
+        ${section(forcedMode, rows)}
+      </div>`;
+    }
+
+    const sellRows = collectRows('sell');
+    const buyRows = collectRows('buy');
+    const hasAny = sellRows.length || buyRows.length;
+    return `<div class="qaAnswer">
+      <h2>販售及回收資訊</h2>
+      ${suggestions.length ? `<div class="qaSuggestions"><span>你是不是想找：</span>${suggestions.map(name => chip(name, `data-qa-shop-item="${html(name)}"`)).join('')}</div>` : ''}
+      ${hasAny ? `${section('sell', sellRows)}${section('buy', buyRows)}` : '<div class="empty" data-qa-shop-empty="all">找不到符合的商店資料。</div>'}
     </div>`;
   }
   async function answerAuto(query){
@@ -305,7 +334,7 @@
     const monsterMatches = findByName(monsters, monsterName, term, 12);
     const mapMatches = (maps.stages || []).filter(stage => norm(stage.stageName).includes(norm(term))).slice(0, 10);
     const shopHtml = await answerShop(term);
-    const shopHasResult = !shopHtml.includes('找不到符合的商店資料');
+    const shopHasResult = !shopHtml.includes('data-qa-shop-empty="all"');
     const itemSection = itemMatches.length ? `<div class="qaAnswer"><h2>道具</h2><div class="qaList">${itemMatches.map(item => {
       const img = itemIcon(item);
       return `<div class="qaRow qaShopRow">
