@@ -957,6 +957,13 @@
     if(count) count.textContent = rows.length + ' 筆';
     if(results) results.innerHTML = list(kind, rows);
   }
+  function updateCollectBeastMap(value){
+    state.active = 'beast';
+    window.SZO_COLLECT_ACTIVE = 'beast';
+    state.beastMap = String(value || 'all');
+    writeCollectFilterState();
+    renderLoaded('beast');
+  }
   function renderCollectMenu(){
     hideCollectTopButton();
     syncNav('menu');
@@ -1107,6 +1114,9 @@
       writeCollectFilterState();
       renderCollectResults();
     }
+    if(ev.target && ev.target.id === 'collectBeastMap'){
+      updateCollectBeastMap(ev.target.value);
+    }
   }, true);
   document.addEventListener('compositionstart', function(ev){
     if(ev.target && ev.target.id === 'collectSearch') state.composing = true;
@@ -1132,9 +1142,7 @@
       renderLoaded(state.active);
     }
     if(ev.target && ev.target.id === 'collectBeastMap'){
-      state.beastMap = ev.target.value || 'all';
-      writeCollectFilterState();
-      renderCollectResults();
+      updateCollectBeastMap(ev.target.value);
     }
     if(ev.target && ev.target.matches && ev.target.matches('[data-collect-source]')){
       const filter = state.sourceFilter[state.active];
