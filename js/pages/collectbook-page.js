@@ -2,6 +2,7 @@
 (function(){
   const DATA_URL = 'data/collectbook_sources.json';
   const BONUS_URL = 'data/collectbook_bonus.json';
+  const MAP_INDEX_URL = 'data/stage_map_index.json';
   const GROUP_SIZE = 96;
   const FILTER_STORAGE_KEY = 'szo.collectbook.filters.v1';
   const SCROLL_STORAGE_KEY = 'szo.collectbook.scroll.v1';
@@ -15,12 +16,14 @@
   const state = {
     data: null,
     locations: {},
+    mapIndex: [],
     loading: null,
     active: 'weapon',
     composing: false,
     query: { weapon: '', artifact: '', recipe: '', beast: '' },
     category: { weapon: 'all', artifact: 'all', recipe: 'all', beast: 'all' },
     segment: { weapon: 'all', artifact: 'all', recipe: 'all', beast: 'all' },
+    beastMap: 'all',
     sourceFilter: {
       weapon: { task: false, shop: false },
       artifact: { task: false, shop: false },
@@ -61,6 +64,7 @@
         if(saved.category && typeof saved.category[kind] === 'string') state.category[kind] = saved.category[kind];
         if(saved.segment && typeof saved.segment[kind] === 'string') state.segment[kind] = saved.segment[kind];
       });
+      if(typeof saved.beastMap === 'string') state.beastMap = saved.beastMap || 'all';
       ['weapon','artifact','recipe'].forEach(kind => {
         if(saved.sourceFilter && saved.sourceFilter[kind]){
           state.sourceFilter[kind] = {
@@ -77,6 +81,7 @@
         query: state.query,
         category: state.category,
         segment: state.segment,
+        beastMap: state.beastMap,
         sourceFilter: state.sourceFilter
       }));
     }catch(e){}
@@ -144,6 +149,27 @@
   function collectMapButton(label, mapName, queryName){
     return `<button class="collectTag collectMapTag" type="button" data-collect-map-location="${escHtml(mapName || label)}" data-collect-map-query="${escHtml(queryName || '')}">${escHtml(label)}</button>`;
   }
+  function decodeAttr(value){
+    if(!value) return '';
+    const el = document.createElement('textarea');
+    el.innerHTML = String(value);
+    return el.value;
+  }
+  function normalizeMapFilterName(value){
+    const cleaned = cleanMapLocationName(String(value || '').replace(/^\s*\d{1,3}\s+/, ''));
+    return cleaned.replace(/\s+/g, '').toLowerCase();
+  }
+  function stageIndexLabel(mapName){
+    const key = normalizeMapFilterName(mapName);
+    if(!key) return '';
+    const stage = (state.mapIndex || []).find(item => normalizeMapFilterName(item.stageName) === key)
+      || (state.mapIndex || []).find(item => {
+        const other = normalizeMapFilterName(item.stageName);
+        return other && (other.includes(key) || key.includes(other));
+      });
+    if(!stage) return mapName;
+    return `${String(stage.stageId).padStart(3, '0')} ${stage.stageName}`;
+  }
   function collectNoteTag(text){
     return `<span class="collectTag collectNoteTag">${escHtml(text)}</span>`;
   }
@@ -170,6 +196,24 @@
     if(!row || row.kind !== 'beast') return row?.locations || [];
     const monsterLoc = state.locations && row.name ? state.locations[row.name] : '';
     return uniqueList([...(row.locations || []), monsterLoc]);
+  }
+  function beastFilterLocationNames(row){
+    const out = [];
+    const seen = new Set();
+    const push = value => {
+      const name = cleanMapLocationName(value);
+      const key = normalizeMapFilterName(name);
+      if(!key || seen.has(key)) return;
+      seen.add(key);
+      out.push(name);
+    };
+    beastMergedLocations(row).forEach(value => mapLocationList([value]).forEach(push));
+    const html = rawBeastLocationTags(row);
+    String(html || '').replace(/data-collect-map-location="([^"]*)"/g, (_, value) => {
+      push(decodeAttr(value));
+      return '';
+    });
+    return out;
   }
   function plainBeastName(value){
     return String(value || '').replace(/[\[\]【】]/g, '').trim();
@@ -673,6 +717,18 @@
     });
     return ordered;
   }
+  function beastMapOptions(){
+    const seen = new Map();
+    getRows('beast').forEach(row => {
+      beastFilterLocationNames(row).forEach(name => {
+        const key = normalizeMapFilterName(name);
+        if(key && !seen.has(key)) seen.set(key, name);
+      });
+    });
+    return [...seen.entries()]
+      .map(([value, name]) => ({ value, name, label: stageIndexLabel(name) }))
+      .sort((a,b) => a.label.localeCompare(b.label, 'zh-Hant'));
+  }
   function baseRowsForSegment(kind){
     const cat = state.category[kind] || 'all';
     return getRows(kind).filter(row => {
@@ -712,11 +768,16 @@
   function filteredRows(kind){
     const q = String(state.query[kind] || '').trim().toLowerCase();
     const source = state.sourceFilter[kind] || {};
+    const beastMap = kind === 'beast' ? normalizeMapFilterName(state.beastMap === 'all' ? '' : state.beastMap) : '';
     return segmentedRows(kind).filter(row => {
       if(source.task && !row.taskFlag) return false;
       if(source.shop && !(row.shopFlag || (row.shops || []).length)) return false;
+      if(beastMap){
+        const maps = beastFilterLocationNames(row).map(normalizeMapFilterName);
+        if(!maps.some(map => map === beastMap || map.includes(beastMap) || beastMap.includes(map))) return false;
+      }
       if(!q) return true;
-      return [row.name, row.itemId, row.searchText, ...(kind === 'beast' ? beastMergedLocations(row) : [])].filter(Boolean).join(' ').toLowerCase().includes(q);
+      return [row.name, row.itemId, row.searchText, ...(kind === 'beast' ? beastMergedLocations(row).concat(beastFilterLocationNames(row)) : [])].filter(Boolean).join(' ').toLowerCase().includes(q);
     });
   }
   async function loadData(){
@@ -729,10 +790,12 @@
         return res.json();
       }),
       fetch(BONUS_URL + '?v=' + version).then(res => res.ok ? res.json() : { rows: [] }).catch(() => ({ rows: [] })),
+      fetch(MAP_INDEX_URL + '?v=' + version).then(res => res.ok ? res.json() : { stages: [] }).catch(() => ({ stages: [] })),
       typeof loadDataBundle === 'function' ? loadDataBundle('locations').catch(() => ({})) : Promise.resolve({})
-    ]).then(([data, bonus, locations]) => {
+    ]).then(([data, bonus, mapIndex, locations]) => {
         data.bonus = bonus || { rows: [] };
         state.data = data;
+        state.mapIndex = Array.isArray(mapIndex?.stages) ? mapIndex.stages : [];
         state.locations = locations && typeof locations === 'object' && !Array.isArray(locations) ? locations : {};
         return data;
       });
@@ -777,6 +840,9 @@
     const catOptions = [`<option value="all">${catLabel}</option>`].concat(cats.map(cat => `<option value="${escHtml(cat)}" ${state.category[kind] === cat ? 'selected' : ''}>${escHtml(cat)}</option>`)).join('');
     const segs = segments(kind);
     const segmentOptions = ['<option value="all">全部區段</option>'].concat(segs.map(seg => `<option value="${escHtml(seg.value)}" ${state.segment[kind] === seg.value ? 'selected' : ''}>${escHtml(seg.label)}</option>`)).join('');
+    const mapOptions = kind === 'beast'
+      ? ['<option value="all">全部地圖</option>'].concat(beastMapOptions().map(item => `<option value="${escHtml(item.value)}" ${state.beastMap === item.value ? 'selected' : ''}>${escHtml(item.label)}</option>`)).join('')
+      : '';
     const source = state.sourceFilter[kind] || { task: false, shop: false };
     const sourceFilters = kind !== 'beast' ? `<div class="collectChecks">
       <label class="collectCheck"><span>任務取得</span><input type="checkbox" data-collect-source="task" ${source.task ? 'checked' : ''}></label>
@@ -785,6 +851,7 @@
     return `<div class="collectTools">
       <input id="collectSearch" value="${escHtml(state.query[kind])}" placeholder="搜尋${escHtml(labels[kind])}名稱或 ID">
       ${kind === 'weapon' || kind === 'beast' ? `<select id="collectCategory">${catOptions}</select>` : ''}
+      ${kind === 'beast' ? `<select id="collectBeastMap">${mapOptions}</select>` : ''}
       ${segs.length ? `<select id="collectSegment">${segmentOptions}</select>` : ''}
       <button class="ghost collectClearBtn" type="button" data-collect-clear>清空篩選</button>
     </div>${sourceFilters}`;
@@ -895,6 +962,7 @@
     if(target && state.query[target] !== undefined) state.query[target] = '';
     if(target && state.category[target] !== undefined) state.category[target] = 'all';
     if(target && state.segment[target] !== undefined) state.segment[target] = 'all';
+    if(target === 'beast') state.beastMap = 'all';
     if(state.sourceFilter[target]) state.sourceFilter[target] = { task: false, shop: false };
     if(target) state.scroll[target] = 0;
     writeCollectFilterState();
@@ -1026,6 +1094,11 @@
       state.segment[state.active] = ev.target.value || 'all';
       writeCollectFilterState();
       renderLoaded(state.active);
+    }
+    if(ev.target && ev.target.id === 'collectBeastMap'){
+      state.beastMap = ev.target.value || 'all';
+      writeCollectFilterState();
+      renderCollectResults();
     }
     if(ev.target && ev.target.matches && ev.target.matches('[data-collect-source]')){
       const filter = state.sourceFilter[state.active];
