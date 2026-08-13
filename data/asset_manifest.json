@@ -1,5 +1,5 @@
 {
-  "version": "assets-0806-v488-soul-69",
+  "version": "assets-0813-v494-m8918",
   "base": "assets/test-media",
   "itemIcons": [
     "0000",
@@ -6213,6 +6213,7 @@
     "8915",
     "8916",
     "8917",
+    "8918",
     "15714"
   ],
   "soulIds": [
@@ -6284,7 +6285,7 @@
   ],
   "counts": {
     "itemIcons": 4306,
-    "monsterPics": 1904,
+    "monsterPics": 1905,
     "soulPortraits": 65,
     "itemMissing": 0,
     "monsterMissing": 1,
