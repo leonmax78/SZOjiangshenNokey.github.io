@@ -84,6 +84,10 @@
     }).filter(Boolean);
   }
   window.calcCompare = function(){
+    // Older comparison modules also forward this click. Once the first call
+    // renders the result, ignore the duplicate call instead of replacing it
+    // with the "select at least two" message.
+    if(!labels.some(label => $(`js${label}`))) return;
     const picks = selectedPicks();
     if(picks.length < 2){
       if(typeof empty === 'function') empty('請至少選擇兩位主降神。');
