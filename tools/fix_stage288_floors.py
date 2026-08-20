@@ -27,7 +27,30 @@ AREA_FLOOR_OVERRIDES = {
         (1136, 664): 68,
         (778, 516): 65,
     },
+    # Tower X is fixed from the published 91-100 floor mechanics and the
+    # identifiable monsters/NPCs in each disconnected map block.
+    293: {
+        (1474, 432): 91,
+        (1518, 120): 92,
+        (210, 702): 93,
+        (154, 90): 94,
+        (958, 156): 95,
+        (778, 516): 96,
+        (572, 946): 97,
+        (1136, 664): 98,
+        (488, 308): 99,
+        (1124, 980): 100,
+    },
 }
+
+
+def marker_area(stage_id, marker, areas):
+    # The Tower X final boss room is a small detached platform at the far
+    # right. Its visual center is closer to floor 91, so nearest-center alone
+    # assigns the emperor and the X chest to the wrong floor.
+    if stage_id == 293 and marker["x"] >= 1450 and marker["y"] >= 800:
+        return next(area for area in areas if area["floor"] == 100)
+    return nearest_area(marker["x"], marker["y"], areas)
 
 
 def nearest_area(x, y, areas):
@@ -113,7 +136,7 @@ def main():
             continue
         corrected_stages += 1
         for marker in tower_stage.get("monsters", []) + tower_stage.get("npcs", []):
-            area = nearest_area(marker["x"], marker["y"], areas)
+            area = marker_area(tower_stage["stageId"], marker, areas)
             marker["floor"] = area["floor"]
             marker["areaKey"] = area["key"]
             marker["areaLabel"] = area["label"]
