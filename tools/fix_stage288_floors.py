@@ -20,6 +20,15 @@ FLOOR_CENTERS = {
     50: (154, 90),
 }
 
+# Confirmed exceptions where monster evidence alone cannot distinguish two
+# disconnected blocks reliably.
+AREA_FLOOR_OVERRIDES = {
+    290: {
+        (1136, 664): 68,
+        (778, 516): 65,
+    },
+}
+
 
 def nearest_area(x, y, areas):
     return min(areas, key=lambda area: (x - area["x"]) ** 2 + (y - area["y"]) ** 2)
@@ -70,6 +79,15 @@ def main():
             continue
         inferred_floors = infer_area_floors(tower_stage)
         for area, floor in zip(areas, inferred_floors):
+            area["floor"] = floor
+            area["key"] = f"tower-{tower_stage['stageId']}-{floor}"
+            area["label"] = f"第{floor}層"
+            area["name"] = f"終末之塔第{floor}層"
+
+        for area in areas:
+            floor = AREA_FLOOR_OVERRIDES.get(tower_stage["stageId"], {}).get((area["x"], area["y"]))
+            if floor is None:
+                continue
             area["floor"] = floor
             area["key"] = f"tower-{tower_stage['stageId']}-{floor}"
             area["label"] = f"第{floor}層"
