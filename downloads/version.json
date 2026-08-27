@@ -1,9 +1,9 @@
 {
   "display_name": "武冠判讀 DEMO",
-  "version": "260614-16",
-  "published_at": "2026-06-14 01:04",
-  "file_name": "Wuguan_DEMO_260614-16.zip",
-  "download_url": "https://leonmax78.github.io/downloads/Wuguan_DEMO_260614-16.zip",
+  "version": "260827-icon-bgra-13",
+  "published_at": "2026-08-27 22:25",
+  "file_name": "Wuguan_DEMO_260827-icon-bgra-13.zip",
+  "download_url": "https://leonmax78.github.io/downloads/Wuguan_DEMO_260827-icon-bgra-13.zip",
   "page_url": "downloads/",
-  "notes": "武冠判讀 DEMO 測試版，合併掉落位置清冊並更新本機教導模型，修正匯出未收錄時掉落位置空白。"
+  "notes": "武冠判讀 DEMO 測試版，修正 TLHS Type 4 道具 ICON 的紅藍色頻道，更新 134 張內建辨識與顯示圖示；保留原有存檔與學習功能。"
 }
