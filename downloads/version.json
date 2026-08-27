@@ -1,9 +1,9 @@
 {
   "display_name": "武冠判讀 DEMO",
-  "version": "260827-icon-bgra-13",
-  "published_at": "2026-08-27 22:25",
-  "file_name": "Wuguan_DEMO_260827-icon-bgra-13.zip",
-  "download_url": "https://leonmax78.github.io/downloads/Wuguan_DEMO_260827-icon-bgra-13.zip",
+  "version": "260827-icon-only-14",
+  "published_at": "2026-08-27 22:45",
+  "file_name": "Wuguan_DEMO_260827-icon-only-14.zip",
+  "download_url": "https://leonmax78.github.io/downloads/Wuguan_DEMO_260827-icon-only-14.zip",
   "page_url": "downloads/",
-  "notes": "武冠判讀 DEMO 測試版，修正 TLHS Type 4 道具 ICON 的紅藍色頻道，更新 134 張內建辨識與顯示圖示；保留原有存檔與學習功能。"
+  "notes": "武冠判讀純 ICON 比對測試版：F8 只比較遊戲 ICON 與內建 ICON，相似度達 0.96 判定已收，否則判定未收；暫停亮度、灰底與學習模型的自動判定。"
 }
