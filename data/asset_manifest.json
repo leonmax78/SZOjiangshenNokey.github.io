@@ -1,5 +1,5 @@
 {
-  "version": "assets-0827-v516-all-map-icons-front",
+  "version": "assets-0827-v517-item-32893",
   "base": "assets/test-media",
   "itemIcons": [
     "0000",
@@ -4307,7 +4307,8 @@
     "6883",
     "6884",
     "6885",
-    "6886"
+    "6886",
+    "6887"
   ],
   "monsterPics": [
     "5001",
@@ -6285,7 +6286,7 @@
     "69"
   ],
   "counts": {
-    "itemIcons": 4306,
+    "itemIcons": 4307,
     "monsterPics": 1906,
     "soulPortraits": 65,
     "itemMissing": 0,
