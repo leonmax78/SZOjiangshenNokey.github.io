@@ -211,7 +211,10 @@ function eqBuildBaseStatsFromItemIni(raw,fallback){
  return base;
 }
 
-function eqRecipesForType(tp){return (eqData().recipes||[]).filter(r=>(r.display_types||[]).includes(tp))}
+function eqRecipesForType(tp){
+ const wanted=compTypeToDisplay(tp);
+ return (eqData().recipes||[]).filter(r=>(r.display_types||r.type_codes||[]).some(type=>compTypeToDisplay(type)===wanted));
+}
 
 function eqFmtVal(v){return v===undefined||v===null||v===''?'':fmt(Number(v)||0)}
 
