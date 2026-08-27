@@ -6171,3 +6171,5 @@
 18173,真‧大秘境寶箱,,1,0,new_drop_kept,new monster row already has DropItem
 18174,超‧大秘境寶箱,,1,0,new_drop_kept,new monster row already has DropItem
 18175,極‧大秘境寶箱,,1,0,new_drop_kept,new monster row already has DropItem
+18176,黃花蜂殺手,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18177,黃花蜂伏兵,,0,0,no_old_drop,old monster row missing or has no valid DropItem
