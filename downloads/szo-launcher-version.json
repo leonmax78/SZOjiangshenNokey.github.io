@@ -1,9 +1,9 @@
 {
   "display_name": "神州ONLINE 帳號啟動器 By尼扣扣",
-  "version": "2.0.2",
-  "published_at": "2026-08-28 16:05",
+  "version": "2.0.3",
+  "published_at": "2026-08-28 16:14",
   "file_name": "SZOnline_Launcher_ByNikoko_Setup.exe",
   "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_Setup.exe",
   "page_url": "downloads/",
-  "notes": "程式更新改為關閉舊版後直接更新目前資料夾並自動重新開啟，不再要求手動選擇解壓位置。"
+  "notes": "帳密範例改用單一半形空格，匯入支援空格、|、Tab、逗號及混合資料，保護密碼可留空。"
 }
