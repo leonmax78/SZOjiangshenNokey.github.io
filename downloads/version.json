@@ -1,9 +1,9 @@
 {
   "display_name": "武冠判讀 DEMO",
-  "version": "260827-icon-only-14",
-  "published_at": "2026-08-27 22:45",
-  "file_name": "Wuguan_DEMO_260827-icon-only-14.zip",
-  "download_url": "https://leonmax78.github.io/downloads/Wuguan_DEMO_260827-icon-only-14.zip",
+  "version": "260828-icon-pair-15",
+  "published_at": "2026-08-28 23:00",
+  "file_name": "Wuguan_DEMO_260828-icon-pair-15.zip",
+  "download_url": "https://leonmax78.github.io/downloads/Wuguan_DEMO_260828-icon-pair-15.zip",
   "page_url": "downloads/",
-  "notes": "武冠判讀純 ICON 比對測試版：F8 只比較遊戲 ICON 與內建 ICON，相似度達 0.96 判定已收，否則判定未收；暫停亮度、灰底與學習模型的自動判定。"
+  "notes": "武冠判讀完整 ICON 配對測試版：先對齊遊戲與內建完整 ICON，再判讀遊戲內的收錄顯示；右側永遠保留完整原色 ICON，不再顯示裁切縮圖。"
 }
