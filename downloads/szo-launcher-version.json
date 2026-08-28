@@ -1,9 +1,9 @@
 {
   "display_name": "神州ONLINE 帳號啟動器 By尼扣扣",
-  "version": "2.0.5",
-  "published_at": "2026-08-28 16:35",
+  "version": "2.0.6",
+  "published_at": "2026-08-28 16:39",
   "file_name": "SZOnline_Launcher_ByNikoko_Setup.exe",
   "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_Setup.exe",
   "page_url": "downloads/",
-  "notes": "更新按鈕改名為『檢查遊戲更新』；登入按鈕精簡為『登入角色』，避免高 DPI 字型裁切。"
+  "notes": "改用相容文字渲染並固定操作列高度，修正高 DPI 環境下按鈕中文字下緣被裁切。"
 }
