@@ -1,9 +1,9 @@
 {
   "display_name": "武冠判讀 DEMO",
-  "version": "260828-icon-pair-15",
-  "published_at": "2026-08-28 23:00",
-  "file_name": "Wuguan_DEMO_260828-icon-pair-15.zip",
-  "download_url": "https://leonmax78.github.io/downloads/Wuguan_DEMO_260828-icon-pair-15.zip",
+  "version": "260614-16",
+  "published_at": "2026-06-14 01:04",
+  "file_name": "Wuguan_DEMO_260614-16.zip",
+  "download_url": "https://leonmax78.github.io/downloads/Wuguan_DEMO_260614-16.zip",
   "page_url": "downloads/",
-  "notes": "武冠判讀完整 ICON 配對測試版：先對齊遊戲與內建完整 ICON，再判讀遊戲內的收錄顯示；右側永遠保留完整原色 ICON，不再顯示裁切縮圖。"
+  "notes": "武冠判讀 DEMO 六月穩定版：合併掉落位置清冊並更新本機教導模型，修正匯出未收錄時掉落位置空白。"
 }
