@@ -2,8 +2,8 @@
   "display_name": "神州ONLINE 帳號啟動器 By尼扣扣",
   "version": "2.0.6",
   "published_at": "2026-08-28 16:39",
-  "file_name": "SZOnline_Launcher_ByNikoko_Setup.exe",
-  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_Setup.exe",
+  "file_name": "SZOnline_Launcher_ByNikoko_2.0.6.7z",
+  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.0.6.7z",
   "page_url": "downloads/",
-  "notes": "改用相容文字渲染並固定操作列高度，修正高 DPI 環境下按鈕中文字下緣被裁切。"
+  "notes": "改用一般 7-Zip 壓縮檔發布，降低自解 EXE 被瀏覽器或防毒軟體誤判的機率；同時修正高 DPI 文字裁切。"
 }
