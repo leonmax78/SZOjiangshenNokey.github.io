@@ -1,9 +1,9 @@
 {
   "display_name": "神州ONLINE 帳號啟動器 By尼扣扣",
-  "version": "2.1.3",
-  "published_at": "2026-08-28 18:53",
-  "file_name": "SZOnline_Launcher_ByNikoko_2.1.3.7z",
-  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.1.3.7z",
+  "version": "2.1.4",
+  "published_at": "2026-08-28 18:57",
+  "file_name": "SZOnline_Launcher_ByNikoko_2.1.4.7z",
+  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.1.4.7z",
   "page_url": "downloads/",
-  "notes": "批次登入加入單次執行鎖與固定帳號快照，兩個登入按鈕同步停用，完成指定帳號後立即停止。"
+  "notes": "程式 EXE、視窗左上角與工作列改用四海同舟網站的水墨舟圖示。"
 }
