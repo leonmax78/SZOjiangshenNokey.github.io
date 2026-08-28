@@ -1,9 +1,9 @@
 {
   "display_name": "神州ONLINE 帳號啟動器 By尼扣扣",
-  "version": "2.0.6",
-  "published_at": "2026-08-28 16:39",
-  "file_name": "SZOnline_Launcher_ByNikoko_2.0.6.7z",
-  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.0.6.7z",
+  "version": "2.1.0",
+  "published_at": "2026-08-28 16:53",
+  "file_name": "SZOnline_Launcher_ByNikoko_2.1.0.7z",
+  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.1.0.7z",
   "page_url": "downloads/",
-  "notes": "改用一般 7-Zip 壓縮檔發布，降低自解 EXE 被瀏覽器或防毒軟體誤判的機率；同時修正高 DPI 文字裁切。"
+  "notes": "每個帳號新增角色欄位 1～4；登入後自動選角、開始遊戲，偵測到保護密碼鍵盤時自動輸入並關閉浮窗。"
 }
