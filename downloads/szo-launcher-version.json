@@ -1,9 +1,9 @@
 {
   "display_name": "神州ONLINE 帳號啟動器 By尼扣扣",
-  "version": "2.1.2",
-  "published_at": "2026-08-28 17:08",
-  "file_name": "SZOnline_Launcher_ByNikoko_2.1.2.7z",
-  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.1.2.7z",
+  "version": "2.1.3",
+  "published_at": "2026-08-28 18:53",
+  "file_name": "SZOnline_Launcher_ByNikoko_2.1.3.7z",
+  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.1.3.7z",
   "page_url": "downloads/",
-  "notes": "保護密碼輸入後自動點擊確定；降低畫面取樣量並縮短等待，角色畫面出現後約 1～2 秒選角。"
+  "notes": "批次登入加入單次執行鎖與固定帳號快照，兩個登入按鈕同步停用，完成指定帳號後立即停止。"
 }
