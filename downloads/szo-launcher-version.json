@@ -1,9 +1,9 @@
 {
   "display_name": "神州ONLINE 帳號啟動器 By尼扣扣",
-  "version": "2.1.4",
-  "published_at": "2026-08-28 18:57",
-  "file_name": "SZOnline_Launcher_ByNikoko_2.1.4.7z",
-  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.1.4.7z",
+  "version": "2.1.5",
+  "published_at": "2026-08-29 00:15",
+  "file_name": "SZOnline_Launcher_ByNikoko_2.1.5.7z",
+  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.1.5.7z",
   "page_url": "downloads/",
-  "notes": "程式 EXE、視窗左上角與工作列改用四海同舟網站的水墨舟圖示。"
+  "notes": "新增多開遊戲視窗可在 Windows 工作列分開顯示的勾選設定。"
 }
