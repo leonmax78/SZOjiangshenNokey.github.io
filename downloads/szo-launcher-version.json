@@ -1,9 +1,9 @@
 {
   "display_name": "神州ONLINE 帳號啟動器 By尼扣扣",
-  "version": "2.3.4",
-  "published_at": "2026-08-30 21:34",
-  "file_name": "SZOnline_Launcher_ByNikoko_2.3.4.7z",
-  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.3.4.7z",
+  "version": "2.3.5",
+  "published_at": "2026-08-30 21:36",
+  "file_name": "SZOnline_Launcher_ByNikoko_2.3.5.7z",
+  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.3.5.7z",
   "page_url": "downloads/",
-  "notes": "修正排列過早導致找不到帳密輸入框；完成單一帳號自動操作後才等比例排列。"
+  "notes": "修正保護密碼已成功登入但狀態仍卡在確認中，避免阻塞下一個批次帳號。"
 }
