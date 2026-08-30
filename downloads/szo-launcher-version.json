@@ -1,9 +1,9 @@
 {
   "display_name": "神州ONLINE 帳號啟動器 By尼扣扣",
-  "version": "2.2.0",
-  "published_at": "2026-08-30 19:49",
-  "file_name": "SZOnline_Launcher_ByNikoko_2.2.0.7z",
-  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.2.0.7z",
+  "version": "2.2.1",
+  "published_at": "2026-08-30 19:57",
+  "file_name": "SZOnline_Launcher_ByNikoko_2.2.1.7z",
+  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.2.1.7z",
   "page_url": "downloads/",
-  "notes": "新增停留角色選單、帳密群組分頁及雷神加速器相容模式。"
+  "notes": "新增多選帳密並批次移至指定分頁或未分類的功能。"
 }
