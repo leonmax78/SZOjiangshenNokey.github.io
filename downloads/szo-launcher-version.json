@@ -1,9 +1,9 @@
 {
   "display_name": "神州ONLINE 帳號啟動器 By尼扣扣",
-  "version": "2.2.1",
-  "published_at": "2026-08-30 19:57",
-  "file_name": "SZOnline_Launcher_ByNikoko_2.2.1.7z",
-  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.2.1.7z",
+  "version": "2.2.2",
+  "published_at": "2026-08-30 20:09",
+  "file_name": "SZOnline_Launcher_ByNikoko_2.2.2.7z",
+  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.2.2.7z",
   "page_url": "downloads/",
-  "notes": "新增多選帳密並批次移至指定分頁或未分類的功能。"
+  "notes": "修正停留模式為填好帳密後不按登入，並整理登入按鈕、底部工具與醒目分頁介面。"
 }
