@@ -1,9 +1,9 @@
 {
   "display_name": "神州ONLINE 帳號啟動器 By尼扣扣",
-  "version": "2.2.7",
-  "published_at": "2026-08-30 20:50",
-  "file_name": "SZOnline_Launcher_ByNikoko_2.2.7.7z",
-  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.2.7.7z",
+  "version": "2.3.0",
+  "published_at": "2026-08-30 21:19",
+  "file_name": "SZOnline_Launcher_ByNikoko_2.3.0.7z",
+  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.3.0.7z",
   "page_url": "downloads/",
-  "notes": "分頁顯示帳號數，並改善海外節點連線官方更新站失敗時的診斷與略過流程。"
+  "notes": "放大啟動器介面與字型，新增多開視窗排列選項，並加快登入畫面偵測與批次登入。"
 }
