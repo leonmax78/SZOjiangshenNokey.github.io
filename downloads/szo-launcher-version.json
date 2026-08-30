@@ -1,9 +1,9 @@
 {
   "display_name": "神州ONLINE 帳號啟動器 By尼扣扣",
-  "version": "2.3.0",
-  "published_at": "2026-08-30 21:19",
-  "file_name": "SZOnline_Launcher_ByNikoko_2.3.0.7z",
-  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.3.0.7z",
+  "version": "2.3.1",
+  "published_at": "2026-08-30 21:24",
+  "file_name": "SZOnline_Launcher_ByNikoko_2.3.1.7z",
+  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.3.1.7z",
   "page_url": "downloads/",
-  "notes": "放大啟動器介面與字型，新增多開視窗排列選項，並加快登入畫面偵測與批次登入。"
+  "notes": "修正批次登入過早切換下一個視窗，新增登入與角色畫面完成轉換確認。"
 }
