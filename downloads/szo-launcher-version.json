@@ -1,9 +1,9 @@
 {
   "display_name": "神州ONLINE 帳號啟動器 By尼扣扣",
-  "version": "2.2.4",
-  "published_at": "2026-08-30 20:19",
-  "file_name": "SZOnline_Launcher_ByNikoko_2.2.4.7z",
-  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.2.4.7z",
+  "version": "2.2.5",
+  "published_at": "2026-08-30 20:31",
+  "file_name": "SZOnline_Launcher_ByNikoko_2.2.5.7z",
+  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.2.5.7z",
   "page_url": "downloads/",
-  "notes": "所有遊戲統一直接啟動 online.dat、移除雷神模式選項，並修正底部按鈕裁切與分類位置。"
+  "notes": "新增依目前分頁獨立匯入與匯出帳密，其他分頁資料不受影響。"
 }
