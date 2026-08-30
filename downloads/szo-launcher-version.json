@@ -1,9 +1,9 @@
 {
   "display_name": "神州ONLINE 帳號啟動器 By尼扣扣",
-  "version": "2.1.6",
-  "published_at": "2026-08-29 17:45",
-  "file_name": "SZOnline_Launcher_ByNikoko_2.1.6.7z",
-  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.1.6.7z",
+  "version": "2.2.0",
+  "published_at": "2026-08-30 19:49",
+  "file_name": "SZOnline_Launcher_ByNikoko_2.2.0.7z",
+  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.2.0.7z",
   "page_url": "downloads/",
-  "notes": "重新發布工作列分開顯示功能，讓 2.1.5 使用者可正常偵測更新。"
+  "notes": "新增停留角色選單、帳密群組分頁及雷神加速器相容模式。"
 }
