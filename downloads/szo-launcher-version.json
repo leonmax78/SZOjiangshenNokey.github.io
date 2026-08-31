@@ -1,9 +1,9 @@
 {
   "display_name": "神州ONLINE 帳號啟動器 By尼扣扣",
-  "version": "2.5.0",
-  "published_at": "2026-08-31 21:18",
-  "file_name": "SZOnline_Launcher_ByNikoko_2.5.0.7z",
-  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.5.0.7z",
+  "version": "2.5.1",
+  "published_at": "2026-08-31 21:33",
+  "file_name": "SZOnline_Launcher_ByNikoko_2.5.1.7z",
+  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.5.1.7z",
   "page_url": "downloads/",
-  "notes": "啟動器更新加入 RSA 數位簽章驗證；簽章無效或更新清單遭竄改時會拒絕下載。"
+  "notes": "每筆帳號新增獨立伺服器設定；預設跟隨啟動器，也可指定北斗、文昌或祿存。"
 }
