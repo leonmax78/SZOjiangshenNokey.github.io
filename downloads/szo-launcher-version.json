@@ -1,9 +1,9 @@
 {
   "display_name": "神州ONLINE 帳號啟動器 By尼扣扣",
-  "version": "2.4.0",
-  "published_at": "2026-08-31 18:44",
-  "file_name": "SZOnline_Launcher_ByNikoko_2.4.0.7z",
-  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.4.0.7z",
+  "version": "2.4.1",
+  "published_at": "2026-08-31 18:52",
+  "file_name": "SZOnline_Launcher_ByNikoko_2.4.1.7z",
+  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.4.1.7z",
   "page_url": "downloads/",
-  "notes": "新增預設關閉的遊戲背景運行開關、三階段登入畫面辨識、保護密碼自動偵測及登入失敗自動重啟。"
+  "notes": "快速辨識不正常離線登入錯誤、縮短角色與保護密碼畫面等待，並新增登入失敗時停止後續登入選項。"
 }
