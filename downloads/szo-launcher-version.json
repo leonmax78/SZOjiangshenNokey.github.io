@@ -1,9 +1,9 @@
 {
   "display_name": "神州ONLINE 帳號啟動器 By尼扣扣",
-  "version": "2.4.7",
-  "published_at": "2026-08-31 19:36",
-  "file_name": "SZOnline_Launcher_ByNikoko_2.4.7.7z",
-  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.4.7.7z",
+  "version": "2.4.8",
+  "published_at": "2026-08-31 19:43",
+  "file_name": "SZOnline_Launcher_ByNikoko_2.4.8.7z",
+  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.4.8.7z",
   "page_url": "downloads/",
-  "notes": "中斷登入流程按鈕改為常駐深紅底、粗體白字，閒置時按下會提示目前沒有登入流程。"
+  "notes": "依昨日 2.3.6 執行檔逐項還原角色選擇與保護密碼偵測、等待及確認流程。"
 }
