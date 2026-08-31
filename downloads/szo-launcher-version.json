@@ -1,9 +1,9 @@
 {
   "display_name": "神州ONLINE 帳號啟動器 By尼扣扣",
-  "version": "2.4.5",
-  "published_at": "2026-08-31 19:23",
-  "file_name": "SZOnline_Launcher_ByNikoko_2.4.5.7z",
-  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.4.5.7z",
+  "version": "2.4.6",
+  "published_at": "2026-08-31 19:32",
+  "file_name": "SZOnline_Launcher_ByNikoko_2.4.6.7z",
+  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.4.6.7z",
   "page_url": "downloads/",
-  "notes": "登入核心恢復昨日穩定流程；中斷登入流程按鈕移至登入區下方，並加大帳號表格可視空間。"
+  "notes": "修正批次登入與下移按鈕裁字，並解除角色頁臨界判斷造成的保護密碼等待，同時維持昨日穩定登入節奏。"
 }
