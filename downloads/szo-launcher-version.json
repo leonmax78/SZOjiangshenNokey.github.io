@@ -1,9 +1,9 @@
 {
   "display_name": "神州ONLINE 帳號啟動器 By尼扣扣",
-  "version": "2.4.3",
-  "published_at": "2026-08-31 19:10",
-  "file_name": "SZOnline_Launcher_ByNikoko_2.4.3.7z",
-  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.4.3.7z",
+  "version": "2.4.4",
+  "published_at": "2026-08-31 19:14",
+  "file_name": "SZOnline_Launcher_ByNikoko_2.4.4.7z",
+  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.4.4.7z",
   "page_url": "downloads/",
-  "notes": "修正正常登入頁被誤判為錯誤；只有確認出現金框錯誤提示才允許自動重啟，並恢復帳密各輸入一次。"
+  "notes": "依實際截圖密度重新校準登入、角色選擇及保護密碼畫面，避免第一組未完成便開啟第二組並縮短角色等待。"
 }
