@@ -1,9 +1,9 @@
 {
   "display_name": "神州ONLINE 帳號啟動器 By尼扣扣",
-  "version": "2.5.5",
-  "published_at": "2026-09-01 20:12",
-  "file_name": "SZOnline_Launcher_ByNikoko_2.5.5.7z",
-  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.5.5.7z",
+  "version": "2.5.6",
+  "published_at": "2026-09-01 20:20",
+  "file_name": "SZOnline_Launcher_ByNikoko_2.5.6.7z",
+  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.5.6.7z",
   "page_url": "downloads/",
-  "notes": "帳號遮罩保留頭尾，密碼與保護密碼維持完全隱藏；縮窄伺服器及角色欄位。"
+  "notes": "進一步縮窄伺服器及角色欄位，將更多寬度分配給帳號、密碼與保護密碼。"
 }
