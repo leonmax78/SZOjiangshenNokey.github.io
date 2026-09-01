@@ -1,9 +1,9 @@
 {
   "display_name": "神州ONLINE 帳號啟動器 By尼扣扣",
-  "version": "2.5.3",
-  "published_at": "2026-09-01 00:10",
-  "file_name": "SZOnline_Launcher_ByNikoko_2.5.3.7z",
-  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.5.3.7z",
+  "version": "2.5.4",
+  "published_at": "2026-09-01 20:05",
+  "file_name": "SZOnline_Launcher_ByNikoko_2.5.4.7z",
+  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.5.4.7z",
   "page_url": "downloads/",
-  "notes": "對調伺服器與角色欄位，帳號密碼遮罩保留頭尾，並簡化匯入範例。"
+  "notes": "新增手動檢查啟動器版本按鈕，版本檢查等寬並排；修正 7z 更新包被誤當成 16 位元 EXE 的問題。"
 }
