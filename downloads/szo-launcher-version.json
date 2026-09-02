@@ -1,9 +1,9 @@
 {
   "display_name": "神州ONLINE 帳號啟動器 By尼扣扣",
-  "version": "2.5.11",
-  "published_at": "2026-09-02 16:20",
-  "file_name": "SZOnline_Launcher_ByNikoko_2.5.11.7z",
-  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.5.11.7z",
+  "version": "2.5.12",
+  "published_at": "2026-09-02 16:35",
+  "file_name": "SZOnline_Launcher_ByNikoko_2.5.12.7z",
+  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.5.12.7z",
   "page_url": "downloads/",
-  "notes": "略過遊戲啟動時的 0x0、1x1 臨時視窗，持續等待至少 320x240 的正式登入視窗後才開始辨識。"
+  "notes": "所有畫面密度辨識改讀前景桌面像素，避開部分 DirectDraw 顯示卡驅動在讀取遊戲視窗 DC 時卡死。"
 }
