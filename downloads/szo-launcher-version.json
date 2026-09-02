@@ -1,9 +1,9 @@
 {
   "display_name": "神州ONLINE 帳號啟動器 By尼扣扣",
-  "version": "2.5.16",
-  "published_at": "2026-09-02 18:41",
-  "file_name": "SZOnline_Launcher_ByNikoko_2.5.16.7z",
-  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.5.16.7z",
+  "version": "2.5.17",
+  "published_at": "2026-09-02 19:04",
+  "file_name": "SZOnline_Launcher_ByNikoko_2.5.17.7z",
+  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.5.17.7z",
   "page_url": "downloads/",
-  "notes": "修正批次登入中途可能因焦點被其他視窗搶走，造成帳號未輸入卻繼續輸入密碼；貼上前會確認目標遊戲 HWND，無法取回焦點則重啟同一支。"
+  "notes": "改善第一次登入常因 Windows 拒絕前景焦點而重啟：登入前暫時附加視窗輸入執行緒，將焦點交給正確遊戲 HWND；重試紀錄會標示焦點或剪貼簿例外。"
 }
