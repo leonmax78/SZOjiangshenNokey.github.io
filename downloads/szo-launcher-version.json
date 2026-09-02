@@ -1,9 +1,9 @@
 {
   "display_name": "神州ONLINE 帳號啟動器 By尼扣扣",
-  "version": "2.5.19",
-  "published_at": "2026-09-02 20:47",
-  "file_name": "SZOnline_Launcher_ByNikoko_2.5.19.7z",
-  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.5.19.7z",
+  "version": "2.5.20",
+  "published_at": "2026-09-02 22:04",
+  "file_name": "SZOnline_Launcher_ByNikoko_2.5.20.7z",
+  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.5.20.7z",
   "page_url": "downloads/",
-  "notes": "帳號、密碼及保護密碼改為直接輸入遊戲欄位，不再依賴 Windows 剪貼簿；修正批次登入第二支之後可能漏掉密碼的問題。"
+  "notes": "批次登入改用前景管線：先開齊並排列最多六個遊戲視窗，依序填入全部帳密，再逐支登入、選角、開始遊戲及輸入保護密碼；視窗全程保持顯示。"
 }
