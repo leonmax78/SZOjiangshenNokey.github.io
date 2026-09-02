@@ -1,9 +1,9 @@
 {
   "display_name": "神州ONLINE 帳號啟動器 By尼扣扣",
-  "version": "2.5.7",
-  "published_at": "2026-09-02 15:05",
-  "file_name": "SZOnline_Launcher_ByNikoko_2.5.7.7z",
-  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.5.7.7z",
+  "version": "2.5.8",
+  "published_at": "2026-09-02 15:30",
+  "file_name": "SZOnline_Launcher_ByNikoko_2.5.8.7z",
+  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.5.8.7z",
   "page_url": "downloads/",
-  "notes": "改善小視窗及偏暗介面的登入畫面辨識，修正部分使用者等待登入畫面逾時而不輸入帳密。"
+  "notes": "新增桌面實際畫面辨識，處理部分 DirectDraw 顯示卡讀不到遊戲視窗畫面的狀況，並加入不含帳密的診斷紀錄。"
 }
