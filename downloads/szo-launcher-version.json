@@ -1,9 +1,9 @@
 {
   "display_name": "神州ONLINE 帳號啟動器 By尼扣扣",
-  "version": "2.5.9",
-  "published_at": "2026-09-02 15:50",
-  "file_name": "SZOnline_Launcher_ByNikoko_2.5.9.7z",
-  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.5.9.7z",
+  "version": "2.5.10",
+  "published_at": "2026-09-02 16:05",
+  "file_name": "SZOnline_Launcher_ByNikoko_2.5.10.7z",
+  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.5.10.7z",
   "page_url": "downloads/",
-  "notes": "每次登入記錄不含帳密的流程階段；帳號與密碼貼上會重新聚焦並安全覆蓋重試一次。"
+  "notes": "修正 2.5.9 帳號與密碼被貼上兩次；改為雙擊穩定焦點後只貼上一次，保留流程診斷紀錄。"
 }
