@@ -1,9 +1,9 @@
 {
   "display_name": "神州ONLINE 帳號啟動器 By尼扣扣",
-  "version": "2.5.18",
-  "published_at": "2026-09-02 20:31",
-  "file_name": "SZOnline_Launcher_ByNikoko_2.5.18.7z",
-  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.5.18.7z",
+  "version": "2.5.19",
+  "published_at": "2026-09-02 20:47",
+  "file_name": "SZOnline_Launcher_ByNikoko_2.5.19.7z",
+  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.5.19.7z",
   "page_url": "downloads/",
-  "notes": "登入與保護密碼改用 Enter 確認；預設第 1 格角色直接開始遊戲，第 2～4 格才點選角色；縮短角色畫面等待時間，提升批次登入速度與穩定性。"
+  "notes": "帳號、密碼及保護密碼改為直接輸入遊戲欄位，不再依賴 Windows 剪貼簿；修正批次登入第二支之後可能漏掉密碼的問題。"
 }
