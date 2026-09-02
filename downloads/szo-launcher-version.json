@@ -1,9 +1,9 @@
 {
   "display_name": "神州ONLINE 帳號啟動器 By尼扣扣",
-  "version": "2.5.14",
-  "published_at": "2026-09-02 16:12",
-  "file_name": "SZOnline_Launcher_ByNikoko_2.5.14.7z",
-  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.5.14.7z",
+  "version": "2.5.15",
+  "published_at": "2026-09-02 18:25",
+  "file_name": "SZOnline_Launcher_ByNikoko_2.5.15.7z",
+  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.5.15.7z",
   "page_url": "downloads/",
-  "notes": "修正 2.5.13 自動更新包內層目錄不相容；改用明確 x86 PE 建置以相容 64 位元 Windows，並保留 800×600、DPI 與 DirectDraw 備援修正。"
+  "notes": "修正 2.5.14 在 Windows 125% 縮放下可能卡住登入辨識，以及取色失敗時誤判不需要輸入保護密碼；剪貼簿占用時會重試並重新啟動該次登入。"
 }
