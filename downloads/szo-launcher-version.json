@@ -1,9 +1,9 @@
 {
   "display_name": "神州ONLINE 帳號啟動器 By尼扣扣",
-  "version": "2.5.21",
-  "published_at": "2026-09-02 22:32",
-  "file_name": "SZOnline_Launcher_ByNikoko_2.5.21.7z",
-  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.5.21.7z",
+  "version": "2.5.22",
+  "published_at": "2026-09-03 12:22",
+  "file_name": "SZOnline_Launcher_ByNikoko_2.5.22.7z",
+  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.5.22.7z",
   "page_url": "downloads/",
-  "notes": "新增背景運行安全保護：偵測到已有神州 ONLINE 遊戲執行時，自動停用背景運行，避免既有遊戲視窗卡頓、沒有回應或崩潰；登入流程仍會繼續。"
+  "notes": "修正官方更新清單失效連結造成 404；六開勾選輸入帳密後停在登入畫面時不再繼續登入；多開排列選擇預設時不再移動或縮放遊戲視窗。"
 }
