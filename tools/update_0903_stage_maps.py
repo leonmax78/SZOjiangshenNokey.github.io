@@ -262,6 +262,10 @@ def main() -> None:
         else:
             old_signatures = set()
         npc_rows = overlay.parse_stage_npcs(stage_id, npcs)
+        if stage_id == 348:
+            for npc in npc_rows:
+                if int(npc["id"]) == 11440:
+                    npc["shop"] = "895"
         floor_map = FLOORS_171_180 if stage_id == 348 else pingxi_tower_floors if stage_id == 15 else None
         entry = {
             "stageId": stage_id,
