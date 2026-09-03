@@ -3702,22 +3702,22 @@
 15704,超‧仙星東瀛神箱,超‧仙星東瀛神箱,0,1,safe_auto_merge,same ID and same name
 15705,超‧仙星中原奇箱,超‧仙星中原奇箱,0,1,safe_auto_merge,same ID and same name
 15706,最後超凡入聖錦囊,最後超凡入聖錦囊,0,1,safe_auto_merge,same ID and same name
-15707,禍玄兇猩,禍玄兇猩,0,1,safe_auto_merge,same ID and same name
-15708,冥燈慘爪,冥燈慘爪,0,1,safe_auto_merge,same ID and same name
-15709,魔極四叉,魔極四叉,0,1,safe_auto_merge,same ID and same name
-15710,天慧爆錘,天慧爆錘,0,1,safe_auto_merge,same ID and same name
-15711,鬼典論史,鬼典論史,0,1,safe_auto_merge,same ID and same name
-15712,終塔衛將,終塔衛將,0,1,safe_auto_merge,same ID and same name
-15713,雙雷轟手,雙雷轟手,0,1,safe_auto_merge,same ID and same name
-15714,泳虛虢漁,泳虛虢漁,0,1,safe_auto_merge,same ID and same name
-15715,森羅冷指,森羅冷指,0,1,safe_auto_merge,same ID and same name
-15716,負罪劈徒,負罪劈徒,0,1,safe_auto_merge,same ID and same name
-15717,末法如座,末法如座,0,1,safe_auto_merge,same ID and same name
-15718,虛空妖龍,虛空妖龍,0,1,safe_auto_merge,same ID and same name
-15719,化外猩覺,化外猩覺,0,1,safe_auto_merge,same ID and same name
-15720,虛典壞相,虛典壞相,0,1,safe_auto_merge,same ID and same name
-15721,星宇諸滅者,星宇諸滅者,0,1,safe_auto_merge,same ID and same name
-15722,終塔之寶,終塔之寶,0,1,safe_auto_merge,same ID and same name
+15707,禍玄兇猩,禍玄兇猩,1,1,new_drop_kept,new monster row already has DropItem
+15708,冥燈慘爪,冥燈慘爪,1,1,new_drop_kept,new monster row already has DropItem
+15709,魔極四叉,魔極四叉,1,1,new_drop_kept,new monster row already has DropItem
+15710,天慧爆錘,天慧爆錘,1,1,new_drop_kept,new monster row already has DropItem
+15711,鬼典論史,鬼典論史,1,1,new_drop_kept,new monster row already has DropItem
+15712,終塔衛將,終塔衛將,1,1,new_drop_kept,new monster row already has DropItem
+15713,雙雷轟手,雙雷轟手,1,1,new_drop_kept,new monster row already has DropItem
+15714,泳虛虢漁,泳虛虢漁,1,1,new_drop_kept,new monster row already has DropItem
+15715,森羅冷指,森羅冷指,1,1,new_drop_kept,new monster row already has DropItem
+15716,負罪劈徒,負罪劈徒,1,1,new_drop_kept,new monster row already has DropItem
+15717,末法如座,末法如座,1,1,new_drop_kept,new monster row already has DropItem
+15718,虛空妖龍,虛空妖龍,1,1,new_drop_kept,new monster row already has DropItem
+15719,化外猩覺,化外猩覺,1,1,new_drop_kept,new monster row already has DropItem
+15720,虛典壞相,虛典壞相,1,1,new_drop_kept,new monster row already has DropItem
+15721,星宇諸滅者,星宇諸滅者,1,1,new_drop_kept,new monster row already has DropItem
+15722,終塔之寶,終塔之寶,1,1,new_drop_kept,new monster row already has DropItem
 15723,躍昇妖玉,躍昇妖玉,0,0,no_old_drop,old monster row missing or has no valid DropItem
 15724,五派仙傳書袋,五派仙傳書袋,0,1,safe_auto_merge,same ID and same name
 15725,星界配方錦囊,星界配方錦囊,0,1,safe_auto_merge,same ID and same name
@@ -3737,23 +3737,23 @@
 15739,聖誕槌哥,聖誕槌哥,0,1,safe_auto_merge,same ID and same name
 15740,聖誕肚皮舞王,聖誕肚皮舞王,0,1,safe_auto_merge,same ID and same name
 15741,倒數一天,倒數一天,0,0,no_old_drop,old monster row missing or has no valid DropItem
-15742,虐殺犯,虐殺犯,0,1,safe_auto_merge,same ID and same name
-15743,惡行犯,惡行犯,0,1,safe_auto_merge,same ID and same name
-15744,冷血者,冷血者,0,1,safe_auto_merge,same ID and same name
-15745,爬脊獸,爬脊獸,0,1,safe_auto_merge,same ID and same name
-15746,虛潛獸,虛潛獸,0,1,safe_auto_merge,same ID and same name
-15747,碎骨者,碎骨者,0,1,safe_auto_merge,same ID and same name
-15748,疤枷?,疤枷?,0,1,safe_auto_merge,same ID and same name
-15749,防攻鐵獅,防攻鐵獅,0,1,safe_auto_merge,same ID and same name
-15750,防術晶人,防術晶人,0,1,safe_auto_merge,same ID and same name
-15751,血腥者,血腥者,0,1,safe_auto_merge,same ID and same name
-15752,黑霾獸,黑霾獸,0,1,safe_auto_merge,same ID and same name
-15753,切割者,切割者,0,1,safe_auto_merge,same ID and same name
-15754,蠍心邪后,蠍心邪后,0,1,safe_auto_merge,same ID and same name
-15755,雙天兇狂,雙天兇狂,0,1,safe_auto_merge,same ID and same name
-15756,妄義負官,妄義負官,0,1,safe_auto_merge,same ID and same name
-15757,三界壞滅尊,三界壞滅尊,0,1,safe_auto_merge,same ID and same name
-15758,終塔之寶<II>,終塔之寶<II>,0,1,safe_auto_merge,same ID and same name
+15742,虐殺犯,虐殺犯,1,1,new_drop_kept,new monster row already has DropItem
+15743,惡行犯,惡行犯,1,1,new_drop_kept,new monster row already has DropItem
+15744,冷血者,冷血者,1,1,new_drop_kept,new monster row already has DropItem
+15745,爬脊獸,爬脊獸,1,1,new_drop_kept,new monster row already has DropItem
+15746,虛潛獸,虛潛獸,1,1,new_drop_kept,new monster row already has DropItem
+15747,碎骨者,碎骨者,1,1,new_drop_kept,new monster row already has DropItem
+15748,疤枷?,疤枷?,1,1,new_drop_kept,new monster row already has DropItem
+15749,防攻鐵獅,防攻鐵獅,1,1,new_drop_kept,new monster row already has DropItem
+15750,防術晶人,防術晶人,1,1,new_drop_kept,new monster row already has DropItem
+15751,血腥者,血腥者,1,1,new_drop_kept,new monster row already has DropItem
+15752,黑霾獸,黑霾獸,1,1,new_drop_kept,new monster row already has DropItem
+15753,切割者,切割者,1,1,new_drop_kept,new monster row already has DropItem
+15754,蠍心邪后,蠍心邪后,1,1,new_drop_kept,new monster row already has DropItem
+15755,雙天兇狂,雙天兇狂,1,1,new_drop_kept,new monster row already has DropItem
+15756,妄義負官,妄義負官,1,1,new_drop_kept,new monster row already has DropItem
+15757,三界壞滅尊,三界壞滅尊,1,1,new_drop_kept,new monster row already has DropItem
+15758,終塔之寶<II>,終塔之寶<II>,1,1,new_drop_kept,new monster row already has DropItem
 15759,終末邪龍鎮,終末邪龍鎮,0,1,safe_auto_merge,same ID and same name
 15760,終末封寶盒,終末封寶盒,0,1,safe_auto_merge,same ID and same name
 15761,小豬刮刮樂,小豬刮刮樂,0,1,safe_auto_merge,same ID and same name
@@ -3772,18 +3772,18 @@
 15774,終末影衛,終末影衛,0,0,no_old_drop,old monster row missing or has no valid DropItem
 15775,昇塔赤靈,昇塔赤靈,0,0,no_old_drop,old monster row missing or has no valid DropItem
 15776,旋幽虛靈,旋幽虛靈,0,1,safe_auto_merge,same ID and same name
-15777,萬鈞碎錘,萬鈞碎錘,0,1,safe_auto_merge,same ID and same name
-15778,魔空邪祀,魔空邪祀,0,1,safe_auto_merge,same ID and same name
-15779,危城巨猩,危城巨猩,0,1,safe_auto_merge,same ID and same name
-15780,大滅霸,大滅霸,0,1,safe_auto_merge,same ID and same name
-15781,兇殘之手,兇殘之手,0,1,safe_auto_merge,same ID and same name
-15782,菌侵甲鬼,菌侵甲鬼,0,1,safe_auto_merge,same ID and same name
-15783,赤潮王叉,赤潮王叉,0,1,safe_auto_merge,same ID and same name
-15784,虛空魔鴆毒麒,虛空魔鴆毒麒,0,1,safe_auto_merge,same ID and same name
-15785,虛空神凜冰麒,虛空神凜冰麒,0,1,safe_auto_merge,same ID and same name
-15786,虛空神燹鳳麒,虛空神燹鳳麒,0,1,safe_auto_merge,same ID and same name
-15787,西楚霸幻王,西楚霸幻王,0,1,safe_auto_merge,same ID and same name
-15788,終塔之寶<III>,終塔之寶<III>,0,1,safe_auto_merge,same ID and same name
+15777,萬鈞碎錘,萬鈞碎錘,1,1,new_drop_kept,new monster row already has DropItem
+15778,魔空邪祀,魔空邪祀,1,1,new_drop_kept,new monster row already has DropItem
+15779,危城巨猩,危城巨猩,1,1,new_drop_kept,new monster row already has DropItem
+15780,大滅霸,大滅霸,1,1,new_drop_kept,new monster row already has DropItem
+15781,兇殘之手,兇殘之手,1,1,new_drop_kept,new monster row already has DropItem
+15782,菌侵甲鬼,菌侵甲鬼,1,1,new_drop_kept,new monster row already has DropItem
+15783,赤潮王叉,赤潮王叉,1,1,new_drop_kept,new monster row already has DropItem
+15784,虛空魔鴆毒麒,虛空魔鴆毒麒,1,1,new_drop_kept,new monster row already has DropItem
+15785,虛空神凜冰麒,虛空神凜冰麒,1,1,new_drop_kept,new monster row already has DropItem
+15786,虛空神燹鳳麒,虛空神燹鳳麒,1,1,new_drop_kept,new monster row already has DropItem
+15787,西楚霸幻王,西楚霸幻王,1,1,new_drop_kept,new monster row already has DropItem
+15788,終塔之寶<III>,終塔之寶<III>,1,1,new_drop_kept,new monster row already has DropItem
 15789,終末邪龍鎮,終末邪龍鎮,0,1,safe_auto_merge,same ID and same name
 15790,通寶院珍寶箱,通寶院珍寶箱,0,1,safe_auto_merge,same ID and same name
 15791,通寶院珍寶箱,通寶院珍寶箱,0,1,safe_auto_merge,same ID and same name
@@ -3840,23 +3840,23 @@
 15842,虛騰風,虛騰風,0,0,no_old_drop,old monster row missing or has no valid DropItem
 15843,虛空主宰？,虛空主宰？,0,1,safe_auto_merge,same ID and same name
 15844,六滅化神大禮包,六滅化神大禮包,0,1,safe_auto_merge,same ID and same name
-15845,瞠目兇首,瞠目兇首,0,1,safe_auto_merge,same ID and same name
-15846,怒咆穢猿,怒咆穢猿,0,1,safe_auto_merge,same ID and same name
-15847,萬金錘蜴,萬金錘蜴,0,1,safe_auto_merge,same ID and same name
-15848,無旌戰狼,無旌戰狼,0,1,safe_auto_merge,same ID and same name
-15849,黑獄破城象,黑獄破城象,0,1,safe_auto_merge,same ID and same name
-15850,招靈巫祀,招靈巫祀,0,1,safe_auto_merge,same ID and same name
-15851,虛海獵叉,虛海獵叉,0,1,safe_auto_merge,same ID and same name
-15852,冥瘴崩山牛,冥瘴崩山牛,0,1,safe_auto_merge,same ID and same name
-15853,驚奇機棺,驚奇機棺,0,1,safe_auto_merge,same ID and same name
-15854,枯血鬼爪,枯血鬼爪,0,1,safe_auto_merge,same ID and same name
-15855,墟漠矮靈,墟漠矮靈,0,1,safe_auto_merge,same ID and same name
-15856,禍星虛天監,禍星虛天監,0,1,safe_auto_merge,same ID and same name
-15857,赤城武烈君,赤城武烈君,0,1,safe_auto_merge,same ID and same name
-15858,終末邪龍鎮,終末邪龍鎮,0,1,safe_auto_merge,same ID and same name
-15859,終塔之寶<IV>,終塔之寶<IV>,0,1,safe_auto_merge,same ID and same name
-15860,驚奇機棺,驚奇機棺,0,1,safe_auto_merge,same ID and same name
-15861,枯血鬼爪,枯血鬼爪,0,1,safe_auto_merge,same ID and same name
+15845,瞠目兇首,瞠目兇首,1,1,new_drop_kept,new monster row already has DropItem
+15846,怒咆穢猿,怒咆穢猿,1,1,new_drop_kept,new monster row already has DropItem
+15847,萬金錘蜴,萬金錘蜴,1,1,new_drop_kept,new monster row already has DropItem
+15848,無旌戰狼,無旌戰狼,1,1,new_drop_kept,new monster row already has DropItem
+15849,黑獄破城象,黑獄破城象,1,1,new_drop_kept,new monster row already has DropItem
+15850,招靈巫祀,招靈巫祀,1,1,new_drop_kept,new monster row already has DropItem
+15851,虛海獵叉,虛海獵叉,1,1,new_drop_kept,new monster row already has DropItem
+15852,冥瘴崩山牛,冥瘴崩山牛,1,1,new_drop_kept,new monster row already has DropItem
+15853,驚奇機棺,驚奇機棺,1,1,new_drop_kept,new monster row already has DropItem
+15854,枯血鬼爪,枯血鬼爪,1,1,new_drop_kept,new monster row already has DropItem
+15855,墟漠矮靈,墟漠矮靈,1,1,new_drop_kept,new monster row already has DropItem
+15856,禍星虛天監,禍星虛天監,1,1,new_drop_kept,new monster row already has DropItem
+15857,赤城武烈君,赤城武烈君,1,1,new_drop_kept,new monster row already has DropItem
+15858,終末邪龍鎮,終末邪龍鎮,1,1,new_drop_kept,new monster row already has DropItem
+15859,終塔之寶<IV>,終塔之寶<IV>,1,1,new_drop_kept,new monster row already has DropItem
+15860,驚奇機棺,驚奇機棺,1,1,new_drop_kept,new monster row already has DropItem
+15861,枯血鬼爪,枯血鬼爪,1,1,new_drop_kept,new monster row already has DropItem
 15862,夏星創世錦囊,夏星創世錦囊,0,1,safe_auto_merge,same ID and same name
 15863,夏辰頂天錦囊,夏辰頂天錦囊,0,1,safe_auto_merge,same ID and same name
 15864,夏時無敵錦囊,夏時無敵錦囊,0,1,safe_auto_merge,same ID and same name
@@ -3927,23 +3927,23 @@
 15929,漠影翼蛇,漠影翼蛇,0,1,safe_auto_merge,same ID and same name
 15930,創神聖鑽錦囊,創神聖鑽錦囊,0,1,safe_auto_merge,same ID and same name
 15931,幽神阿努比斯,幽神阿努比斯,0,0,no_old_drop,old monster row missing or has no valid DropItem
-15932,沙野夜叉,沙野夜叉,0,1,safe_auto_merge,same ID and same name
-15933,峽谷矮靈,峽谷矮靈,0,1,safe_auto_merge,same ID and same name
-15934,金奇電鼠,金奇電鼠,0,1,safe_auto_merge,same ID and same name
-15935,王谷兵蜂,王谷兵蜂,0,1,safe_auto_merge,same ID and same name
-15936,王谷聖蜂守,王谷聖蜂守,0,1,safe_auto_merge,same ID and same name
-15937,白金之猩,白金之猩,0,1,safe_auto_merge,same ID and same name
-15938,窮兇極鱷,窮兇極鱷,0,1,safe_auto_merge,same ID and same name
-15939,虛無狩鬼,虛無狩鬼,0,1,safe_auto_merge,same ID and same name
-15940,王谷獸騎守,王谷獸騎守,0,1,safe_auto_merge,same ID and same name
-15941,惡浪狂獵,惡浪狂獵,0,1,safe_auto_merge,same ID and same name
+15932,沙野夜叉,沙野夜叉,1,1,new_drop_kept,new monster row already has DropItem
+15933,峽谷矮靈,峽谷矮靈,1,1,new_drop_kept,new monster row already has DropItem
+15934,金奇電鼠,金奇電鼠,1,1,new_drop_kept,new monster row already has DropItem
+15935,王谷兵蜂,王谷兵蜂,1,1,new_drop_kept,new monster row already has DropItem
+15936,王谷聖蜂守,王谷聖蜂守,1,1,new_drop_kept,new monster row already has DropItem
+15937,白金之猩,白金之猩,1,1,new_drop_kept,new monster row already has DropItem
+15938,窮兇極鱷,窮兇極鱷,1,1,new_drop_kept,new monster row already has DropItem
+15939,虛無狩鬼,虛無狩鬼,1,1,new_drop_kept,new monster row already has DropItem
+15940,王谷獸騎守,王谷獸騎守,1,1,new_drop_kept,new monster row already has DropItem
+15941,惡浪狂獵,惡浪狂獵,1,1,new_drop_kept,new monster row already has DropItem
 15942,登樓寶箱,登樓寶箱,0,1,safe_auto_merge,same ID and same name
 15943,陷地寶箱,陷地寶箱,0,1,safe_auto_merge,same ID and same name
-15944,挑羊點尖,挑羊點尖,0,1,safe_auto_merge,same ID and same name
-15945,畫蛇似蛟,畫蛇似蛟,0,1,safe_auto_merge,same ID and same name
-15946,王谷書藏司,王谷書藏司,0,1,safe_auto_merge,same ID and same name
-15947,咒君拉美西斯,咒君拉美西斯,0,1,safe_auto_merge,same ID and same name
-15948,終塔之寶<V>,終塔之寶<V>,0,1,safe_auto_merge,same ID and same name
+15944,挑羊點尖,挑羊點尖,1,1,new_drop_kept,new monster row already has DropItem
+15945,畫蛇似蛟,畫蛇似蛟,1,1,new_drop_kept,new monster row already has DropItem
+15946,王谷書藏司,王谷書藏司,1,1,new_drop_kept,new monster row already has DropItem
+15947,咒君拉美西斯,咒君拉美西斯,1,1,new_drop_kept,new monster row already has DropItem
+15948,終塔之寶<V>,終塔之寶<V>,1,1,new_drop_kept,new monster row already has DropItem
 15949,聖誕王國紅襪,聖誕王國紅襪,0,1,safe_auto_merge,same ID and same name
 15950,聖誕王國寶箱,聖誕王國寶箱,0,1,safe_auto_merge,same ID and same name
 15951,鋼鐵寒奔,鋼鐵寒奔,0,1,safe_auto_merge,same ID and same name
@@ -4082,21 +4082,21 @@
 16084,太陽神典錦囊,太陽神典錦囊,0,1,safe_auto_merge,same ID and same name
 16085,真‧太陽神典錦囊,真‧太陽神典錦囊,0,1,safe_auto_merge,same ID and same name
 16086,天罪符咒包,天罪符咒包,1,1,new_drop_kept,new monster row already has DropItem
-16087,虛無十字軍,虛無十字軍,0,1,safe_auto_merge,same ID and same name
-16088,虛無真知士,虛無真知士,0,1,safe_auto_merge,same ID and same name
-16089,艾濟原人,艾濟原人,0,1,safe_auto_merge,same ID and same name
-16090,尼絡暴獸,尼絡暴獸,0,1,safe_auto_merge,same ID and same name
-16091,虛統‧賽特,虛統‧賽特,0,1,safe_auto_merge,same ID and same name
-16092,尼絡狂鱷,尼絡狂鱷,0,1,safe_auto_merge,same ID and same name
-16093,護柱血爪,護柱血爪,0,1,safe_auto_merge,same ID and same name
-16094,柱末腐豚,柱末腐豚,0,1,safe_auto_merge,same ID and same name
-16095,虛座‧塞拉比斯,虛座‧塞拉比斯,0,1,safe_auto_merge,same ID and same name
-16096,霸虛雄獅,霸虛雄獅,0,1,safe_auto_merge,same ID and same name
-16097,喚虛女巫,喚虛女巫,0,1,safe_auto_merge,same ID and same name
-16098,神柱虛祭,神柱虛祭,0,1,safe_auto_merge,same ID and same name
-16099,虛龍‧阿佩普,虛龍‧阿佩普,0,1,safe_auto_merge,same ID and same name
-16100,終劫阿努比斯,終劫阿努比斯,0,1,safe_auto_merge,same ID and same name
-16101,終塔之寶<VI>,終塔之寶<VI>,0,1,safe_auto_merge,same ID and same name
+16087,虛無十字軍,虛無十字軍,1,1,new_drop_kept,new monster row already has DropItem
+16088,虛無真知士,虛無真知士,1,1,new_drop_kept,new monster row already has DropItem
+16089,艾濟原人,艾濟原人,1,1,new_drop_kept,new monster row already has DropItem
+16090,尼絡暴獸,尼絡暴獸,1,1,new_drop_kept,new monster row already has DropItem
+16091,虛統‧賽特,虛統‧賽特,1,1,new_drop_kept,new monster row already has DropItem
+16092,尼絡狂鱷,尼絡狂鱷,1,1,new_drop_kept,new monster row already has DropItem
+16093,護柱血爪,護柱血爪,1,1,new_drop_kept,new monster row already has DropItem
+16094,柱末腐豚,柱末腐豚,1,1,new_drop_kept,new monster row already has DropItem
+16095,虛座‧塞拉比斯,虛座‧塞拉比斯,1,1,new_drop_kept,new monster row already has DropItem
+16096,霸虛雄獅,霸虛雄獅,1,1,new_drop_kept,new monster row already has DropItem
+16097,喚虛女巫,喚虛女巫,1,1,new_drop_kept,new monster row already has DropItem
+16098,神柱虛祭,神柱虛祭,1,1,new_drop_kept,new monster row already has DropItem
+16099,虛龍‧阿佩普,虛龍‧阿佩普,1,1,new_drop_kept,new monster row already has DropItem
+16100,終劫阿努比斯,終劫阿努比斯,1,1,new_drop_kept,new monster row already has DropItem
+16101,終塔之寶<VI>,終塔之寶<VI>,1,1,new_drop_kept,new monster row already has DropItem
 16102,昇行碧光,昇行碧光,0,0,no_old_drop,old monster row missing or has no valid DropItem
 16103,禁制赤光,禁制赤光,0,0,no_old_drop,old monster row missing or has no valid DropItem
 16104,神州潮服精選包,神州潮服精選包,0,1,safe_auto_merge,same ID and same name
@@ -4259,20 +4259,20 @@
 16261,神‧帝星中原奇箱,神‧帝星中原奇箱,0,1,safe_auto_merge,same ID and same name
 16262,武俠神域錦囊,武俠神域錦囊,0,1,safe_auto_merge,same ID and same name
 16263,太陰使徒,太陰使徒,0,1,safe_auto_merge,same ID and same name
-16264,砌塔石奴,砌塔石奴,0,1,safe_auto_merge,same ID and same name
-16265,咒殺修陀,咒殺修陀,0,1,safe_auto_merge,same ID and same name
-16266,碎魂金鬼,碎魂金鬼,0,1,safe_auto_merge,same ID and same name
-16267,衛皇凶赦殘豹,衛皇凶赦殘豹,0,1,safe_auto_merge,same ID and same name
-16268,暴拳狌狌,暴拳狌狌,0,1,safe_auto_merge,same ID and same name
-16269,無序燭陰,無序燭陰,0,1,safe_auto_merge,same ID and same name
-16270,怒裂睚眥,怒裂睚眥,0,1,safe_auto_merge,same ID and same name
-16271,衛皇人面獅身,衛皇人面獅身,0,1,safe_auto_merge,same ID and same name
-16272,壯脂鑿齒,壯脂鑿齒,0,1,safe_auto_merge,same ID and same name
-16273,九毒相柳,九毒相柳,0,1,safe_auto_merge,same ID and same name
-16274,諸肢惡樓,諸肢惡樓,0,1,safe_auto_merge,same ID and same name
-16275,衛皇巨劍神座,衛皇巨劍神座,0,1,safe_auto_merge,same ID and same name
-16276,再生黑后,再生黑后,0,1,safe_auto_merge,same ID and same name
-16277,終塔之寶<VII>,終塔之寶<VII>,0,1,safe_auto_merge,same ID and same name
+16264,砌塔石奴,砌塔石奴,1,1,new_drop_kept,new monster row already has DropItem
+16265,咒殺修陀,咒殺修陀,1,1,new_drop_kept,new monster row already has DropItem
+16266,碎魂金鬼,碎魂金鬼,1,1,new_drop_kept,new monster row already has DropItem
+16267,衛皇凶赦殘豹,衛皇凶赦殘豹,1,1,new_drop_kept,new monster row already has DropItem
+16268,暴拳狌狌,暴拳狌狌,1,1,new_drop_kept,new monster row already has DropItem
+16269,無序燭陰,無序燭陰,1,1,new_drop_kept,new monster row already has DropItem
+16270,怒裂睚眥,怒裂睚眥,1,1,new_drop_kept,new monster row already has DropItem
+16271,衛皇人面獅身,衛皇人面獅身,1,1,new_drop_kept,new monster row already has DropItem
+16272,壯脂鑿齒,壯脂鑿齒,1,1,new_drop_kept,new monster row already has DropItem
+16273,九毒相柳,九毒相柳,1,1,new_drop_kept,new monster row already has DropItem
+16274,諸肢惡樓,諸肢惡樓,1,1,new_drop_kept,new monster row already has DropItem
+16275,衛皇巨劍神座,衛皇巨劍神座,1,1,new_drop_kept,new monster row already has DropItem
+16276,再生黑后,再生黑后,1,1,new_drop_kept,new monster row already has DropItem
+16277,終塔之寶<VII>,終塔之寶<VII>,1,1,new_drop_kept,new monster row already has DropItem
 16278,武冠台隱刑,武冠台隱刑,0,0,no_old_drop,old monster row missing or has no valid DropItem
 16279,武冠台守軍,武冠台守軍,0,0,no_old_drop,old monster row missing or has no valid DropItem
 16280,武冠台衛兵,武冠台衛兵,0,0,no_old_drop,old monster row missing or has no valid DropItem
@@ -4473,25 +4473,25 @@
 16475,寒宮將軍,寒宮將軍,0,1,safe_auto_merge,same ID and same name
 16476,月光獵手,月光獵手,0,1,safe_auto_merge,same ID and same name
 16477,仙力碎片,仙力碎片,0,0,no_old_drop,old monster row missing or has no valid DropItem
-16478,虛行蜴魔,虛行蜴魔,0,1,safe_auto_merge,same ID and same name
-16479,虛行影虎,虛行影虎,0,1,safe_auto_merge,same ID and same name
-16480,冥河緝獵手,冥河緝獵手,0,1,safe_auto_merge,same ID and same name
+16478,虛行蜴魔,虛行蜴魔,1,1,new_drop_kept,new monster row already has DropItem
+16479,虛行影虎,虛行影虎,1,1,new_drop_kept,new monster row already has DropItem
+16480,冥河緝獵手,冥河緝獵手,1,1,new_drop_kept,new monster row already has DropItem
 16481,死川血鱷,死川血鱷,0,0,no_old_drop,old monster row missing or has no valid DropItem
 16482,死川悍犀,死川悍犀,0,0,no_old_drop,old monster row missing or has no valid DropItem
 16483,死川牙豹,死川牙豹,0,0,no_old_drop,old monster row missing or has no valid DropItem
 16484,虛空主宰分靈,虛空主宰分靈,0,0,no_old_drop,old monster row missing or has no valid DropItem
-16485,尸薩滿,尸薩滿,0,1,safe_auto_merge,same ID and same name
-16486,木乃伊,木乃伊,0,1,safe_auto_merge,same ID and same name
-16487,冥河黑門將,冥河黑門將,0,1,safe_auto_merge,same ID and same name
+16485,尸薩滿,尸薩滿,1,1,new_drop_kept,new monster row already has DropItem
+16486,木乃伊,木乃伊,1,1,new_drop_kept,new monster row already has DropItem
+16487,冥河黑門將,冥河黑門將,1,1,new_drop_kept,new monster row already has DropItem
 16488,死川幽鳥,死川幽鳥,0,0,no_old_drop,old monster row missing or has no valid DropItem
 16489,死川爪犯,死川爪犯,0,0,no_old_drop,old monster row missing or has no valid DropItem
 16490,死川鬼祭,死川鬼祭,0,0,no_old_drop,old monster row missing or has no valid DropItem
 16491,虛空主宰幻象,虛空主宰幻象,0,0,no_old_drop,old monster row missing or has no valid DropItem
-16492,一杖虛導,一杖虛導,0,1,safe_auto_merge,same ID and same name
-16493,八顛虛兇,八顛虛兇,0,1,safe_auto_merge,same ID and same name
-16494,金字塔殉司,金字塔殉司,0,1,safe_auto_merge,same ID and same name
+16492,一杖虛導,一杖虛導,1,1,new_drop_kept,new monster row already has DropItem
+16493,八顛虛兇,八顛虛兇,1,1,new_drop_kept,new monster row already has DropItem
+16494,金字塔殉司,金字塔殉司,1,1,new_drop_kept,new monster row already has DropItem
 16495,冥還黑后,冥還黑后,0,1,safe_auto_merge,same ID and same name
-16496,終塔之寶<VIII>,終塔之寶<VIII>,0,1,safe_auto_merge,same ID and same name
+16496,終塔之寶<VIII>,終塔之寶<VIII>,1,1,new_drop_kept,new monster row already has DropItem
 16497,長疆寇,長疆寇,0,1,safe_auto_merge,same ID and same name
 16498,高麗劍客,高麗劍客,0,1,safe_auto_merge,same ID and same name
 16499,太極劍官,太極劍官,0,1,safe_auto_merge,same ID and same name
@@ -4516,20 +4516,20 @@
 16518,征疆弓手,征疆弓手,0,1,safe_auto_merge,same ID and same name
 16519,赤膽長疆錦囊,赤膽長疆錦囊,0,1,safe_auto_merge,same ID and same name
 16520,幽冥水鬼,幽冥水鬼,0,1,safe_auto_merge,same ID and same name
-16521,造亂思魅,造亂思魅,0,1,safe_auto_merge,same ID and same name
-16522,生非識邪,生非識邪,0,1,safe_auto_merge,same ID and same name
-16523,迷竅幻鬼,迷竅幻鬼,0,1,safe_auto_merge,same ID and same name
-16524,忌天魔將像,忌天魔將像,0,1,safe_auto_merge,same ID and same name
-16525,倒懸心魔,倒懸心魔,0,1,safe_auto_merge,same ID and same name
-16526,失序亂兵,失序亂兵,0,1,safe_auto_merge,same ID and same name
-16527,危盪弄臣,危盪弄臣,0,1,safe_auto_merge,same ID and same name
-16528,仇燄魔翼龍,仇燄魔翼龍,0,1,safe_auto_merge,same ID and same name
-16529,國破兇卒,國破兇卒,0,1,safe_auto_merge,same ID and same name
-16530,禍患造者,禍患造者,0,1,safe_auto_merge,same ID and same name
-16531,瘡痍行者,瘡痍行者,0,1,safe_auto_merge,same ID and same name
-16532,輾州魔軍司,輾州魔軍司,0,1,safe_auto_merge,same ID and same name
-16533,亡國之紫‧九尾,亡國之紫‧九尾,0,1,safe_auto_merge,same ID and same name
-16534,終塔之寶<IX>,終塔之寶<IX>,0,1,safe_auto_merge,same ID and same name
+16521,造亂思魅,造亂思魅,1,1,new_drop_kept,new monster row already has DropItem
+16522,生非識邪,生非識邪,1,1,new_drop_kept,new monster row already has DropItem
+16523,迷竅幻鬼,迷竅幻鬼,1,1,new_drop_kept,new monster row already has DropItem
+16524,忌天魔將像,忌天魔將像,1,1,new_drop_kept,new monster row already has DropItem
+16525,倒懸心魔,倒懸心魔,1,1,new_drop_kept,new monster row already has DropItem
+16526,失序亂兵,失序亂兵,1,1,new_drop_kept,new monster row already has DropItem
+16527,危盪弄臣,危盪弄臣,1,1,new_drop_kept,new monster row already has DropItem
+16528,仇燄魔翼龍,仇燄魔翼龍,1,1,new_drop_kept,new monster row already has DropItem
+16529,國破兇卒,國破兇卒,1,1,new_drop_kept,new monster row already has DropItem
+16530,禍患造者,禍患造者,1,1,new_drop_kept,new monster row already has DropItem
+16531,瘡痍行者,瘡痍行者,1,1,new_drop_kept,new monster row already has DropItem
+16532,輾州魔軍司,輾州魔軍司,1,1,new_drop_kept,new monster row already has DropItem
+16533,亡國之紫‧九尾,亡國之紫‧九尾,1,1,new_drop_kept,new monster row already has DropItem
+16534,終塔之寶<IX>,終塔之寶<IX>,1,1,new_drop_kept,new monster row already has DropItem
 16535,虛空能源,虛空能源,0,0,no_old_drop,old monster row missing or has no valid DropItem
 16536,虛滅石龍陣,虛滅石龍陣,0,0,no_old_drop,old monster row missing or has no valid DropItem
 16537,虛滅銀龍陣,虛滅銀龍陣,0,0,no_old_drop,old monster row missing or has no valid DropItem
@@ -6173,3 +6173,16 @@
 18175,極‧大秘境寶箱,,1,0,new_drop_kept,new monster row already has DropItem
 18176,黃花蜂殺手,,0,0,no_old_drop,old monster row missing or has no valid DropItem
 18177,黃花蜂伏兵,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18178,符兵．虛血,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18179,符兵．虛精,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18180,白堊魔蠶,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18181,寒懸烏竟都,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18182,符兵．劍修,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18183,符兵．咒修,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18184,尼羅浮陀王,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18185,狼雷嚎嘯,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18186,五嶽岩魔,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18187,裂笞阿羅邏,,0,0,no_old_drop,old monster row missing or has no valid DropItem
+18188,驚宇鬱嶓羅,,1,0,new_drop_kept,new monster row already has DropItem
+18189,終塔之寶<XVIII>,,1,0,new_drop_kept,new monster row already has DropItem
+18190,終末支龍柱,,0,0,no_old_drop,old monster row missing or has no valid DropItem

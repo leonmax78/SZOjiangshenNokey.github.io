@@ -1,0 +1,23 @@
+[
+  {
+    "stageId": 347,
+    "width": 2240,
+    "height": 1200,
+    "monsters": 182,
+    "npcs": 1
+  },
+  {
+    "stageId": 348,
+    "width": 2240,
+    "height": 1200,
+    "monsters": 178,
+    "npcs": 1
+  },
+  {
+    "stageId": 393,
+    "width": 800,
+    "height": 480,
+    "monsters": 35,
+    "npcs": 2
+  }
+]
