@@ -567,6 +567,13 @@
     }).join('');
   }
 
+  function updateMapSelectionDom(stage){
+    const target = stage || currentStage();
+    if(!target) return;
+    const overlay = document.querySelector('.mapOverlay');
+    if(overlay) overlay.innerHTML = markerDots(target);
+  }
+
   function zoomValue(){
     const n = Number(state.zoom);
     if(!Number.isFinite(n)) return 1;
@@ -786,12 +793,12 @@
     const monster = ev.target?.dataset?.mapMonster;
     if(monster){
       ev.target.checked ? state.monsters.add(monster) : state.monsters.delete(monster);
-      renderLoaded();
+      updateMapSelectionDom();
     }
     const npc = ev.target?.dataset?.mapNpc;
     if(npc){
       ev.target.checked ? state.npcs.add(npc) : state.npcs.delete(npc);
-      renderLoaded();
+      updateMapSelectionDom();
     }
   });
 
@@ -854,7 +861,9 @@
     const rows = (all || none) === 'monster' ? monsterGroups(stage) : (stage.npcs || []).map(n => Object.assign({ kind: 'npc' }, n));
     set.clear();
     if(all) rows.forEach(row => set.add(markerKey(row)));
-    renderLoaded();
+    const attr = (all || none) === 'monster' ? 'data-map-monster' : 'data-map-npc';
+    document.querySelectorAll(`input[${attr}]`).forEach(input => { input.checked = !!all; });
+    updateMapSelectionDom(stage);
   });
 
   document.addEventListener('click', ev => {
