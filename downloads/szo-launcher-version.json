@@ -1,9 +1,9 @@
 {
   "display_name": "神州ONLINE 帳號啟動器 By尼扣扣",
-  "version": "2.5.23",
-  "published_at": "2026-09-03 12:43",
-  "file_name": "SZOnline_Launcher_ByNikoko_2.5.23.7z",
-  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.5.23.7z",
+  "version": "2.5.24",
+  "published_at": "2026-09-03 13:33",
+  "file_name": "SZOnline_Launcher_ByNikoko_2.5.24.7z",
+  "download_url": "https://leonmax78.github.io/downloads/SZOnline_Launcher_ByNikoko_2.5.24.7z",
   "page_url": "downloads/",
-  "notes": "遊戲版本檢查改為只比較官方手動更新頁版本與本機版本，不再自行遞增版本號猜測更新網址，避免誤查不存在的更新檔。"
+  "notes": "帳密匯入與匯出新增 Excel（XLSX）格式；匯入、匯出都會先選擇全部或指定分頁，再選擇 Excel／記事本格式。Excel 欄位清楚排列並保留帳密前導零。"
 }
