@@ -1,5 +1,12 @@
 [
   {
+    "stageId": 15,
+    "width": 960,
+    "height": 480,
+    "monsters": 93,
+    "npcs": 25
+  },
+  {
     "stageId": 347,
     "width": 2240,
     "height": 1200,

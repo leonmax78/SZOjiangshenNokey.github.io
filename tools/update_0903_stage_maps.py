@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import argparse
+import csv
 import importlib.util
 import json
 import re
+import struct
 from pathlib import Path
 
 
@@ -35,7 +37,12 @@ def load_module(path: Path):
     return module
 
 
-def marker(row: dict[str, object], scale: int, floor_map: dict[int, list[int]] | None = None) -> dict[str, object]:
+def marker(
+    row: dict[str, object],
+    scale: int,
+    floor_map: dict[int, list[int]] | None = None,
+    activity: str = "",
+) -> dict[str, object]:
     raw_x = int(row["x"])
     raw_y = int(row["y"])
     result: dict[str, object] = {
@@ -54,6 +61,11 @@ def marker(row: dict[str, object], scale: int, floor_map: dict[int, list[int]] |
     if floor_map and int(row["id"]) in floor_map:
         result["tower_floors"] = floor_map[int(row["id"])]
         result["floor"] = floor_map[int(row["id"])][0]
+        result["areaName"] = "、".join(
+            f"終末之塔第{floor}層" for floor in floor_map[int(row["id"])]
+        )
+    if activity:
+        result["activity"] = activity
     if row["kind"] == "npc":
         result["role"] = str(row.get("npc_role") or "normal")
         result["shop"] = str(row.get("shop") or "")
@@ -65,6 +77,7 @@ def main() -> None:
     parser.add_argument("--site-root", type=Path, default=Path.cwd())
     parser.add_argument("--update-root", type=Path, default=Path(r"C:\Users\leonm\Desktop\0903"))
     parser.add_argument("--base-root", type=Path, default=Path(r"C:\Users\leonm\Desktop\0702"))
+    parser.add_argument("--previous-root", type=Path, default=Path(r"C:\Users\leonm\Desktop\0827"))
     parser.add_argument("--overlay", type=Path, default=DEFAULT_OVERLAY)
     args = parser.parse_args()
 
@@ -152,13 +165,35 @@ def main() -> None:
     data_path = site_root / "data" / "stage_maps.json"
     payload = json.loads(data_path.read_text(encoding="utf-8"))
     by_id = {int(stage["stageId"]): stage for stage in payload["stages"]}
+    for tower_marker in by_id[287].get("monsters", []):
+        if int(tower_marker["id"]) == 15852:
+            tower_marker["floor"] = 36
+            tower_marker["tower_floors"] = [36]
+            tower_marker["areaName"] = "終末之塔第36層"
+    tower_stage_ids = set(range(284, 295)) | set(range(342, 348))
+    tower_monster_ids = {
+        int(monster["id"])
+        for stage_id, stage in by_id.items()
+        if stage_id in tower_stage_ids
+        for monster in stage.get("monsters", [])
+    }
+    pingxi_tower_floors: dict[int, list[int]] = {15852: [36]}
+    location_csv = site_root / "raw" / "一般怪物位置.csv"
+    if location_csv.exists():
+        with location_csv.open(encoding="utf-8-sig", newline="") as handle:
+            for row in csv.DictReader(handle):
+                monster_id = str(row.get("怪物ID") or "")
+                floor_text = str(row.get("終末樓層") or "")
+                floors = [int(value) for value in re.findall(r"(\d+)層", floor_text)]
+                if monster_id.isdigit() and floors:
+                    pingxi_tower_floors[int(monster_id)] = floors
     png_dir = site_root / "assets" / "test-media" / "stage-maps"
     webp_dir = site_root / "assets" / "test-media" / "stage-maps-webp"
     png_dir.mkdir(parents=True, exist_ok=True)
     webp_dir.mkdir(parents=True, exist_ok=True)
 
     report = []
-    for stage_id in (347, 348, 393):
+    for stage_id in (15, 347, 348, 393):
         canvas, _ = overlay.compose_stage_map(
             stage_id,
             context,
@@ -173,15 +208,78 @@ def main() -> None:
         map_image.save(webp_dir / f"stage{stage_id:03d}.webp", format="WEBP", quality=88, method=6)
 
         monster_rows = overlay.parse_stage_objects(stage_id, monsters)
+        if stage_id == 15:
+            # Activity countdown and announcement controllers are not visible bosses.
+            monster_rows = [row for row in monster_rows if int(row["id"]) not in (5506, 14910)]
+            old_mpc = args.previous_root / "MAP" / "STAGE015.MPC"
+            old_data = old_mpc.read_bytes()
+            old_start = struct.unpack_from("<I", old_data, 24)[0] + 2
+            old_end = struct.unpack_from("<I", old_data, 32)[0]
+            old_signatures = {
+                (
+                    struct.unpack_from("<H", old_data, offset + 16)[0],
+                    struct.unpack_from("<H", old_data, offset)[0],
+                    struct.unpack_from("<H", old_data, offset + 2)[0],
+                )
+                for offset in range(old_start, min(old_end, len(old_data) - 37), 38)
+            }
+            present = {(int(row["id"]), int(row["x"]), int(row["y"])) for row in monster_rows}
+            current_mpc = args.update_root / "MAP" / "STAGE015.MPC"
+            current_data = current_mpc.read_bytes()
+            current_start = struct.unpack_from("<I", current_data, 24)[0] + 2
+            current_end = struct.unpack_from("<I", current_data, 32)[0]
+            for offset in range(current_start, min(current_end, len(current_data) - 37), 38):
+                x = struct.unpack_from("<H", current_data, offset)[0]
+                y = struct.unpack_from("<H", current_data, offset + 2)[0]
+                monster_id = struct.unpack_from("<H", current_data, offset + 16)[0]
+                signature = (monster_id, x, y)
+                if signature in old_signatures or signature in present or monster_id in (5506, 14910):
+                    continue
+                monster = monsters.get(monster_id)
+                if not monster or not str(monster.get("Pic") or "").isdigit():
+                    continue
+                monster_rows.append(
+                    {
+                        "kind": "monster",
+                        "x": x,
+                        "y": y,
+                        "coord_x": int(round(x / 16)),
+                        "coord_y": int(round(y / 16)),
+                        "id": monster_id,
+                        "pic": int(monster["Pic"]),
+                        "name": str(monster.get("Name") or f"ID {monster_id}"),
+                        "level": int(monster.get("Level") or 0),
+                        "type": str(monster.get("Type") or ""),
+                    }
+                )
+                present.add(signature)
+            monster_rows = [
+                row
+                for row in monster_rows
+                if (int(row["id"]), int(row["x"]), int(row["y"])) in old_signatures
+                or int(row["id"]) in tower_monster_ids
+            ]
+        else:
+            old_signatures = set()
         npc_rows = overlay.parse_stage_npcs(stage_id, npcs)
-        floor_map = FLOORS_171_180 if stage_id == 348 else None
+        floor_map = FLOORS_171_180 if stage_id == 348 else pingxi_tower_floors if stage_id == 15 else None
         entry = {
             "stageId": stage_id,
             "stageName": str(stage_names[stage_id]),
             "image": f"assets/test-media/stage-maps-webp/stage{stage_id:03d}.webp",
             "width": width,
             "height": height,
-            "monsters": [marker(row, scale, floor_map) for row in monster_rows],
+            "monsters": [
+                marker(
+                    row,
+                    scale,
+                    floor_map,
+                    "虛空群魔大遊行"
+                    if stage_id == 15 and (int(row["id"]), int(row["x"]), int(row["y"])) not in old_signatures
+                    else "",
+                )
+                for row in monster_rows
+            ],
             "npcs": [marker(row, scale) for row in npc_rows],
             "scale": scale,
         }
