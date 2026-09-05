@@ -183,32 +183,56 @@ function latestMonstersHTML(limit=260){
  return (monsters||[]).slice().reverse().slice(0,limit).map(m=>`<button type="button" class="resultItem withAsset" data-monster="${esc(m.ID)}">${monsterThumbHTML(m)}<span class="resultText"><div class="rName">${esc(nameOf(m))}</div><div class="rSub">Lv.${esc(m.Level||'')} / ${esc(raceName(m.Type))}${subtypeName(m.Type,m.SubType)?' / '+esc(subtypeName(m.Type,m.SubType)):''} / ID ${esc(m.ID||'')}</div></span></button>`).join('');
 }
 
+function beastRows(){return Array.isArray(window.SZO_BEASTS)?window.SZO_BEASTS:[]}
+function beastByMonsterId(id){return beastRows().filter(row=>String(row.monsterId||'')===String(id||''))}
+function beastStarsHTML(selected){
+ return Array.from({length:9},(_,i)=>i+2).map(star=>`<button type="button" class="beastStarBtn ${Number(selected)===star?'active':''}" onclick="selectBeastStars(${star})">${star}星甕</button>`).join('');
+}
+function beastResultHTML(row,index){
+ const m=(monsters||[]).find(item=>String(item.ID||'')===String(row.monsterId||''));
+ const thumb=m?monsterThumbHTML(m):'';
+ const meta=m?`${esc(raceName(m.Type))}${subtypeName(m.Type,m.SubType)?' / '+esc(subtypeName(m.Type,m.SubType)):''}`:'怪物資料待補';
+ return `<button type="button" class="resultItem withAsset" onclick="showBeastDetail(${index})">${thumb}<span class="resultText"><div class="rName">${esc(row.name)}</div><div class="rSub">${esc(row.stars)}星甕 / ${meta}</div></span></button>`;
+}
+function renderBeastResults(){
+ const box=byId('monsterResultsMain');if(!box)return;
+ const star=Number(window.v88BeastStars||2);
+ const q=String(byId('monsterQMain')?.value||'').trim().toLowerCase();
+ box.innerHTML=beastRows().map((row,index)=>({row,index})).filter(item=>Number(item.row.stars)===star&&(!q||String(item.row.name).toLowerCase().includes(q))).map(item=>beastResultHTML(item.row,item.index)).join('')||'<div class="muted">沒有符合的封獸。</div>';
+}
+function selectBeastStars(star){window.v88BeastStars=Number(star);document.querySelectorAll('.beastStarBtn').forEach(btn=>btn.classList.toggle('active',btn.textContent===`${star}星甕`));renderBeastResults()}
+function setMonsterQueryMode(mode){window.v88MonsterMode=mode==='beast'?'beast':'monster';renderMonsterPage()}
+
 function renderMonsterPage(){
  restoreMonsterSearchState();
- const q=window.v88MonsterQ||'',min=window.v88MonsterMin||'',max=window.v88MonsterMax||'',race=window.v88MonsterRace||'',subtype=window.v88MonsterSubtype||'';
+ const q=window.v88MonsterQ||'',min=window.v88MonsterMin||'',max=window.v88MonsterMax||'',race=window.v88MonsterRace||'',subtype=window.v88MonsterSubtype||'',beastMode=window.v88MonsterMode==='beast';
  if(!hasMonsterData()&&!hasMonsterSearchIndex()&&typeof window.ensureMonsterSearchIndexLoaded==='function'){
   byId('reader').innerHTML='<section class="card monsterSearchPage"><h1>怪物查詢</h1><div class="muted">正在載入怪物搜尋索引，請稍等。</div></section>';
   window.ensureMonsterSearchIndexLoaded().then(ok=>{if(ok)renderMonsterPage();else byId('reader').innerHTML='<section class="card"><h1>怪物查詢</h1><div class="empty">怪物資料載入失敗，請重新整理一次。</div></section>';});
   return;
  }
  byId('reader').innerHTML=`<section class="card monsterSearchPage latestSearchPage"><h1>怪物查詢</h1>
+  <div class="monsterModeSwitch"><button type="button" class="${beastMode?'':'active'}" onclick="setMonsterQueryMode('monster')">查詢怪物</button><button type="button" class="${beastMode?'active':''}" onclick="setMonsterQueryMode('beast')">查詢封獸</button></div>
+  ${beastMode?`<div class="beastStarPicker" aria-label="封甕星級">${beastStarsHTML(window.v88BeastStars||2)}</div>`:''}
   <div class="latestQueryLayout">
     <div class="latestMainPane">
       <div class="kvGrid">
-        <div class="kv"><div class="k">怪物名稱 / ID / 位置 / 種族 / 子分類</div><div class="v"><input id="monsterQMain" placeholder="例如：黃帝、問頂仙龍、蜘蛛精" value="${esc(q)}" oninput="searchMonstersMain()"></div></div>
+        <div class="kv"><div class="k">${beastMode?'封獸名稱':'怪物名稱 / ID / 位置 / 種族 / 子分類'}</div><div class="v"><input id="monsterQMain" placeholder="${beastMode?'例如：影咒獸．垣鹿':'例如：黃帝、問頂仙龍、蜘蛛精'}" value="${esc(q)}" oninput="searchMonstersMain()"></div></div>
+        ${beastMode?'':`
         <div class="kv"><div class="k">種族</div><div class="v"><select id="monsterRaceMain" onchange="searchMonstersMain()">${hasMonsterData()?monsterRaceOptionsHTML(race):monsterIndexRaceOptionsHTML(race)}</select></div></div>
         <div class="kv"><div class="k">子分類</div><div class="v"><select id="monsterSubtypeMain" onchange="searchMonstersMain()">${hasMonsterData()?monsterSubtypeOptionsHTML(subtype,race):monsterIndexSubtypeOptionsHTML(subtype,race)}</select></div></div>
         <div class="kv"><div class="k">最低 Lv</div><div class="v"><input id="monsterMinMain" type="number" value="${esc(min)}" oninput="searchMonstersMain()"></div></div>
         <div class="kv"><div class="k">最高 Lv</div><div class="v"><input id="monsterMaxMain" type="number" value="${esc(max)}" oninput="searchMonstersMain()"></div></div>
+        `}
       </div>
       <div class="itemFilterActions"><button type="button" onclick="clearMonsterSearchFilters()">\u6e05\u7a7a\u7be9\u9078</button></div>
       <div class="results" id="monsterResultsMain"></div>
     </div>
-    <aside class="latestSidePane">
+    ${beastMode?'':`<aside class="latestSidePane">
       <div class="latestSideTitle">最新怪物清單</div>
       <div class="latestSideHint">依 MONSTER_C.INI 原始順序反向顯示，越新的資料越上面。</div>
       <div class="latestList" id="monsterLatestList">${latestMonstersHTML()}</div>
-    </aside>
+    </aside>`}
   </div>
  </section>`;
  startMonsterFullDataLoad();
@@ -221,6 +245,7 @@ function renderMonsterPage(){
 function searchMonstersMain(){
  const q=byId('monsterQMain'); if(!q)return;
  window.v88MonsterQ=q.value;
+ if(window.v88MonsterMode==='beast'){renderBeastResults();return;}
  window.v88MonsterMin=byId('monsterMinMain')?.value||'';
  window.v88MonsterMax=byId('monsterMaxMain')?.value||'';
  window.v88MonsterRace=byId('monsterRaceMain')?.value||'';
@@ -239,6 +264,23 @@ function searchMonstersMain(){
   ensureMonsterSearchLocations().then(ok=>{if(ok&&byId('monsterResultsMain'))searchMonstersMain();});
  }
  box.innerHTML=hasMonsterData()?monsterResultsHTML(filterMonsterList(window.v88MonsterQ,window.v88MonsterMin,window.v88MonsterMax,window.v88MonsterRace,window.v88MonsterSubtype)):monsterIndexResultsHTML(filterMonsterIndexList(window.v88MonsterQ,window.v88MonsterMin,window.v88MonsterMax,window.v88MonsterRace,window.v88MonsterSubtype));
+}
+
+function showBeastDetail(index){
+ const row=beastRows()[Number(index)];if(!row)return;
+ const m=(monsters||[]).find(item=>String(item.ID||'')===String(row.monsterId||''));
+ const hero=m?monsterThumbHTML(m).replace('assetThumb monsterThumb','assetHero monsterHero'):'';
+ const basic=[['怪物名稱',row.name],['星級',`${row.stars}星甕`],['種族',m?raceName(m.Type):'待補'],['子分類',m?subtypeName(m.Type,m.SubType):'待補']];
+ const ability=m?[
+  ['生命',m.HP],['攻擊',row.attack==null?'待補':Math.round(Number(row.attack))],
+  ['防禦',Math.round((Number(m.ExtraDef)||0)+(Number(m.Con)||0)*0.2+(Number(m.Dex)||0)*0.1)],
+  ['術攻',Math.round((Number(m.MagicAttack)||0)+(Number(m.Int)||0)*2.4)],
+  ['術防',Math.round((Number(m.MagicDef)||0)+(Number(m.Int)||0)*0.8)]
+ ]:[['生命','待補'],['攻擊',row.attack==null?'待補':row.attack],['防禦','待補'],['術攻','待補'],['術防','待補']];
+ const stats=m?[['體魄',m.Con],['力量',m.Str],['智慧',m.Int],['靈敏',m.Dex]]:[];
+ const skills=m?[["技能1",monsterSkillText(m.Skill1)],["技能2",monsterSkillText(m.Skill2)],["技能3",monsterSkillText(m.Skill3)],["技能4",monsterSkillText(m.Skill4)]]:(row.skills||[]).map((skill,i)=>[`技能${i+1}`,skill]);
+ byId('reader').innerHTML=`<section class="card monsterCompact"><button class="backBtn" type="button" onclick="renderMonsterPage()">← 返回封獸查詢</button><div class="assetPreviewPanel monsterPreviewPanel"><div class="assetArtPanel">${hero}<h1>${esc(row.name)}</h1><span class="beastTag">封獸 · ${esc(row.stars)}星甕</span></div><div class="assetInfoPanel"><div class="monsterPanel"><h3>怪物資料</h3>${monsterRowsHTML(basic,'monsterDataGrid')}</div><div class="monsterPanel"><h3>能力資訊</h3>${monsterRowsHTML(ability,'monsterStatGrid')}</div></div></div><div class="monsterGrid"><div class="monsterPanel"><h3>四圍</h3>${monsterRowsHTML(stats,'monsterStatGrid')}</div>${skills.some(item=>item[1])?`<div class="monsterPanel monsterSkillPanel"><h3>技能資訊</h3>${monsterRowsHTML(skills,'monsterSkillGrid')}</div>`:''}</div></section>`;
+ window.scrollTo({top:0,behavior:'smooth'});
 }
 
 function clearMonsterSearchFilters(){
@@ -424,10 +466,11 @@ function showMonster(id,skipPush){
  const skillVisible=skills.some(x=>x[1]!==''&&x[1]!==undefined&&x[1]!==null&&String(x[1]).trim()!=='0');
  const breakNote=m.ExtraDef?`<div class="muted" style="margin-top:10px;font-weight:800">${esc(monsterBreakSuggestText(m.ExtraDef))}</div>`:'';
  const hero=monsterThumbHTML(m).replace('assetThumb monsterThumb','assetHero monsterHero');
+ const beastTags=beastByMonsterId(id).map(row=>`<span class="beastTag">封獸 · ${esc(row.stars)}星甕</span>`).join('');
  byId('reader').innerHTML=`<section class="card monsterCompact">
   <button class="backBtn" type="button" onclick="goBackToPrevious()">← 返回怪物查詢</button>
   <div class="assetPreviewPanel monsterPreviewPanel">
-    <div class="assetArtPanel">${hero}<h1>${esc(nameOf(m))}</h1></div>
+    <div class="assetArtPanel">${hero}<h1>${esc(nameOf(m))}</h1>${beastTags}</div>
     <div class="assetInfoPanel">
       <div class="monsterTopActions">
         <button type="button" class="mapJumpBtn" onclick="showMonsterMapLocations('${esc(id)}','${esc(nameOf(m))}')">查看地圖位置<small>顯示出現地圖與點位</small></button>
@@ -454,3 +497,6 @@ window.monsterSkillText=monsterSkillText;
 window.showMonster=showMonster;
 window.showMonsterDropPage=showMonsterDropPage;
 window.showMonsterMapLocations=showMonsterMapLocations;
+window.setMonsterQueryMode=setMonsterQueryMode;
+window.selectBeastStars=selectBeastStars;
+window.showBeastDetail=showBeastDetail;

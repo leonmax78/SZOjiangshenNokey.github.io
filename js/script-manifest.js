@@ -7,7 +7,8 @@ window.SZO_SCRIPT_GROUPS = {
     "data/asset_manifest.bundle.js",
     "js/data/asset-media.js",
     "data/item_series.bundle.js",
-    "data/item_kind.bundle.js"
+    "data/item_kind.bundle.js",
+    "data/beasts.bundle.js"
   ],
   "data_soul": [
     "js/data/soul-data.js"
