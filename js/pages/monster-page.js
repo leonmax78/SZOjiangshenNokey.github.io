@@ -17,7 +17,8 @@ function writeMonsterSearchState(){
    max:window.v88MonsterMax||'',
    race:window.v88MonsterRace||'',
    subtype:window.v88MonsterSubtype||'',
-   withPoints:!!window.v88MonsterWithPoints
+   withPoints:!!window.v88MonsterWithPoints,
+   hideInstances:!!window.v88MonsterHideInstances
   }));
  }catch(e){}
 }
@@ -25,6 +26,7 @@ function writeMonsterSearchState(){
 function restoreMonsterSearchState(){
  const state=readMonsterSearchState();
  if(window.v88MonsterWithPoints===undefined)window.v88MonsterWithPoints=!!state.withPoints;
+ if(window.v88MonsterHideInstances===undefined)window.v88MonsterHideInstances=!!state.hideInstances;
  if(window.v88MonsterQ===undefined || (!window.v88MonsterQ && state.q))window.v88MonsterQ=state.q||'';
  if(window.v88MonsterMin===undefined || (!window.v88MonsterMin && state.min))window.v88MonsterMin=state.min||'';
  if(window.v88MonsterMax===undefined || (!window.v88MonsterMax && state.max))window.v88MonsterMax=state.max||'';
@@ -69,21 +71,35 @@ function monsterSearchIndexRows(){
 }
 function hasMonsterSearchIndex(){return monsterSearchIndexRows().length>0}
 let monsterSpawnIds=null;
+let monsterInstanceOnlyIds=null;
 let monsterSpawnPromise=null;
 function ensureMonsterSpawnIds(){
  if(monsterSpawnIds)return Promise.resolve(monsterSpawnIds);
  if(!monsterSpawnPromise){
-  monsterSpawnPromise=fetch('data/stage_maps.json?v='+encodeURIComponent(document.body?.dataset?.version||'dev'),{cache:'force-cache'})
-   .then(res=>{if(!res.ok)throw new Error('Map data load failed');return res.json();})
-   .then(data=>{
-    if(!Array.isArray(data.stages))throw new Error('Invalid map data');
-    monsterSpawnIds=new Set(data.stages.flatMap(stage=>(stage.monsters||[]).filter(m=>m.id!=null&&Number.isFinite(m.x)&&Number.isFinite(m.y)).map(m=>String(m.id))));
+  monsterSpawnPromise=Promise.all(['stage_maps','monster_map_categories'].map(key=>fetch('data/'+key+'.json?v='+encodeURIComponent(document.body?.dataset?.version||'dev'),{cache:'force-cache'})
+   .then(res=>{if(!res.ok)throw new Error('Map data load failed');return res.json();})))
+   .then(([data,categories])=>{
+    if(!Array.isArray(data.stages)||!Array.isArray(categories.stages))throw new Error('Invalid map data');
+    const excluded=new Set(categories.stages.map(s=>Number(s.stageId)));
+    const all=new Set(),inside=new Set(),outside=new Set();
+    for(const stage of data.stages){
+     for(const m of stage.monsters||[]){
+      if(m.id==null||!Number.isFinite(m.x)||!Number.isFinite(m.y))continue;
+      const id=String(m.id);all.add(id);
+      (excluded.has(Number(stage.stageId))?inside:outside).add(id);
+     }
+    }
+    monsterInstanceOnlyIds=new Set([...inside].filter(id=>!outside.has(id)));
+    monsterSpawnIds=all;
     return monsterSpawnIds;
    }).finally(()=>{monsterSpawnPromise=null;});
  }
  return monsterSpawnPromise;
 }
-function monsterPassesPointFilter(id){return !window.v88MonsterWithPoints||!!monsterSpawnIds?.has(String(id));}
+function monsterPassesPointFilter(id){
+ return (!window.v88MonsterWithPoints||!!monsterSpawnIds?.has(String(id)))&&
+  (!window.v88MonsterHideInstances||!!monsterInstanceOnlyIds&&!monsterInstanceOnlyIds.has(String(id)));
+}
 let monsterSearchLocationPromise=null;
 function ensureMonsterSearchLocations(){
  if(monsterLocations&&Object.keys(monsterLocations).length)return Promise.resolve(true);
@@ -199,7 +215,7 @@ function monsterResultsHTML(arr){
 }
 
 function latestMonstersHTML(limit=260){
- if(window.v88MonsterWithPoints&&!monsterSpawnIds)return '<div class="muted">地圖點位資料載入中。</div>';
+ if((window.v88MonsterWithPoints||window.v88MonsterHideInstances)&&!monsterSpawnIds)return '<div class="muted">地圖點位資料載入中。</div>';
  if(!hasMonsterData())return '<div class="muted">資料載入中，請稍等。</div>';
  return (monsters||[]).filter(m=>monsterPassesPointFilter(m.ID)).reverse().slice(0,limit).map(m=>`<button type="button" class="resultItem withAsset" data-monster="${esc(m.ID)}">${monsterThumbHTML(m)}<span class="resultText"><div class="rName">${esc(nameOf(m))}</div><div class="rSub">Lv.${esc(m.Level||'')} / ${esc(raceName(m.Type))}${subtypeName(m.Type,m.SubType)?' / '+esc(subtypeName(m.Type,m.SubType)):''} / ID ${esc(m.ID||'')}</div></span></button>`).join('');
 }
@@ -248,7 +264,7 @@ function renderMonsterPage(){
         <div class="kv"><div class="k">最高 Lv</div><div class="v"><input id="monsterMaxMain" type="number" value="${esc(max)}" oninput="searchMonstersMain()"></div></div>
         `}
       </div>
-      <div class="itemFilterActions">${beastMode?'':`<label class="monsterPointFilter"><input id="monsterWithPoints" type="checkbox" ${window.v88MonsterWithPoints?'checked':''} onchange="searchMonstersMain()">僅顯示有地圖點位</label>`}<button type="button" onclick="clearMonsterSearchFilters()">\u6e05\u7a7a\u7be9\u9078</button></div>
+      <div class="itemFilterActions">${beastMode?'':`<label class="monsterPointFilter"><input id="monsterWithPoints" type="checkbox" ${window.v88MonsterWithPoints?'checked':''} onchange="searchMonstersMain()">僅顯示有地圖點位</label><label class="monsterPointFilter"><input id="monsterHideInstances" type="checkbox" ${window.v88MonsterHideInstances?'checked':''} onchange="searchMonstersMain()">屏蔽七寶、副本怪物</label>`}<button type="button" onclick="clearMonsterSearchFilters()">\u6e05\u7a7a\u7be9\u9078</button></div>
       <div class="results" id="monsterResultsMain"></div>
     </div>
     ${beastMode?'':`<aside class="latestSidePane">
@@ -270,6 +286,7 @@ function searchMonstersMain(){
  window.v88MonsterQ=q.value;
  if(window.v88MonsterMode==='beast'){renderBeastResults();return;}
  window.v88MonsterWithPoints=!!byId('monsterWithPoints')?.checked;
+ window.v88MonsterHideInstances=!!byId('monsterHideInstances')?.checked;
  window.v88MonsterMin=byId('monsterMinMain')?.value||'';
  window.v88MonsterMax=byId('monsterMaxMain')?.value||'';
  window.v88MonsterRace=byId('monsterRaceMain')?.value||'';
@@ -284,10 +301,10 @@ function searchMonstersMain(){
  const box=byId('monsterResultsMain'); if(!box)return;
  const latest=byId('monsterLatestList');
  if(latest)latest.innerHTML=latestMonstersHTML();
- if(window.v88MonsterWithPoints&&!monsterSpawnIds){
+ if((window.v88MonsterWithPoints||window.v88MonsterHideInstances)&&!monsterSpawnIds){
   box.innerHTML='<div class="muted">地圖點位資料載入中。</div>';
   ensureMonsterSpawnIds().then(()=>{if(byId('monsterResultsMain'))searchMonstersMain();}).catch(()=>{
-   if(window.v88MonsterWithPoints&&window.v88MonsterMode!=='beast'&&byId('monsterResultsMain')===box){
+   if((window.v88MonsterWithPoints||window.v88MonsterHideInstances)&&window.v88MonsterMode!=='beast'&&byId('monsterResultsMain')===box){
     box.innerHTML='<div class="muted">地圖點位載入失敗。</div><button type="button" onclick="searchMonstersMain()">重試</button>';
     if(latest)latest.innerHTML='<div class="muted">地圖點位載入失敗。</div>';
    }
@@ -295,7 +312,7 @@ function searchMonstersMain(){
   return;
  }
  const hasFilter=!!(String(window.v88MonsterQ||'').trim()||String(window.v88MonsterMin||'').trim()||String(window.v88MonsterMax||'').trim()||String(window.v88MonsterRace||'').trim()||String(window.v88MonsterSubtype||'').trim());
- if(!hasFilter&&!window.v88MonsterWithPoints){box.innerHTML='';return;}
+ if(!hasFilter&&!window.v88MonsterWithPoints&&!window.v88MonsterHideInstances){box.innerHTML='';return;}
  if(String(window.v88MonsterQ||'').trim()&&!(monsterLocations&&Object.keys(monsterLocations).length)){
   ensureMonsterSearchLocations().then(ok=>{if(ok&&byId('monsterResultsMain'))searchMonstersMain();});
  }
@@ -331,6 +348,8 @@ async function showBeastCaptureLocation(index,locationIndex){
 }
 
 function clearMonsterSearchFilters(){
+ window.v88MonsterHideInstances=false;
+ const instances=byId('monsterHideInstances');if(instances)instances.checked=false;
  window.v88MonsterWithPoints=false;
  const points=byId('monsterWithPoints');if(points)points.checked=false;
  window.v88MonsterQ='';

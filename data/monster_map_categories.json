@@ -1,0 +1,985 @@
+{
+  "version": 1,
+  "stages": [
+    {
+      "stageId": 77,
+      "stageName": "盤蛇洞",
+      "category": "dungeon",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 20,
+        "groupMission": 15002,
+        "limit": 1
+      },
+      "fivePlayerEvidence": []
+    },
+    {
+      "stageId": 101,
+      "stageName": "龍宮八層一隅",
+      "category": "dungeon",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 10,
+        "groupMission": 0,
+        "limit": 0
+      },
+      "fivePlayerEvidence": []
+    },
+    {
+      "stageId": 102,
+      "stageName": "龍宮八層廣場",
+      "category": "dungeon",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 20,
+        "groupMission": 15003,
+        "limit": 1
+      },
+      "fivePlayerEvidence": []
+    },
+    {
+      "stageId": 120,
+      "stageName": "黃龍秘殿",
+      "category": "dungeon",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 30,
+        "groupMission": 15005,
+        "limit": 1
+      },
+      "fivePlayerEvidence": []
+    },
+    {
+      "stageId": 121,
+      "stageName": "修羅級黃龍秘殿",
+      "category": "dungeon",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 30,
+        "groupMission": 15006,
+        "limit": 1
+      },
+      "fivePlayerEvidence": []
+    },
+    {
+      "stageId": 133,
+      "stageName": "極七寶仙境　壹",
+      "category": "qibao",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 0,
+        "groupMission": 0,
+        "limit": null
+      },
+      "fivePlayerEvidence": []
+    },
+    {
+      "stageId": 136,
+      "stageName": "極七寶仙境　貳",
+      "category": "qibao",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 0,
+        "groupMission": 0,
+        "limit": null
+      },
+      "fivePlayerEvidence": []
+    },
+    {
+      "stageId": 137,
+      "stageName": "天戮魔殿",
+      "category": "dungeon",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 20,
+        "groupMission": 15012,
+        "limit": 1
+      },
+      "fivePlayerEvidence": []
+    },
+    {
+      "stageId": 142,
+      "stageName": "森羅閻殿",
+      "category": "dungeon",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 20,
+        "groupMission": 15011,
+        "limit": 1
+      },
+      "fivePlayerEvidence": [
+        {
+          "source": "STGMSG191.INI",
+          "line": 3798,
+          "text": "Msg = 哈、哈哈…那我就放心交給你們了！還有，行事小心的無界閻羅，只允許讓【組滿五人的隊伍】進入森羅閻殿當中，企圖阻止我們利用優勢人力進攻…你千萬記得要找齊可以信賴的4名同伴，共破閻殿！"
+        }
+      ]
+    },
+    {
+      "stageId": 186,
+      "stageName": "七寶仙境　壹",
+      "category": "qibao",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 0,
+        "groupMission": 0,
+        "limit": null
+      },
+      "fivePlayerEvidence": []
+    },
+    {
+      "stageId": 187,
+      "stageName": "七寶仙境　貳",
+      "category": "qibao",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 0,
+        "groupMission": 0,
+        "limit": null
+      },
+      "fivePlayerEvidence": []
+    },
+    {
+      "stageId": 188,
+      "stageName": "七寶仙境　參",
+      "category": "qibao",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 0,
+        "groupMission": 0,
+        "limit": null
+      },
+      "fivePlayerEvidence": []
+    },
+    {
+      "stageId": 189,
+      "stageName": "絕七寶仙境　壹",
+      "category": "qibao",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 0,
+        "groupMission": 0,
+        "limit": null
+      },
+      "fivePlayerEvidence": []
+    },
+    {
+      "stageId": 200,
+      "stageName": "極七寶仙境　參",
+      "category": "qibao",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 0,
+        "groupMission": 0,
+        "limit": null
+      },
+      "fivePlayerEvidence": []
+    },
+    {
+      "stageId": 201,
+      "stageName": "神七寶仙境　貳",
+      "category": "qibao",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 0,
+        "groupMission": 0,
+        "limit": null
+      },
+      "fivePlayerEvidence": []
+    },
+    {
+      "stageId": 211,
+      "stageName": "天授之間",
+      "category": "dungeon",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 20,
+        "groupMission": 15013,
+        "limit": 1
+      },
+      "fivePlayerEvidence": [
+        {
+          "source": "STGMSG203.INI",
+          "line": 1135,
+          "text": "Msg = 『天授之間』入口設有強大結界，看來唯有【集合五人之力組成隊伍】，才有辦法進入！"
+        }
+      ]
+    },
+    {
+      "stageId": 212,
+      "stageName": "神煉之間",
+      "category": "dungeon",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 20,
+        "groupMission": 15014,
+        "limit": 1
+      },
+      "fivePlayerEvidence": [
+        {
+          "source": "STGMSG203.INI",
+          "line": 1140,
+          "text": "Msg = 『神煉之間』入口設有強大結界，看來唯有【集合五人之力組成隊伍】，才有辦法進入！"
+        }
+      ]
+    },
+    {
+      "stageId": 222,
+      "stageName": "飛昇大廳",
+      "category": "dungeon",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 20,
+        "groupMission": 15015,
+        "limit": 1
+      },
+      "fivePlayerEvidence": [
+        {
+          "source": "STGMSG214.INI",
+          "line": 3780,
+          "text": "Msg = 『飛昇大廳』入口設有強大結界，看來唯有【集合五人之力組成隊伍】，才有辦法進入！"
+        },
+        {
+          "source": "STGMSG214.INI",
+          "line": 3868,
+          "text": "Msg = 修羅級『飛昇大廳』入口設有強大結界，看來唯有【集合五人之力組成隊伍】，才有辦法進入！"
+        },
+        {
+          "source": "STGMSG214.INI",
+          "line": 9993,
+          "text": "Msg = 『飛昇大廳』入口設有強大結界，看來唯有【集合五人之力組成隊伍】，才有辦法進入！"
+        },
+        {
+          "source": "STGMSG214.INI",
+          "line": 10073,
+          "text": "Msg = 『修羅級飛昇大廳』入口設有強大結界，看來唯有【集合五人之力組成隊伍】，才有辦法進入！"
+        },
+        {
+          "source": "STGMSG228.INI",
+          "line": 1663,
+          "text": "Msg = 修羅級『飛昇大廳』入口設有強大結界，看來唯有【集合五人之力組成隊伍】，才有辦法進入！"
+        }
+      ]
+    },
+    {
+      "stageId": 223,
+      "stageName": "真七寶仙境　壹",
+      "category": "qibao",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 0,
+        "groupMission": 0,
+        "limit": null
+      },
+      "fivePlayerEvidence": []
+    },
+    {
+      "stageId": 224,
+      "stageName": "真七寶仙境　貳",
+      "category": "qibao",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 0,
+        "groupMission": 0,
+        "limit": null
+      },
+      "fivePlayerEvidence": []
+    },
+    {
+      "stageId": 225,
+      "stageName": "真七寶仙境　參",
+      "category": "qibao",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 0,
+        "groupMission": 0,
+        "limit": null
+      },
+      "fivePlayerEvidence": []
+    },
+    {
+      "stageId": 226,
+      "stageName": "絕七寶仙境　貳",
+      "category": "qibao",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 0,
+        "groupMission": 0,
+        "limit": null
+      },
+      "fivePlayerEvidence": []
+    },
+    {
+      "stageId": 228,
+      "stageName": "修羅級飛昇大廳",
+      "category": "dungeon",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 20,
+        "groupMission": 15016,
+        "limit": 1
+      },
+      "fivePlayerEvidence": [
+        {
+          "source": "STGMSG214.INI",
+          "line": 3780,
+          "text": "Msg = 『飛昇大廳』入口設有強大結界，看來唯有【集合五人之力組成隊伍】，才有辦法進入！"
+        },
+        {
+          "source": "STGMSG214.INI",
+          "line": 3868,
+          "text": "Msg = 修羅級『飛昇大廳』入口設有強大結界，看來唯有【集合五人之力組成隊伍】，才有辦法進入！"
+        },
+        {
+          "source": "STGMSG214.INI",
+          "line": 9993,
+          "text": "Msg = 『飛昇大廳』入口設有強大結界，看來唯有【集合五人之力組成隊伍】，才有辦法進入！"
+        },
+        {
+          "source": "STGMSG214.INI",
+          "line": 10073,
+          "text": "Msg = 『修羅級飛昇大廳』入口設有強大結界，看來唯有【集合五人之力組成隊伍】，才有辦法進入！"
+        },
+        {
+          "source": "STGMSG228.INI",
+          "line": 1663,
+          "text": "Msg = 修羅級『飛昇大廳』入口設有強大結界，看來唯有【集合五人之力組成隊伍】，才有辦法進入！"
+        }
+      ]
+    },
+    {
+      "stageId": 237,
+      "stageName": "神臨之地",
+      "category": "dungeon",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 20,
+        "groupMission": 15017,
+        "limit": 1
+      },
+      "fivePlayerEvidence": [
+        {
+          "source": "STGMSG228.INI",
+          "line": 1673,
+          "text": "Msg = 修羅級『神臨之地』入口遭人設置強大結界加以干涉通行，似乎唯有【集合五人之力組成隊伍】，才能強行突破結界並入內一戰！"
+        },
+        {
+          "source": "STGMSG228.INI",
+          "line": 1732,
+          "text": "Msg = 『神臨之地』入口遭人設置強大結界加以干涉通行，似乎唯有【集合五人之力組成隊伍】，才能強行突破結界並入內一戰！"
+        }
+      ]
+    },
+    {
+      "stageId": 239,
+      "stageName": "修羅級神臨之地",
+      "category": "dungeon",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 20,
+        "groupMission": 15018,
+        "limit": 1
+      },
+      "fivePlayerEvidence": [
+        {
+          "source": "STGMSG228.INI",
+          "line": 1673,
+          "text": "Msg = 修羅級『神臨之地』入口遭人設置強大結界加以干涉通行，似乎唯有【集合五人之力組成隊伍】，才能強行突破結界並入內一戰！"
+        },
+        {
+          "source": "STGMSG228.INI",
+          "line": 1732,
+          "text": "Msg = 『神臨之地』入口遭人設置強大結界加以干涉通行，似乎唯有【集合五人之力組成隊伍】，才能強行突破結界並入內一戰！"
+        }
+      ]
+    },
+    {
+      "stageId": 248,
+      "stageName": "九霄天樓",
+      "category": "dungeon",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 20,
+        "groupMission": 15019,
+        "limit": 1
+      },
+      "fivePlayerEvidence": [
+        {
+          "source": "STGMSG240.INI",
+          "line": 1370,
+          "text": "Msg = 『九霄天樓』正門前設下的仙脈大陣，需【集合五人之力組成隊伍】，才有足夠的生氣將陣力引至六道聖獸印上，以印代劫！先設法湊齊同伴吧！"
+        },
+        {
+          "source": "STGMSG240.INI",
+          "line": 1536,
+          "text": "Msg = 修羅級『九霄天樓』正門前設下的仙脈大陣，需【集合五人之力組成隊伍】，才有足夠的生氣將陣力引至六道聖獸印上，以印代劫！先設法湊齊同伴吧！"
+        },
+        {
+          "source": "STGMSG240.INI",
+          "line": 4978,
+          "text": "Msg = 好……完成了！只要攜帶此印，且組成五人隊伍，就能不受影響地通過仙脈大陣進入九霄天樓了！但每回進入天樓，六道聖獸印即會因帶你凡軀承受陣力而灰化，如想再闖一次則得重新製作一個……但願你此去一切順利！"
+        },
+        {
+          "source": "STGMSG240.INI",
+          "line": 4993,
+          "text": "Msg = 好……完成了！只要攜帶此印，且組成五人隊伍，就能不受影響地通過仙脈大陣進入九霄天樓了！但每回進入天樓，六道聖獸印即會因帶你凡軀承受陣力而灰化，如想再闖一次則得重新製作一個……但願你此去一切順利！"
+        }
+      ]
+    },
+    {
+      "stageId": 249,
+      "stageName": "修羅級九霄天樓",
+      "category": "dungeon",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 20,
+        "groupMission": 15020,
+        "limit": 1
+      },
+      "fivePlayerEvidence": [
+        {
+          "source": "STGMSG240.INI",
+          "line": 1370,
+          "text": "Msg = 『九霄天樓』正門前設下的仙脈大陣，需【集合五人之力組成隊伍】，才有足夠的生氣將陣力引至六道聖獸印上，以印代劫！先設法湊齊同伴吧！"
+        },
+        {
+          "source": "STGMSG240.INI",
+          "line": 1536,
+          "text": "Msg = 修羅級『九霄天樓』正門前設下的仙脈大陣，需【集合五人之力組成隊伍】，才有足夠的生氣將陣力引至六道聖獸印上，以印代劫！先設法湊齊同伴吧！"
+        },
+        {
+          "source": "STGMSG240.INI",
+          "line": 4978,
+          "text": "Msg = 好……完成了！只要攜帶此印，且組成五人隊伍，就能不受影響地通過仙脈大陣進入九霄天樓了！但每回進入天樓，六道聖獸印即會因帶你凡軀承受陣力而灰化，如想再闖一次則得重新製作一個……但願你此去一切順利！"
+        },
+        {
+          "source": "STGMSG240.INI",
+          "line": 4993,
+          "text": "Msg = 好……完成了！只要攜帶此印，且組成五人隊伍，就能不受影響地通過仙脈大陣進入九霄天樓了！但每回進入天樓，六道聖獸印即會因帶你凡軀承受陣力而灰化，如想再闖一次則得重新製作一個……但願你此去一切順利！"
+        }
+      ]
+    },
+    {
+      "stageId": 258,
+      "stageName": "無限鬥界",
+      "category": "dungeon",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 20,
+        "groupMission": 15021,
+        "limit": 1
+      },
+      "fivePlayerEvidence": [
+        {
+          "source": "STGMSG240.INI",
+          "line": 1592,
+          "text": "Msg = 『無限鬥界』之進入點存在於變幻莫測的時流空間當中，需【集合五人之力組成隊伍】，再配合四殿祭錫，才有辦法暫時開啟正確通路讓大家入內…當務之急還是得先湊齊同伴！"
+        },
+        {
+          "source": "STGMSG240.INI",
+          "line": 1673,
+          "text": "Msg = 修羅級『無限鬥界』之進入點存在於變幻莫測的時流空間當中，需【集合五人之力組成隊伍】，再配合四殿祭錫各3枚，才有辦法暫時開啟正確通路讓大家入內…當務之急還是得先湊齊同伴！"
+        },
+        {
+          "source": "STGMSG240.INI",
+          "line": 14819,
+          "text": "Msg = 如今，進入時之聖城道路，已由紀元裂片鋪設完成，子僅需再準備「龍殿祭錫」、「虎殿祭錫」、「雀殿祭錫」、「玄殿祭錫」各一，並組滿五人隊伍合力剖開時流沖力，即可進入『無限鬥界』！"
+        },
+        {
+          "source": "STGMSG240.INI",
+          "line": 14849,
+          "text": "Msg = 反向業力之王，以摩羅經典中對「業」之諧音【卡馬】為名，聚集無數業力所化之妖魔，持續異化時之聖城！而進入時之聖城道路已由紀元裂片鋪設完成，子僅需再準備「龍殿祭錫」、「虎殿祭錫」、「雀殿祭錫」、「玄殿祭錫」各一，並組滿五人隊伍合力剖開時流沖力，即可進入『無限鬥界』！"
+        }
+      ]
+    },
+    {
+      "stageId": 259,
+      "stageName": "修羅級無限鬥界",
+      "category": "dungeon",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 20,
+        "groupMission": 15022,
+        "limit": 1
+      },
+      "fivePlayerEvidence": [
+        {
+          "source": "STGMSG240.INI",
+          "line": 1592,
+          "text": "Msg = 『無限鬥界』之進入點存在於變幻莫測的時流空間當中，需【集合五人之力組成隊伍】，再配合四殿祭錫，才有辦法暫時開啟正確通路讓大家入內…當務之急還是得先湊齊同伴！"
+        },
+        {
+          "source": "STGMSG240.INI",
+          "line": 1673,
+          "text": "Msg = 修羅級『無限鬥界』之進入點存在於變幻莫測的時流空間當中，需【集合五人之力組成隊伍】，再配合四殿祭錫各3枚，才有辦法暫時開啟正確通路讓大家入內…當務之急還是得先湊齊同伴！"
+        },
+        {
+          "source": "STGMSG240.INI",
+          "line": 14819,
+          "text": "Msg = 如今，進入時之聖城道路，已由紀元裂片鋪設完成，子僅需再準備「龍殿祭錫」、「虎殿祭錫」、「雀殿祭錫」、「玄殿祭錫」各一，並組滿五人隊伍合力剖開時流沖力，即可進入『無限鬥界』！"
+        },
+        {
+          "source": "STGMSG240.INI",
+          "line": 14849,
+          "text": "Msg = 反向業力之王，以摩羅經典中對「業」之諧音【卡馬】為名，聚集無數業力所化之妖魔，持續異化時之聖城！而進入時之聖城道路已由紀元裂片鋪設完成，子僅需再準備「龍殿祭錫」、「虎殿祭錫」、「雀殿祭錫」、「玄殿祭錫」各一，並組滿五人隊伍合力剖開時流沖力，即可進入『無限鬥界』！"
+        }
+      ]
+    },
+    {
+      "stageId": 272,
+      "stageName": "魔君天都",
+      "category": "dungeon",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 20,
+        "groupMission": 15023,
+        "limit": 1
+      },
+      "fivePlayerEvidence": [
+        {
+          "source": "STGMSG240.INI",
+          "line": 36194,
+          "text": "Msg = 『魔君天都』正門前佈下血氣衝天的妖邪結界，需【集合五人之力組成隊伍】，方可凝聚充足仙氣突破結界！先想辦法去招募更多同伴吧！"
+        },
+        {
+          "source": "STGMSG240.INI",
+          "line": 36301,
+          "text": "Msg = 修羅級『魔君天都』正門前佈下血氣衝天的妖邪結界，需【集合五人之力組成隊伍】，方可凝聚充足仙氣突破結界！先想辦法去招募更多同伴吧！"
+        }
+      ]
+    },
+    {
+      "stageId": 273,
+      "stageName": "修羅級魔君天都",
+      "category": "dungeon",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 20,
+        "groupMission": 15024,
+        "limit": 1
+      },
+      "fivePlayerEvidence": [
+        {
+          "source": "STGMSG240.INI",
+          "line": 36194,
+          "text": "Msg = 『魔君天都』正門前佈下血氣衝天的妖邪結界，需【集合五人之力組成隊伍】，方可凝聚充足仙氣突破結界！先想辦法去招募更多同伴吧！"
+        },
+        {
+          "source": "STGMSG240.INI",
+          "line": 36301,
+          "text": "Msg = 修羅級『魔君天都』正門前佈下血氣衝天的妖邪結界，需【集合五人之力組成隊伍】，方可凝聚充足仙氣突破結界！先想辦法去招募更多同伴吧！"
+        }
+      ]
+    },
+    {
+      "stageId": 274,
+      "stageName": "絕七寶仙境　參",
+      "category": "qibao",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 0,
+        "groupMission": 0,
+        "limit": null
+      },
+      "fivePlayerEvidence": []
+    },
+    {
+      "stageId": 281,
+      "stageName": "破滅之源",
+      "category": "dungeon",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 20,
+        "groupMission": 15025,
+        "limit": 1
+      },
+      "fivePlayerEvidence": [
+        {
+          "source": "STGMSG240.INI",
+          "line": 36581,
+          "text": "Msg = 『破滅之源』入口仍充塞著洶湧的虛空能量，需【集合五人之力組成隊伍】，才能凝聚充足仙氣、破開虛空逆流！先想辦法去招募更多同伴吧！"
+        },
+        {
+          "source": "STGMSG240.INI",
+          "line": 36892,
+          "text": "Msg = 修羅級『破滅之源』入口仍充塞著洶湧的虛空能量，需【集合五人之力組成隊伍】，才能凝聚充足仙氣、破開虛空逆流！先想辦法去招募更多同伴吧！"
+        },
+        {
+          "source": "STGMSG240.INI",
+          "line": 50104,
+          "text": "Msg = 把握所餘不多時間，組成五人隊伍攻進虛空之核心『破滅之源』罷！令虛空渾沌勢力見證，何謂人子之勇氣！"
+        },
+        {
+          "source": "STGMSG240.INI",
+          "line": 50120,
+          "text": "Msg = 神州天星啊！虛空之末，將有終極挑戰，等待你為蒼生黎民解除滅世之危！於『不解迴路』東北盡處，護守虛空中核之障壁已破，此將為星者挑戰虛空主宰之大好良機…把握所餘不多時間，組成五人隊伍攻進虛空之核心『破滅之源』罷！令虛空渾沌勢力見證，何謂人子之勇氣！"
+        }
+      ]
+    },
+    {
+      "stageId": 283,
+      "stageName": "修羅級破滅之源",
+      "category": "dungeon",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 20,
+        "groupMission": 15026,
+        "limit": 1
+      },
+      "fivePlayerEvidence": [
+        {
+          "source": "STGMSG240.INI",
+          "line": 36581,
+          "text": "Msg = 『破滅之源』入口仍充塞著洶湧的虛空能量，需【集合五人之力組成隊伍】，才能凝聚充足仙氣、破開虛空逆流！先想辦法去招募更多同伴吧！"
+        },
+        {
+          "source": "STGMSG240.INI",
+          "line": 36892,
+          "text": "Msg = 修羅級『破滅之源』入口仍充塞著洶湧的虛空能量，需【集合五人之力組成隊伍】，才能凝聚充足仙氣、破開虛空逆流！先想辦法去招募更多同伴吧！"
+        },
+        {
+          "source": "STGMSG240.INI",
+          "line": 50104,
+          "text": "Msg = 把握所餘不多時間，組成五人隊伍攻進虛空之核心『破滅之源』罷！令虛空渾沌勢力見證，何謂人子之勇氣！"
+        },
+        {
+          "source": "STGMSG240.INI",
+          "line": 50120,
+          "text": "Msg = 神州天星啊！虛空之末，將有終極挑戰，等待你為蒼生黎民解除滅世之危！於『不解迴路』東北盡處，護守虛空中核之障壁已破，此將為星者挑戰虛空主宰之大好良機…把握所餘不多時間，組成五人隊伍攻進虛空之核心『破滅之源』罷！令虛空渾沌勢力見證，何謂人子之勇氣！"
+        }
+      ]
+    },
+    {
+      "stageId": 295,
+      "stageName": "超七寶仙境　壹",
+      "category": "qibao",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 0,
+        "groupMission": 0,
+        "limit": null
+      },
+      "fivePlayerEvidence": []
+    },
+    {
+      "stageId": 296,
+      "stageName": "超七寶仙境　貳",
+      "category": "qibao",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 0,
+        "groupMission": 0,
+        "limit": null
+      },
+      "fivePlayerEvidence": []
+    },
+    {
+      "stageId": 297,
+      "stageName": "超七寶仙境　參",
+      "category": "qibao",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 0,
+        "groupMission": 0,
+        "limit": null
+      },
+      "fivePlayerEvidence": []
+    },
+    {
+      "stageId": 298,
+      "stageName": "神七寶仙境　參",
+      "category": "qibao",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 0,
+        "groupMission": 0,
+        "limit": null
+      },
+      "fivePlayerEvidence": []
+    },
+    {
+      "stageId": 299,
+      "stageName": "絕七寶仙境　肆",
+      "category": "qibao",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 0,
+        "groupMission": 0,
+        "limit": null
+      },
+      "fivePlayerEvidence": []
+    },
+    {
+      "stageId": 300,
+      "stageName": "虛空大秘境",
+      "category": "dungeon",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 95,
+        "groupMission": 15004,
+        "limit": 1
+      },
+      "fivePlayerEvidence": []
+    },
+    {
+      "stageId": 308,
+      "stageName": "神王金字塔",
+      "category": "dungeon",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 30,
+        "groupMission": 15027,
+        "limit": 1
+      },
+      "fivePlayerEvidence": [
+        {
+          "source": "STGMSG128.INI",
+          "line": 2701,
+          "text": "Msg = 『神王金字塔』門前邪咒即使有冥府之書破解，仍需要更多的生命力量來完全壓制…【集合五人之力組成隊伍】是最佳的凝聚生命力量做法，先想辦法去招募更多同伴加入隊伍吧！"
+        },
+        {
+          "source": "STGMSG128.INI",
+          "line": 4816,
+          "text": "Msg = 『修羅級神王金字塔』門前邪咒即使有冥府之書破解，仍需要更多的生命力量來完全壓制…【集合五人之力組成隊伍】是最佳的凝聚生命力量做法，先想辦法去招募更多同伴加入隊伍吧！"
+        }
+      ]
+    },
+    {
+      "stageId": 309,
+      "stageName": "修羅級神王金字塔",
+      "category": "dungeon",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 30,
+        "groupMission": 15028,
+        "limit": 1
+      },
+      "fivePlayerEvidence": [
+        {
+          "source": "STGMSG128.INI",
+          "line": 2701,
+          "text": "Msg = 『神王金字塔』門前邪咒即使有冥府之書破解，仍需要更多的生命力量來完全壓制…【集合五人之力組成隊伍】是最佳的凝聚生命力量做法，先想辦法去招募更多同伴加入隊伍吧！"
+        },
+        {
+          "source": "STGMSG128.INI",
+          "line": 4816,
+          "text": "Msg = 『修羅級神王金字塔』門前邪咒即使有冥府之書破解，仍需要更多的生命力量來完全壓制…【集合五人之力組成隊伍】是最佳的凝聚生命力量做法，先想辦法去招募更多同伴加入隊伍吧！"
+        }
+      ]
+    },
+    {
+      "stageId": 323,
+      "stageName": "五鷹閣",
+      "category": "dungeon",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 30,
+        "groupMission": 15007,
+        "limit": 1
+      },
+      "fivePlayerEvidence": []
+    },
+    {
+      "stageId": 324,
+      "stageName": "修羅級五鷹閣",
+      "category": "dungeon",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 30,
+        "groupMission": 15008,
+        "limit": 1
+      },
+      "fivePlayerEvidence": []
+    },
+    {
+      "stageId": 337,
+      "stageName": "玉旭之巔",
+      "category": "dungeon",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 30,
+        "groupMission": 15009,
+        "limit": 1
+      },
+      "fivePlayerEvidence": []
+    },
+    {
+      "stageId": 338,
+      "stageName": "修羅級玉旭之巔",
+      "category": "dungeon",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 30,
+        "groupMission": 15010,
+        "limit": 1
+      },
+      "fivePlayerEvidence": []
+    },
+    {
+      "stageId": 339,
+      "stageName": "神七寶仙境　肆",
+      "category": "qibao",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 0,
+        "groupMission": 0,
+        "limit": null
+      },
+      "fivePlayerEvidence": []
+    },
+    {
+      "stageId": 356,
+      "stageName": "帝七寶仙境　壹",
+      "category": "qibao",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 0,
+        "groupMission": 0,
+        "limit": null
+      },
+      "fivePlayerEvidence": []
+    },
+    {
+      "stageId": 357,
+      "stageName": "帝七寶仙境　貳",
+      "category": "qibao",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 0,
+        "groupMission": 0,
+        "limit": null
+      },
+      "fivePlayerEvidence": []
+    },
+    {
+      "stageId": 358,
+      "stageName": "帝七寶仙境　參",
+      "category": "qibao",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 0,
+        "groupMission": 0,
+        "limit": null
+      },
+      "fivePlayerEvidence": []
+    },
+    {
+      "stageId": 359,
+      "stageName": "帝七寶仙境　肆",
+      "category": "qibao",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 0,
+        "groupMission": 0,
+        "limit": null
+      },
+      "fivePlayerEvidence": []
+    },
+    {
+      "stageId": 360,
+      "stageName": "神七寶仙境　壹",
+      "category": "qibao",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 0,
+        "groupMission": 0,
+        "limit": null
+      },
+      "fivePlayerEvidence": []
+    },
+    {
+      "stageId": 368,
+      "stageName": "蛇眼城",
+      "category": "dungeon",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 30,
+        "groupMission": 15029,
+        "limit": 1
+      },
+      "fivePlayerEvidence": [
+        {
+          "source": "STGMSG145.INI",
+          "line": 6266,
+          "text": "Msg = 孫子兵法有云，勝兵先勝而後求戰，就算認定蛇眼星氣勢已竭，你亦該組齊修為夠高的五人隊伍，再闖蛇眼城，以免重蹈臨勝前又失手讓禍首遁走的覆轍。"
+        }
+      ]
+    },
+    {
+      "stageId": 369,
+      "stageName": "修羅級蛇眼城",
+      "category": "dungeon",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 30,
+        "groupMission": 15030,
+        "limit": 1
+      },
+      "fivePlayerEvidence": [
+        {
+          "source": "STGMSG145.INI",
+          "line": 6266,
+          "text": "Msg = 孫子兵法有云，勝兵先勝而後求戰，就算認定蛇眼星氣勢已竭，你亦該組齊修為夠高的五人隊伍，再闖蛇眼城，以免重蹈臨勝前又失手讓禍首遁走的覆轍。"
+        }
+      ]
+    },
+    {
+      "stageId": 389,
+      "stageName": "俠隱樓",
+      "category": "dungeon",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 30,
+        "groupMission": 15031,
+        "limit": 1
+      },
+      "fivePlayerEvidence": [
+        {
+          "source": "STGMSG83.INI",
+          "line": 5160,
+          "text": "Msg = 為此更不能縱虎歸山，讓辰紫荊逃出龍川，否則若他攜帶兵馬歸降六宇，必將造成中原更大威脅！事已至此，請英雄徵集【四名隊員組成五人隊伍】，再持【指定數目紀元裂片】穿越已減弱之星雲迷障，入『俠隱樓』擒下瑯王辰紫荊！"
+        },
+        {
+          "source": "STGMSG83.INI",
+          "line": 5182,
+          "text": "Msg = 五派令多名高手入龍川鎮壓民亂，就為遏制六宇野心，而今已近功成階段，更不可縱虎歸山，讓辰紫荊逃出龍川！請英雄徵集【四名隊員組成五人隊伍】，再持【指定數目紀元裂片】穿越已減弱之星雲迷障，入『俠隱樓』擒下瑯王辰紫荊！"
+        }
+      ]
+    },
+    {
+      "stageId": 390,
+      "stageName": "獨鬥級俠隱樓",
+      "category": "dungeon",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 15,
+        "groupMission": 0,
+        "limit": 0
+      },
+      "fivePlayerEvidence": []
+    },
+    {
+      "stageId": 391,
+      "stageName": "修羅級俠隱樓",
+      "category": "dungeon",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 30,
+        "groupMission": 15032,
+        "limit": 1
+      },
+      "fivePlayerEvidence": [
+        {
+          "source": "STGMSG83.INI",
+          "line": 5160,
+          "text": "Msg = 為此更不能縱虎歸山，讓辰紫荊逃出龍川，否則若他攜帶兵馬歸降六宇，必將造成中原更大威脅！事已至此，請英雄徵集【四名隊員組成五人隊伍】，再持【指定數目紀元裂片】穿越已減弱之星雲迷障，入『俠隱樓』擒下瑯王辰紫荊！"
+        },
+        {
+          "source": "STGMSG83.INI",
+          "line": 5182,
+          "text": "Msg = 五派令多名高手入龍川鎮壓民亂，就為遏制六宇野心，而今已近功成階段，更不可縱虎歸山，讓辰紫荊逃出龍川！請英雄徵集【四名隊員組成五人隊伍】，再持【指定數目紀元裂片】穿越已減弱之星雲迷障，入『俠隱樓』擒下瑯王辰紫荊！"
+        }
+      ]
+    }
+  ]
+}
