@@ -3519,6 +3519,9 @@ body{
   justify-content:flex-end;
   margin:10px 0 0;
 }
+.monsterSearchPage .itemFilterActions{flex-wrap:wrap;gap:12px;align-items:center}
+.monsterPointFilter{display:flex;align-items:center;gap:8px;margin-right:auto;cursor:pointer}
+.monsterPointFilter input[type="checkbox"]{width:18px;height:18px;flex:0 0 18px;margin:0}
 .itemFilterActions button{
   border:1px solid var(--line);
   background:var(--panel2);

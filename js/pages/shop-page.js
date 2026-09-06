@@ -3,6 +3,7 @@
   const SHOP_DATA_URL = 'data/shop_all.json';
   const MAP_DATA_URL = 'data/stage_maps.json';
   const SHOW_SHOP_COORDS = false;
+  const HIDDEN_SHOP_STAGE_IDS = new Set([354, 377]);
   const state = {
     data: null,
     maps: null,
@@ -97,6 +98,7 @@
     const shops = shopMap();
     const rows = [];
     for(const stage of state.maps?.stages || []){
+      if(HIDDEN_SHOP_STAGE_IDS.has(Number(stage.stageId))) continue;
       for(const npc of stage.npcs || []){
         const shopId = String(npc.shop || '').trim();
         if(!shopId || !shops.has(shopId)) continue;
