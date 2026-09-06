@@ -14,18 +14,6 @@
       "fivePlayerEvidence": []
     },
     {
-      "stageId": 101,
-      "stageName": "龍宮八層一隅",
-      "category": "dungeon",
-      "evidence": {
-        "source": "STAGE.INI",
-        "parallel": 10,
-        "groupMission": 0,
-        "limit": 0
-      },
-      "fivePlayerEvidence": []
-    },
-    {
       "stageId": 102,
       "stageName": "龍宮八層廣場",
       "category": "dungeon",
