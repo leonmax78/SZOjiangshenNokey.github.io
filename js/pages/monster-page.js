@@ -281,7 +281,18 @@ function showBeastDetail(index){
  ]:[['生命','待補'],['攻擊',row.attack==null?'待補':row.attack],['防禦','待補'],['術攻','待補'],['術防','待補']];
  const stats=m?[['體魄',m.Con],['力量',m.Str],['智慧',m.Int],['靈敏',m.Dex]]:[];
  const skills=m?[["技能1",monsterSkillText(m.Skill1)],["技能2",monsterSkillText(m.Skill2)],["技能3",monsterSkillText(m.Skill3)],["技能4",monsterSkillText(m.Skill4)]]:(row.skills||[]).map((skill,i)=>[`技能${i+1}`,skill]);
+ const capture=(row.captureLocations||[]).map((place,i)=>`<button type="button" class="collectTag collectMapTag" onclick="showBeastCaptureLocation(${Number(index)},${i})">${esc(place.stageName)}</button>`).join('');
  byId('reader').innerHTML=`<section class="card monsterCompact"><button class="backBtn" type="button" onclick="renderMonsterPage()">← 返回封獸查詢</button><div class="assetPreviewPanel monsterPreviewPanel"><div class="assetArtPanel">${hero}<h1>${esc(row.name)}</h1><span class="beastTag">封獸 · ${esc(row.stars)}星甕</span></div><div class="assetInfoPanel"><div class="monsterPanel"><h3>怪物資料</h3>${monsterRowsHTML(basic,'monsterDataGrid')}</div><div class="monsterPanel"><h3>能力資訊</h3>${monsterRowsHTML(ability,'monsterStatGrid')}</div></div></div><div class="monsterGrid"><div class="monsterPanel"><h3>四圍</h3>${monsterRowsHTML(stats,'monsterStatGrid')}</div>${skills.some(item=>item[1])?`<div class="monsterPanel monsterSkillPanel"><h3>技能資訊</h3>${monsterRowsHTML(skills,'monsterSkillGrid')}</div>`:''}</div></section>`;
+ if(capture)byId('reader').querySelector('.monsterGrid').insertAdjacentHTML('beforeend',`<div class="monsterPanel beastCapturePanel"><h3>捕捉位置</h3><div class="beastCaptureLinks">${capture}</div></div>`);
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+
+async function showBeastCaptureLocation(index,locationIndex){
+ const place=beastRows()[index]?.captureLocations?.[locationIndex];if(!place)return;
+ if(typeof ensureMapPageLoaded==='function')await ensureMapPageLoaded();
+ await window.openBeastCaptureMap(place);
+ document.querySelectorAll('.navBtn[data-view]').forEach(button=>button.classList.toggle('active',button.dataset.view==='map'));
+ if(typeof closeDrawer==='function')closeDrawer();
  window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -502,3 +513,4 @@ window.showMonsterMapLocations=showMonsterMapLocations;
 window.setMonsterQueryMode=setMonsterQueryMode;
 window.selectBeastStars=selectBeastStars;
 window.showBeastDetail=showBeastDetail;
+window.showBeastCaptureLocation=showBeastCaptureLocation;

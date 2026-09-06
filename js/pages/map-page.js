@@ -944,6 +944,19 @@
     await renderStageMapPage();
   };
 
+  window.openBeastCaptureMap = async function(place){
+    await ensureMapDataLoaded();
+    const stage=mapData.stages.find(item=>Number(item.stageId)===Number(place.stageId));
+    if(!stage)return;
+    const ids=new Set(place.monsterIds.map(String));
+    state.stageId=Number(stage.stageId);
+    state.query=place.monsterName;
+    state.monsters.clear();
+    state.npcs.clear();
+    monsterGroups(stage).filter(group=>ids.has(String(group.id))).forEach(group=>state.monsters.add(markerKey(group)));
+    await renderStageMapPage();
+  };
+
   window.openMapSearchLocation = async function(mapName, queryName){
     await ensureMapDataLoaded();
     const targetMap = String(mapName || '').trim();

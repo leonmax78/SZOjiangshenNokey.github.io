@@ -1,0 +1,1397 @@
+[
+  {
+    "name": "兔精",
+    "id": "5712",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "冰蟾蜍",
+    "id": "5019",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "大山犬",
+    "id": "5061",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "大狂猴",
+    "id": "5062",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "大蜘蛛",
+    "id": "5065",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "大蟾蜍",
+    "id": "5064",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "大野豬",
+    "id": "5063",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "小蠍子",
+    "id": "5106",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "山豬",
+    "id": "5010",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "巨灰鼠",
+    "id": "5081",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "巨蜘蛛",
+    "id": "5021",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "巨蝙蝠",
+    "id": "5085",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "巨蟾蜍",
+    "id": "5017",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "巨鼠",
+    "id": "5080",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "年小弟",
+    "id": "5782",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "惡犬",
+    "id": "5001",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "搗蛋小狸貓",
+    "id": "5336",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "火蟾蜍",
+    "id": "5018",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "灰蝙蝠",
+    "id": "5084",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "灰鷹",
+    "id": "5711",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "狂犬",
+    "id": "5002",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "狸精",
+    "id": "5713",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "玉雷兔",
+    "id": "5925",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "白貂",
+    "id": "5710",
+    "status": "calibrated-for-review",
+    "baseBias": "0x60016, 0x9cd2, 24"
+  },
+  {
+    "name": "白雪",
+    "id": "9036",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "緞帶兔",
+    "id": "5337",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "翡翠",
+    "id": "9034",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "蒼藍",
+    "id": "9033",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "藍尾蠍",
+    "id": "5107",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "蝙蝠",
+    "id": "5083",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "變色蜥蜴",
+    "id": "5095",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "食屍巨鼠",
+    "id": "5082",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "黃金",
+    "id": "9035",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "黑狂猴",
+    "id": "5012",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "千面狐",
+    "id": "5309",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "屍犬",
+    "id": "5003",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "巨蜈蚣",
+    "id": "5182",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "斑紋蜘蛛",
+    "id": "5022",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "桃花蜂",
+    "id": "5293",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "殭屍",
+    "id": "5039",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "毒蟾蜍",
+    "id": "5020",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "沙漠斑蛛",
+    "id": "9017",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "沙漠響尾蛇",
+    "id": "9015",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "狂猿",
+    "id": "5098",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "綠蜥蜴",
+    "id": "5096",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "翠蛇",
+    "id": "5185",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "赤蠍子",
+    "id": "5108",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "遊魂",
+    "id": "5037",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "野狼",
+    "id": "5005",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "飛毛兔",
+    "id": "5301",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "黃金吉祥豬",
+    "id": "9120",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "劍齒狼",
+    "id": "5007",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "大山豬",
+    "id": "5011",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "小妖狸",
+    "id": "5312",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "山羊",
+    "id": "5680",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "巨蠍子",
+    "id": "5109",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "幽冥犬",
+    "id": "5004",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "毒殭屍",
+    "id": "5041",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "水鬼",
+    "id": "5027",
+    "status": "Reference coloring is not explained by a linear correction"
+  },
+  {
+    "name": "沙漠蠱毒蜘蛛",
+    "id": "9018",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "洞穴蜥蜴",
+    "id": "5879",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "火妖",
+    "id": "5028",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "狂猴王",
+    "id": "5013",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "玄龜",
+    "id": "5290",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "白毛巨猿",
+    "id": "5014",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "石怪",
+    "id": "5025",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "紅毛巨猿",
+    "id": "5015",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "蟾蜍精",
+    "id": "5223",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "血屍",
+    "id": "5040",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "赤蜥蜴",
+    "id": "5097",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "野馬",
+    "id": "5681",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "雪狼",
+    "id": "5006",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "骷髏士兵",
+    "id": "5030",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "骷髏弓手",
+    "id": "5031",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "鬼面蜘蛛",
+    "id": "5023",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "鱷魚",
+    "id": "5188",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "黃牛",
+    "id": "5682",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "{千面狐}",
+    "id": "5322",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "{桃花兵蜂}",
+    "id": "5342",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "{水鬼}",
+    "id": "5345",
+    "status": "missing-reference-or-id"
+  },
+  {
+    "name": "{火妖}",
+    "id": "5346",
+    "status": "missing-reference-or-id"
+  },
+  {
+    "name": "{石怪}",
+    "id": "5343",
+    "status": "missing-reference-or-id"
+  },
+  {
+    "name": "人蔘精",
+    "id": "5317",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "付喪傘鬼",
+    "id": "9229",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "冤魂",
+    "id": "5038",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "劍齒鱷",
+    "id": "5189",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "士兵俑（劍）",
+    "id": "",
+    "status": "missing-reference-or-id"
+  },
+  {
+    "name": "士兵俑（弓）",
+    "id": "",
+    "status": "missing-reference-or-id"
+  },
+  {
+    "name": "士兵俑（槍）",
+    "id": "",
+    "status": "missing-reference-or-id"
+  },
+  {
+    "name": "大力熊",
+    "id": "5304",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "岩龜",
+    "id": "5951",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "巨狂猿",
+    "id": "5099",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "巨螯蝦兵",
+    "id": "5288",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "搗藥兔",
+    "id": "5302",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "晝行傘鬼",
+    "id": "9228",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "桃花兵蜂",
+    "id": "5292",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "死靈弓手",
+    "id": "5269",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "毒血屍",
+    "id": "5029",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "灰巨蟒",
+    "id": "5186",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "百草狐郎中",
+    "id": "5310",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "禿鷹",
+    "id": "5945",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "箭蜈蚣",
+    "id": "5183",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "老虎",
+    "id": "5008",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "蠍子王",
+    "id": "5110",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "跳鼠",
+    "id": "5954",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "雷刃窮奇",
+    "id": "9189",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "靈芝精",
+    "id": "5315",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "風精窮奇",
+    "id": "9188",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "食人巨猿",
+    "id": "5016",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "<老樹精>",
+    "id": "5330",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "{力士俑}",
+    "id": "5437",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "{百草狐郎中}",
+    "id": "5323",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "{老樹精}",
+    "id": "5329",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "五毒蜈蚣",
+    "id": "5184",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "力士俑",
+    "id": "5046",
+    "status": "missing-reference-or-id"
+  },
+  {
+    "name": "妖狸射手",
+    "id": "5313",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "妖面蜘蛛",
+    "id": "5024",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "小冰蕈傘人",
+    "id": "5871",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "小火蕈傘人",
+    "id": "5870",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "小蕈傘人",
+    "id": "5872",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "山魅",
+    "id": "5321",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "巨角龜",
+    "id": "5291",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "惡水鬼",
+    "id": "5059",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "林魅",
+    "id": "5320",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "沙漠巨蟒",
+    "id": "9016",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "海魅",
+    "id": "5319",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "白鹿",
+    "id": "5686",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "紫靈貂",
+    "id": "5684",
+    "status": "calibrated-for-review",
+    "baseBias": "0x60327, 0x9cd2, 19"
+  },
+  {
+    "name": "綠毛狂猿",
+    "id": "5100",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "老樹精",
+    "id": "5058",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "花精",
+    "id": "5227",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "蒼狼",
+    "id": "5685",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "虎鬥士",
+    "id": "5307",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "覓蜜熊",
+    "id": "5305",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "迷你戰象",
+    "id": "9449",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "邪火妖",
+    "id": "5060",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "金石怪",
+    "id": "5057",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "食人巨蟒",
+    "id": "5187",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "食人巨鱷",
+    "id": "5190",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "食人虎",
+    "id": "5009",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "鬼螯蝦兵",
+    "id": "5289",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "龍骨河童",
+    "id": "9256",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[九尾狐]",
+    "id": "9090",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "[傘鬼]",
+    "id": "9556",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[兔仙人]",
+    "id": "9088",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[千年蔘精]",
+    "id": "9093",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[千年蟾蜍精]",
+    "id": "9084",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[千年靈芝精]",
+    "id": "9092",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "[吸血殭屍]",
+    "id": "9083",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[嘯地幼犀]",
+    "id": "9555",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[女王蜂]",
+    "id": "9087",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[巨禿鷹]",
+    "id": "9096",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[熊武者]",
+    "id": "9553",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "[獵鷹]",
+    "id": "9094",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[虎霸王]",
+    "id": "9089",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[蛇魔女]",
+    "id": "9086",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "[蜘蛛精]",
+    "id": "9085",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "[隱者狸仙]",
+    "id": "9091",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "[飛毛跳鼠]",
+    "id": "9097",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[鳳凰]",
+    "id": "9554",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[黑豹]",
+    "id": "9095",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "烏羽天狗",
+    "id": "9500",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[冰蕈傘人]",
+    "id": "9581",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[千年樹精]",
+    "id": "9571",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "[千年花精]",
+    "id": "9572",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[嘯地巨犀]",
+    "id": "9579",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[天山巨猿]",
+    "id": "9574",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[天山食人虎]",
+    "id": "9573",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[將軍俑]",
+    "id": "9570",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[毒蕈傘人]",
+    "id": "9582",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[激雷鐮鼬]",
+    "id": "9583",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[火蕈傘人]",
+    "id": "9580",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[疾風戰士]",
+    "id": "9576",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[白骨精]",
+    "id": "9569",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[神行跳鼠]",
+    "id": "9578",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[草原戰士]",
+    "id": "9575",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[銅石龜]",
+    "id": "9577",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "[鬼河童]",
+    "id": "9584",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "九皇天尊龍",
+    "id": "9934",
+    "status": "missing-reference-or-id"
+  },
+  {
+    "name": "冰塵白鋼獅",
+    "id": "9662",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "天山黑霸",
+    "id": "14187",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "瘋電玩虎霸王",
+    "id": "9737",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "真火鳳凰",
+    "id": "9568",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "第六天鬼王",
+    "id": "9823",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "蒼穹神翔牛",
+    "id": "9885",
+    "status": "calibrated-for-review",
+    "baseBias": "0x5, 0xe9c1, 130"
+  },
+  {
+    "name": "[冰執鐮鼬]",
+    "id": "14037",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[劍刺傘鬼]",
+    "id": "14046",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[叢林野象]",
+    "id": "14045",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[天狗]",
+    "id": "14038",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "[密林妖禽]",
+    "id": "14039",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[巨錘猴精]",
+    "id": "14040",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "[怒雪麒麟]",
+    "id": "14051",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[惡鬼]",
+    "id": "14044",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[拔山象妖]",
+    "id": "14048",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "[晶石怪]",
+    "id": "14034",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[沼地巨蛇]",
+    "id": "14041",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[火雲麒麟]",
+    "id": "14049",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[白靈石獅]",
+    "id": "14043",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[蠱毒麒麟]",
+    "id": "14050",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[血瘤眼]",
+    "id": "14042",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[魅亂傘鬼]",
+    "id": "14035",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[鴉天狗]",
+    "id": "14047",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[黑天妖魔]",
+    "id": "14036",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "冰界海后",
+    "id": "14223",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "凱旋獅王",
+    "id": "14376",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "咬錢黃金鼠",
+    "id": "16063",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "幻武天龍神",
+    "id": "14052",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "浩天將神",
+    "id": "14299",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "炎獄魔眼",
+    "id": "14413",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "焚世炎帝",
+    "id": "14190",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "破界皇龍",
+    "id": "14412",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "神威虎將",
+    "id": "14169",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "紫燄影凰",
+    "id": "14068",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "霜血霸蜥",
+    "id": "14424",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[三途棺差]",
+    "id": "14460",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "[半身虎人]",
+    "id": "14469",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "[嘯狂之風]",
+    "id": "14474",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "[地煞]",
+    "id": "14459",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[巨憾之土]",
+    "id": "14473",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "[幽谷翔龍]",
+    "id": "14467",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "[拘魂白無常]",
+    "id": "14463",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[提刑黑無常]",
+    "id": "14464",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "[焚怒之火]",
+    "id": "14471",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "[索命牛頭]",
+    "id": "14461",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[藏地氂牛]",
+    "id": "14466",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "[輪迴外邪]",
+    "id": "14468",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "[追魂馬面]",
+    "id": "14462",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "[雪峰野人]",
+    "id": "14465",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "[駱駝]",
+    "id": "14470",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "[騰湧之水]",
+    "id": "14472",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "九尾妖仙妲己",
+    "id": "16313",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "傾國金色九尾",
+    "id": "16453",
+    "status": "calibrated-for-review",
+    "baseBias": "0x10408, 0x43f6, 158"
+  },
+  {
+    "name": "元始劍靈",
+    "id": "15457",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "劫‧修羅魔君",
+    "id": "14475",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "劫‧無界閻羅",
+    "id": "14506",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "劫‧邪幻魔帝",
+    "id": "14528",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "化靈四聖太宰",
+    "id": "15380",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "天尊雷神王",
+    "id": "14930",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "天尊風神王",
+    "id": "14931",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "太極金架蔘王",
+    "id": "16893",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "幽神阿努比斯",
+    "id": "15931",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "影咒獸．刁蛇",
+    "id": "17726",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "影咒獸．垣鹿",
+    "id": "17727",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "影咒獸．墨蟾",
+    "id": "17623",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "影咒獸．玉犬",
+    "id": "17046",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "影咒獸．脫兔",
+    "id": "17387",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "影咒獸．蹣象",
+    "id": "17725",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "影咒獸．鴞",
+    "id": "17047",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "新紀神燹鳳麒",
+    "id": "15030",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "新羅次雄獬廌",
+    "id": "16562",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "方舟天翼虎",
+    "id": "17624",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "歧異霸王龍",
+    "id": "17957",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "泰源黑熊王",
+    "id": "16780",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "煌翠玉蝶仙",
+    "id": "14743",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "狂宇魔鴆毒麒",
+    "id": "15227",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "真九皇天尊龍",
+    "id": "14763",
+    "status": "calibrated-for-review",
+    "baseBias": "0x3a, 0xf306, 2"
+  },
+  {
+    "name": "符兵 龍驤",
+    "id": "15031",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "終末尊主",
+    "id": "15726",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "絕曆神凜冰麒",
+    "id": "15107",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "綿柔喜羊駝",
+    "id": "16352",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "聖翼不死鳥",
+    "id": "14527",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "蒼濤聖玉蛟",
+    "id": "14641",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "虛主化尊",
+    "id": "15643",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "覆朝嫣紅九尾",
+    "id": "16926",
+    "status": "calibrated-for-review",
+    "baseBias": "0x63e, 0x2a8c, 144"
+  },
+  {
+    "name": "護天聖將烈魂",
+    "id": "15375",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "赤綾烈緋神",
+    "id": "15869",
+    "status": "Reference pose does not align reliably"
+  },
+  {
+    "name": "逆神阿努比斯",
+    "id": "16118",
+    "status": "calibrated-for-review",
+    "baseBias": ""
+  },
+  {
+    "name": "飛尊皓羽白陵",
+    "id": "16927",
+    "status": "Reference pose does not align reliably"
+  }
+]
