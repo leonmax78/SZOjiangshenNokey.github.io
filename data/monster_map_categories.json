@@ -26,6 +26,18 @@
       "fivePlayerEvidence": []
     },
     {
+      "stageId": 109,
+      "stageName": "神州武冠台",
+      "category": "arena",
+      "evidence": {
+        "source": "STAGE.INI",
+        "parallel": 0,
+        "groupMission": 0,
+        "limit": null
+      },
+      "fivePlayerEvidence": []
+    },
+    {
       "stageId": 120,
       "stageName": "黃龍秘殿",
       "category": "dungeon",
