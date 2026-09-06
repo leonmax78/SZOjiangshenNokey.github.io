@@ -1561,6 +1561,9 @@ section.card:has(.supportPlan) > .notice{
   font-size:24px;
   line-height:1.2;
 }
+.monsterPreviewPanel .assetArtPanel:has(.beastTag){flex-wrap:wrap;justify-content:center;align-content:center;gap:10px}
+.monsterPreviewPanel .assetArtPanel:has(.beastTag) h1{flex-basis:100%;text-align:center;overflow-wrap:anywhere}
+.monsterPreviewPanel .assetArtPanel .beastTag{flex-shrink:0;white-space:nowrap}
 .assetInfoPanel{
   min-width:0;
   display:grid;

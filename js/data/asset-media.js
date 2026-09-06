@@ -43,6 +43,8 @@
   }
   function monsterPortraitSrc(monster){
     const id=String(monster&&(monster.ID!==undefined?monster.ID:monster.id)||'').trim();
+    const beast=id&&(window.SZO_BEASTS||[]).find(row=>String(row.monsterId)===id&&row.portrait);
+    if(beast)return `${base().replace(/\/assets\/test-media$/, '')}/${beast.portrait}?v=528`;
     if(id&&monsterPortraitOverrides[id])return `${base()}/${monsterPortraitOverrides[id]}${mediaVersion()}`;
     const pic=String(monster&&(monster.Pic!==undefined?monster.Pic:monster.pic)||'').trim();
     return pic&&setOf('monster').has(pic)?`${base()}/monster-portraits/m${pic}.png${mediaVersion()}`:'';

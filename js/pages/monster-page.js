@@ -190,7 +190,7 @@ function beastStarsHTML(selected){
 }
 function beastResultHTML(row,index){
  const m=(monsters||[]).find(item=>String(item.ID||'')===String(row.monsterId||''));
- const thumb=m?monsterThumbHTML(m):'';
+ const thumb=m?monsterThumbHTML(m):row.portrait&&window.SZO_ASSET_MEDIA?window.SZO_ASSET_MEDIA.img(row.portrait,row.name,'assetThumb monsterThumb'):'';
  const meta=m?`${esc(raceName(m.Type))}${subtypeName(m.Type,m.SubType)?' / '+esc(subtypeName(m.Type,m.SubType)):''}`:'怪物資料待補';
  return `<button type="button" class="resultItem withAsset" onclick="showBeastDetail(${index})">${thumb}<span class="resultText"><div class="rName">${esc(row.name)}</div><div class="rSub">${esc(row.stars)}星甕 / ${meta}</div></span></button>`;
 }
@@ -198,7 +198,9 @@ function renderBeastResults(){
  const box=byId('monsterResultsMain');if(!box)return;
  const star=Number(window.v88BeastStars||2);
  const q=String(byId('monsterQMain')?.value||'').trim().toLowerCase();
- box.innerHTML=beastRows().map((row,index)=>({row,index})).filter(item=>Number(item.row.stars)===star&&(!q||String(item.row.name).toLowerCase().includes(q))).map(item=>beastResultHTML(item.row,item.index)).join('')||'<div class="muted">沒有符合的封獸。</div>';
+ const results=beastRows().map((row,index)=>({row,index})).filter(item=>Number(item.row.stars)===star&&(!q||String(item.row.name).toLowerCase().includes(q)));
+ results.sort((a,b)=>(Number(a.row.monsterId)||Infinity)-(Number(b.row.monsterId)||Infinity)||a.index-b.index);
+ box.innerHTML=results.map(item=>beastResultHTML(item.row,item.index)).join('')||'<div class="muted">沒有符合的封獸。</div>';
 }
 function selectBeastStars(star){window.v88BeastStars=Number(star);document.querySelectorAll('.beastStarBtn').forEach(btn=>btn.classList.toggle('active',btn.textContent===`${star}星甕`));renderBeastResults()}
 function setMonsterQueryMode(mode){window.v88MonsterMode=mode==='beast'?'beast':'monster';renderMonsterPage()}
@@ -269,7 +271,7 @@ function searchMonstersMain(){
 function showBeastDetail(index){
  const row=beastRows()[Number(index)];if(!row)return;
  const m=(monsters||[]).find(item=>String(item.ID||'')===String(row.monsterId||''));
- const hero=m?monsterThumbHTML(m).replace('assetThumb monsterThumb','assetHero monsterHero'):'';
+ const hero=m?monsterThumbHTML(m).replace('assetThumb monsterThumb','assetHero monsterHero'):row.portrait&&window.SZO_ASSET_MEDIA?window.SZO_ASSET_MEDIA.img(row.portrait,row.name,'assetHero monsterHero'):'';
  const basic=[['怪物名稱',row.name],['星級',`${row.stars}星甕`],['種族',m?raceName(m.Type):'待補'],['子分類',m?subtypeName(m.Type,m.SubType):'待補']];
  const ability=m?[
   ['生命',m.HP],['攻擊',row.attack==null?'待補':Math.round(Number(row.attack))],
