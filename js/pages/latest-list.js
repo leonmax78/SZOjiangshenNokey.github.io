@@ -13,7 +13,7 @@
   }
   window.renderMonsterPage=function(){
     const q=window.v88MonsterQ||'', min=window.v88MonsterMin||'', max=window.v88MonsterMax||'', race=window.v88MonsterRace||'', subtype=window.v88MonsterSubtype||'';
-    _id('reader').innerHTML=`<section class="card monsterSearchPage latestSearchPage"><h1>怪物查詢</h1><div class="latestQueryLayout"><div class="latestMainPane">
+    _id('reader').innerHTML=`<section class="card monsterSearchPage latestSearchPage"><h1>怪物、封獸查詢</h1><div class="latestQueryLayout"><div class="latestMainPane">
       <div class="kvGrid">
         <div class="kv"><div class="k">怪物名稱 / ID / 位置 / 種族 / 子分類</div><div class="v"><input id="monsterQMain" placeholder="例如：問頂仙龍、飛燕、妖物系、蜘蛛精" value="${_e(q)}"></div></div>
         <div class="kv"><div class="k">種族</div><div class="v"><select id="monsterRaceMain">${monsterRaceOptionsHTML(race)}</select></div></div>

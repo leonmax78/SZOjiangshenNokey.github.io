@@ -263,7 +263,7 @@ window.showPageLoading=showPageLoading;
 
 function viewLoadingLabel(view){
  const labels={
-  monster:'怪物查詢',
+  monster:'怪物、封獸查詢',
   collect:'武冠收錄資料',
   shop:'商店販賣資訊',
   map:'地圖查詢',
@@ -315,7 +315,7 @@ window.showPageLoading=showPageLoading;
 
 function viewLoadingLabel(view){
  const labels={
-  monster:'怪物查詢',
+  monster:'怪物、封獸查詢',
   collect:'武冠收錄資料',
   shop:'商店販賣資訊',
   downloads:'工具下載區',
@@ -1511,7 +1511,7 @@ window.addEventListener('popstate',()=>goBackToPrevious());
 
 
 function backLabelFor(view){
- if(view==='monster')return '返回怪物查詢';
+ if(view==='monster')return '返回怪物、封獸查詢';
  if(view==='item')return '返回道具查詢';
  if(view==='reverse')return '返回道具反查';
  if(view==='shop')return '返回商店販賣資訊';

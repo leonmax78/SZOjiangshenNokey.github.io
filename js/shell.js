@@ -31,7 +31,7 @@
         <button class="navBtn sub" data-jiang="training">修練機制 <span>›</span></button>
         <div id="jiangFields"></div>
       </div>
-      <button class="navBtn major" data-view="monster">怪物查詢 <span>›</span></button>
+      <button class="navBtn major" data-view="monster">怪物、封獸查詢 <span>›</span></button>
       <button class="navBtn major" data-view="item">道具查詢 <span>›</span></button>
       <div class="formBox" id="itemForm">
         <div class="subMenuNote">道具相關功能</div>

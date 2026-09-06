@@ -209,11 +209,11 @@ function renderMonsterPage(){
  restoreMonsterSearchState();
  const q=window.v88MonsterQ||'',min=window.v88MonsterMin||'',max=window.v88MonsterMax||'',race=window.v88MonsterRace||'',subtype=window.v88MonsterSubtype||'',beastMode=window.v88MonsterMode==='beast';
  if(!hasMonsterData()&&!hasMonsterSearchIndex()&&typeof window.ensureMonsterSearchIndexLoaded==='function'){
-  byId('reader').innerHTML='<section class="card monsterSearchPage"><h1>怪物查詢</h1><div class="muted">正在載入怪物搜尋索引，請稍等。</div></section>';
-  window.ensureMonsterSearchIndexLoaded().then(ok=>{if(ok)renderMonsterPage();else byId('reader').innerHTML='<section class="card"><h1>怪物查詢</h1><div class="empty">怪物資料載入失敗，請重新整理一次。</div></section>';});
+  byId('reader').innerHTML='<section class="card monsterSearchPage"><h1>怪物、封獸查詢</h1><div class="muted">正在載入怪物搜尋索引，請稍等。</div></section>';
+  window.ensureMonsterSearchIndexLoaded().then(ok=>{if(ok)renderMonsterPage();else byId('reader').innerHTML='<section class="card"><h1>怪物、封獸查詢</h1><div class="empty">怪物資料載入失敗，請重新整理一次。</div></section>';});
   return;
  }
- byId('reader').innerHTML=`<section class="card monsterSearchPage latestSearchPage"><h1>怪物查詢</h1>
+ byId('reader').innerHTML=`<section class="card monsterSearchPage latestSearchPage"><h1>怪物、封獸查詢</h1>
   <div class="monsterModeSwitch"><button type="button" class="${beastMode?'':'active'}" onclick="setMonsterQueryMode('monster')">查詢怪物</button><button type="button" class="${beastMode?'active':''}" onclick="setMonsterQueryMode('beast')">查詢封獸</button></div>
   ${beastMode?`<div class="beastStarPicker" aria-label="封甕星級">${beastStarsHTML(window.v88BeastStars||2)}</div>`:''}
   <div class="latestQueryLayout">
@@ -452,7 +452,7 @@ function showMonster(id,skipPush){
  window.v86LastView='monster';
  if(!skipPush){try{history.pushState({app:'detail',view:'monster'},'','#monster-'+id);}catch(e){}}
  if(!hasMonsterData()&&typeof window.ensureMonsterDataLoaded==='function'){
-  byId('reader').innerHTML=`<section class="card"><button class="backBtn" type="button" onclick="goBackToPrevious('monster')">← 返回怪物查詢</button><h1>怪物資料讀取中</h1><div class="muted">正在載入完整怪物資料，請稍等。</div></section>`;
+  byId('reader').innerHTML=`<section class="card"><button class="backBtn" type="button" onclick="goBackToPrevious('monster')">← 返回怪物、封獸查詢</button><h1>怪物資料讀取中</h1><div class="muted">正在載入完整怪物資料，請稍等。</div></section>`;
   window.ensureMonsterDataLoaded().then(ok=>{if(ok&&location.hash==='#monster-'+id)showMonster(id,true);});
   return;
  }
@@ -481,7 +481,7 @@ function showMonster(id,skipPush){
  const hero=monsterThumbHTML(m).replace('assetThumb monsterThumb','assetHero monsterHero');
  const beastTags=beastByMonsterId(id).map(row=>`<span class="beastTag">封獸 · ${esc(row.stars)}星甕</span>`).join('');
  byId('reader').innerHTML=`<section class="card monsterCompact">
-  <button class="backBtn" type="button" onclick="goBackToPrevious()">← 返回怪物查詢</button>
+  <button class="backBtn" type="button" onclick="goBackToPrevious()">← 返回怪物、封獸查詢</button>
   <div class="assetPreviewPanel monsterPreviewPanel">
     <div class="assetArtPanel">${hero}<h1>${esc(nameOf(m))}</h1>${beastTags}</div>
     <div class="assetInfoPanel">
